@@ -49,15 +49,6 @@ class ProductItem extends StatelessWidget {
                         fadeInCurve: Curves.bounceIn,
                         placeholder: product.image,
                       )
-//                    CachedNetworkImage(
-//                      imageUrl: product.image,
-//                      height: constraints.maxHeight * 0.6 - 16.0,
-//                      width: constraints.maxHeight * 0.5 - 10.0,
-//                      fit: BoxFit.contain,
-//                      placeholder: (context, url) =>
-//                          AdaptiveProgressIndicator(),
-//                    ),
-
 //                    child: Image.network(
 //                      product.image,
 //                      height: constraints.maxHeight * 0.6 - 16.0,
