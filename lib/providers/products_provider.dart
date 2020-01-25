@@ -1,0 +1,353 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:topstyle/models/ads_model.dart';
+import 'package:topstyle/models/product_details_model.dart';
+
+import '../models/products_model.dart';
+
+class ProductsProvider with ChangeNotifier {
+  List<ProductsModel> _bestSeller = [];
+  List<ProductsModel> _makeup = [];
+  List<ProductsModel> _perfume = [];
+  List<ProductsModel> _care = [];
+  List<ProductsModel> _lenses = [];
+  List<ProductsModel> _nails = [];
+  List<ProductsModel> _devices = [];
+  List<ProductsModel> _favorite = [];
+  List<Ads> _ads = [];
+
+//  final String baseUrl = 'http://192.168.43.61/api/';
+  final String baseUrl = 'https://topstylesa.com/api/';
+
+  Future<int> submitComment(
+      String review, int productId, double rate, String token) async {
+    int msg = 0;
+//    print(review);
+    try {
+      final response = await http.post('${baseUrl}review', headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+        "Accept": "application/json",
+      }, body: {
+        'rate': rate.round().toString(),
+        'review': review,
+        'product_id': productId.toString()
+      });
+      if (response.statusCode == 200) {
+        msg = 1;
+        print(response.body);
+      } else {
+        msg = 2;
+        print(response.body);
+      }
+    } catch (error) {
+      print(msg);
+      print(error.toString());
+//      throw error;
+    }
+    return msg;
+  }
+
+  Future<ProductDetailsModelWithList> productDetailsData(
+      int productId, String lang, String token) async {
+    ProductDetailsModelWithList productDetailsModelWithList;
+    try {
+      final response = token == 'none'
+          ? await http.get(
+              '${baseUrl}product/details/guest/$productId?lang=$lang',
+              headers: {
+                  "Accept": "application/json",
+                })
+          : await http
+              .get('${baseUrl}product/details/$productId?lang=$lang', headers: {
+              HttpHeaders.authorizationHeader: 'Bearer $token',
+              "Accept": "application/json",
+            });
+      if (response.statusCode == 200) {
+        if (jsonDecode(response.body) != null) {
+//          print(jsonDecode(response.body)['data']);
+          productDetailsModelWithList =
+              ProductDetailsModelWithList.fromJson(jsonDecode(response.body));
+//          print(jsonDecode(response.body)['data']);
+//          print(productDetailsModelWithList.productDetailsModel.name);
+        }
+      } else {
+        print('request is faild in product provider'
+            ' productDetailsData'
+            ' code ${response.statusCode}');
+      }
+    } catch (error) {
+      print(error.toString());
+      throw error.toString();
+    }
+    return productDetailsModelWithList;
+  }
+
+  Future<bool> toggleProductFavorite(int productId, String token) async {
+    bool isDone = false;
+    try {
+      final response = await http.get(
+        '${baseUrl}favorite/$productId',
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+          "Accept": "application/json",
+        },
+      );
+      if (response.statusCode == 200) {
+        notifyListeners();
+        isDone = true;
+//        print(jsonDecode(response.body));
+      } else {
+        isDone = false;
+        print(response.statusCode);
+      }
+    } catch (error) {
+      print(error.toString());
+      throw error;
+    }
+    notifyListeners();
+    return isDone;
+  }
+
+  Future<List<ProductsModel>> allFavoriteProducts(
+      String lang, String token) async {
+    try {
+      final response = await http.get(
+        '${baseUrl}favorite?lang=$lang',
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+          "Accept": "application/json",
+        },
+      );
+      if (response.statusCode == 200) {
+        _favorite = ProductsModel.parseProducts(
+            jsonDecode(response.body)['data'] as List);
+//        print(jsonDecode(response.body));
+
+      } else {}
+    } catch (error) {
+      print(error.toString());
+      throw error.toString();
+    }
+    return List.from(_favorite);
+  }
+
+  // Data is See More With Filter
+  Future<Map<String, dynamic>> allDataInSeeMoreWithMultiFilter(
+      String category, String lang, int pageNumber, String token) async {
+    List<ProductsModel> _allProductsFilter = [];
+    Map<String, dynamic> responseMap;
+    try {
+      final response = token == 'none'
+          ? await http.get(
+              '${baseUrl}filtter/guest?category=$category&lang=$lang&page=$pageNumber',
+              headers: {
+                  "Accept": "application/json",
+                })
+          : await http.get(
+              '${baseUrl}filtter/?category=$category&lang=$lang&page=$pageNumber',
+              headers: {
+                  HttpHeaders.authorizationHeader: 'Bearer $token',
+                  "Accept": "application/json",
+                });
+      if (response.statusCode == 200) {
+        if (jsonDecode(response.body)['data'] != null) {
+          _allProductsFilter = ProductsModel.parseProducts(
+              jsonDecode(response.body)['data'] as List);
+          responseMap = {
+            'data': _allProductsFilter,
+            'last_page': jsonDecode(response.body)['meta']['last_page'],
+          };
+          print('filterd response : ${_allProductsFilter.length}');
+        }
+      } else {
+        print('request is faild in product provider'
+            ' allDataInSpecificCategoryWith Multi Filter status'
+            ' code ${response.statusCode}');
+      }
+    } catch (error) {
+      print(error.toString());
+      throw error.toString();
+    }
+    return responseMap;
+  }
+
+  Future<Map<String, dynamic>> allDataInSeeMoreWithFilter(String category,
+      String lang, int pageNumber, String order, String token) async {
+    List<ProductsModel> _allProductsFilter = [];
+    Map<String, dynamic> responseMap;
+    try {
+      final response = token == 'none'
+          ? await http.get(
+              '${baseUrl}filtter/guest?category=$category&lang=$lang&order=$order&page=$pageNumber',
+              headers: {
+                  "Accept": "application/json",
+                })
+          : await http.get(
+              '${baseUrl}filtter/?category=$category&lang=$lang&order=$order&page=$pageNumber',
+              headers: {
+                  HttpHeaders.authorizationHeader: 'Bearer $token',
+                  "Accept": "application/json",
+                });
+      if (response.statusCode == 200) {
+        if (jsonDecode(response.body)['data'] != null) {
+          _allProductsFilter = ProductsModel.parseProducts(
+              jsonDecode(response.body)['data'] as List);
+          responseMap = {
+            'data': _allProductsFilter,
+            'last_page': jsonDecode(response.body)['meta']['last_page'],
+          };
+        }
+      } else {
+        print('request is faild in product provider'
+            ' allDataInSpecificCategoryAndFilter status'
+            ' code ${response.statusCode}');
+      }
+    } catch (error) {
+      print(error.toString());
+      throw error.toString();
+    }
+    return responseMap;
+  }
+
+  // Data in See More Page
+  Future<Map<String, dynamic>> allDataInSpecificCategory(
+      String category, String lang, int pageNumber, String token) async {
+//    print(token);
+    List<ProductsModel> _allProducts = [];
+    Map<String, dynamic> responseMap;
+    try {
+      final response = token == 'none'
+          ? await http.get(
+              '${baseUrl}products/guest/$category?lang=$lang&page=$pageNumber',
+              headers: {
+                  "Accept": "application/json",
+                })
+          : await http.get(
+              '${baseUrl}products/$category?lang=$lang&page=$pageNumber',
+              headers: {
+                HttpHeaders.authorizationHeader: 'Bearer $token',
+                "Accept": "application/json",
+              },
+            );
+      if (response.statusCode == 200) {
+        _allProducts = ProductsModel.parseProducts(
+            jsonDecode(response.body)['data'] as List);
+        responseMap = {
+          'data': _allProducts,
+          'last_page': jsonDecode(response.body)['meta']['last_page'],
+        };
+      }
+    } catch (error) {
+      print(error.toString());
+      throw error.toString();
+    }
+    return responseMap;
+  }
+
+  Future<Map<String, dynamic>> allDataWithSpecificBrand(
+      String brandId, int pageNumber) async {
+    List<ProductsModel> _allProducts = [];
+    Map<String, dynamic> responseMap;
+    try {
+      final response = await http
+          .get('${baseUrl}brandProducts/$brandId&page=$pageNumber', headers: {
+        "Accept": "application/json",
+      });
+      if (response.statusCode == 200) {
+        _allProducts = ProductsModel.parseProducts(
+            jsonDecode(response.body)['data'] as List);
+        responseMap = {
+          'data': _allProducts,
+          'last_page': jsonDecode(response.body)['meta']['last_page'],
+        };
+      }
+    } catch (error) {
+      print(error.toString());
+      throw error;
+    }
+    return responseMap;
+  }
+
+  Future<List<Ads>> fetchAllProducts(String lang, String token) async {
+    try {
+      final response = token == 'none'
+          ? await http.get('${baseUrl}homePageGuest?lang=$lang')
+          : await http.get(
+              '${baseUrl}homePage?lang=$lang',
+              headers: {
+                HttpHeaders.authorizationHeader: 'Bearer $token',
+                "Accept": "application/json",
+              },
+            );
+
+      if (response.statusCode == 200) {
+        _bestSeller = ProductsModel.parseProducts(
+            jsonDecode(response.body)['Best_Seller'] as List);
+        _makeup = ProductsModel.parseProducts(
+            jsonDecode(response.body)['Makeup'] as List);
+        _perfume = ProductsModel.parseProducts(
+            jsonDecode(response.body)['Perfume'] as List);
+        _care = ProductsModel.parseProducts(
+            jsonDecode(response.body)['Care'] as List);
+        _lenses = ProductsModel.parseProducts(
+            jsonDecode(response.body)['Lenses'] as List);
+        _nails = ProductsModel.parseProducts(
+            jsonDecode(response.body)['Nails'] as List);
+        _devices = ProductsModel.parseProducts(
+            jsonDecode(response.body)['Devices'] as List);
+        var _adsList = jsonDecode(response.body)['ads'] as List;
+        _ads = _adsList.map((ads) => Ads.fromJson(ads)).toList();
+//        print(_bestSeller[0].isFavorite);
+//        notifyListeners();
+      } else {
+        print('response status code is ${response.statusCode}');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    return _ads;
+  }
+
+  List<ProductsModel> get devices {
+    return List.from(_devices);
+  }
+
+  List<ProductsModel> get nails {
+    return List.from(_nails);
+  }
+
+  List<ProductsModel> get lenses {
+    return List.from(_lenses);
+  }
+
+  List<ProductsModel> get care {
+    return List.from(_care);
+  }
+
+  List<ProductsModel> get perfume {
+    return List.from(_perfume);
+  }
+
+  List<ProductsModel> get makeup {
+    return List.from(_makeup);
+  }
+
+  List<ProductsModel> get bestSeller {
+    return List.from(_bestSeller);
+  }
+
+  List<ProductsModel> get favorite {
+    return List.from(_favorite);
+  }
+
+  List<Ads> get ads {
+    return List.from(_ads);
+  }
+
+//  ProductDetailsModelWithList get productDetails {
+//    return productDetailsModelWithList;
+//  }
+}
