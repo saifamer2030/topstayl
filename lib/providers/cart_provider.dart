@@ -298,7 +298,8 @@ class CartItemProvider with ChangeNotifier {
   double get totalPrice {
     double totalPrice = 0.0;
     _cartItems.forEach((data) {
-      totalPrice += data.quantity * data.productPrice;
+      totalPrice += data.quantity * data.productPrice -
+          (data.quantity * data.productPrice * data.discount / 100);
     });
     return totalPrice;
   }

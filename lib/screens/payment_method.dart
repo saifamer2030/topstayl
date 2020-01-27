@@ -707,8 +707,6 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                         _cashOnDeliveryValueFees)
                                     .toStringAsFixed(2);
                                 _doCreditCardPayment(total);
-//                                  Navigator.of(context).push(MaterialPageRoute(
-//                                      builder: (context) => PaymentWebView()));
                               }
 
 //

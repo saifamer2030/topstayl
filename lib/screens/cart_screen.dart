@@ -91,7 +91,7 @@ class _CartScreenState extends State<CartScreen>
                                     : Colors.black,
                               ),
                               child: Text(
-                                '${cart.totalPrice >= 199.0 ? AppLocalization.of(context).translate('free_shipping_hint') : '${AppLocalization.of(context).translate('get_free_shipping_hint_1')}${(cart.totalPrice - 199.0).abs()} ${AppLocalization.of(context).translate("sar")}${AppLocalization.of(context).translate('get_free_shipping_hint_2')}'}',
+                                '${cart.totalPrice >= 199.0 ? AppLocalization.of(context).translate('free_shipping_hint') : '${AppLocalization.of(context).translate('get_free_shipping_hint_1')}${(cart.totalPrice - 199.0).abs().toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}${AppLocalization.of(context).translate('get_free_shipping_hint_2')}'}',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13.0,
@@ -108,6 +108,7 @@ class _CartScreenState extends State<CartScreen>
                                 productImageUrl:
                                     cartItems[index].productImageUrl,
                                 productPrice: cartItems[index].productPrice,
+                                discountPrice: cartItems[index].discount,
                                 isAvailable: cartItems[index].isAvailable,
                                 availableQuantity:
                                     cartItems[index].availableQuantity,

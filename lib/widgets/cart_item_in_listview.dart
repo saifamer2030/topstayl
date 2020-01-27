@@ -13,6 +13,7 @@ class CartItemListView extends StatefulWidget {
   final int productId;
   final String brandName;
   final double productPrice;
+  final int discountPrice;
   final int quantity;
   final int availableQuantity;
   final String productImageUrl;
@@ -26,6 +27,7 @@ class CartItemListView extends StatefulWidget {
       @required this.quantity,
       @required this.availableQuantity,
       @required this.productPrice,
+      @required this.discountPrice,
       @required this.productName,
       @required this.brandName,
       @required this.productImageUrl,
@@ -111,7 +113,7 @@ class _CartItemListViewState extends State<CartItemListView> {
                           style: TextStyle(fontSize: 12.0),
                         ),
                         Text(
-                          '${widget.productPrice.toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
+                          '${widget.discountPrice == 0 ? widget.productPrice.toStringAsFixed(2) : ((widget.productPrice) - (widget.discountPrice * widget.productPrice) / 100).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
                           style: TextStyle(
                               fontSize: 12.0, fontWeight: FontWeight.normal),
                         ),
@@ -136,6 +138,9 @@ class _CartItemListViewState extends State<CartItemListView> {
                                   fontSize: 12.0, fontWeight: FontWeight.bold),
                             ),
                           ]),
+                        ),
+                        SizedBox(
+                          width: 3.0,
                         ),
                         Container(
                           child: Row(

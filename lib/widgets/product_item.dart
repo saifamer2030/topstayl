@@ -148,7 +148,7 @@ class ProductItem extends StatelessWidget {
                     product.discount == 0
                         ? Container()
                         : Text(
-                            '${((double.parse(product.price) * product.discount) / 100).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
+                            '${(double.parse(product.price) - (double.parse(product.price) * product.discount / 100)).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
                             style: TextStyle(
                               fontSize: 12.0,
                               fontWeight: FontWeight.bold,
