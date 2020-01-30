@@ -280,7 +280,7 @@
   "user_data_is_changed": "تم تغير بيانات المستخدم بنجاح",
   "coupon_hint": "الخصم يشمل المنتجات غير المخفضة",
   "total_purchase": "إجمالي سعر السلة",
-  "free_shipping_hint": "مبروك! أنت مؤهل للشحن المجاني",
+  "free_shipping_hint": "أنت مؤهل للشحن المجاني",
   "get_free_shipping_hint_1": "أضف منتجات بقيمة ",
   "get_free_shipping_hint_2": " للحصول علي شحن مجاني"
 }

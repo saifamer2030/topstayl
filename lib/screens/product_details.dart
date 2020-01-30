@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/models/cart_item_model.dart';
 import 'package:topstyle/models/product_details_model.dart';
 import 'package:topstyle/providers/cart_provider.dart';
 import 'package:topstyle/providers/languages_provider.dart';
@@ -74,11 +75,20 @@ class _ProductDetailsState extends State<ProductDetails>
     });
   }
 
+  double totalPrice = 0.0;
+
+  List<CartItemModel> _lists = [];
   getCartData() async {
     var token = await userProvider.isAuthenticated();
     final String lang = appLanguage.appLocal.toString();
-    await Provider.of<CartItemProvider>(context)
+    _lists = await Provider.of<CartItemProvider>(context)
         .fetchAllCartItem(lang, token['Authorization']);
+
+    _lists.forEach((data) {
+      totalPrice += (data.productPrice -
+              (data.quantity * data.productPrice * data.discount / 100)) *
+          data.quantity;
+    });
   }
 
   Widget _buildProductDetailsCarousel() {
@@ -598,8 +608,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                       ? Container()
                                       : Text(
                                           _isProductChosen
-                                              ? '${((productDetails.options[_productOptionIndex].price) * (productDetails.discount) / 100).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}'
-                                              : '${((productDetails.options[0].price) * (productDetails.discount) / 100).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
+                                              ? '${((productDetails.options[_productOptionIndex].price) - ((productDetails.options[_productOptionIndex].price) * (productDetails.discount) / 100)).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}'
+                                              : '${((productDetails.options[0].price) - ((productDetails.options[0].price) * (productDetails.discount) / 100)).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
                                           style: TextStyle(
                                             fontSize: 16.0,
                                             color: Colors.red,
@@ -611,7 +621,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   ),
                                   productDetails.discount == 0
                                       ? Container()
-                                      : TagShape(20),
+                                      : TagShape(productDetails.discount),
 //                        Text('40 SAR'),
                                 ],
                               ),
@@ -1069,198 +1079,212 @@ class _ProductDetailsState extends State<ProductDetails>
                                       : Colors.grey,
                                 ),
                                 child: Consumer<CartItemProvider>(
-                                  builder: (ctx, cart, _) => FlatButton(
-                                    onPressed:
-//                          _isProductChosen
-//                              ?
-                                        (_isAddedToCart &&
-                                                oldProductId ==
-                                                    productDetails
+                                  builder: (ctx, _cartProvider, _) =>
+                                      FlatButton(
+                                    onPressed: (_isAddedToCart &&
+                                            oldProductId ==
+                                                productDetails
+                                                    .options[
+                                                        _productOptionIndex]
+                                                    .id)
+                                        ? null
+                                        : (productDetails
                                                         .options[
                                                             _productOptionIndex]
-                                                        .id)
-                                            ? null
-                                            : (productDetails
+                                                        .quantity >
+                                                    0 &&
+                                                productDetails
+                                                        .options[
+                                                            _productOptionIndex]
+                                                        .isAvailable ==
+                                                    1)
+                                            ? () async {
+                                                setState(() {
+                                                  _isProductAddedToCart = true;
+                                                });
+                                                var token = await userProvider
+                                                    .isAuthenticated();
+                                                var lang = appLanguage.appLocal
+                                                    .toString();
+
+                                                int response = await _cartProvider
+                                                    .addCartItem(
+                                                        productDetails
                                                             .options[
                                                                 _productOptionIndex]
-                                                            .quantity >
-                                                        0 &&
-                                                    productDetails
-                                                            .options[
-                                                                _productOptionIndex]
-                                                            .isAvailable ==
-                                                        1)
-                                                ? () async {
-                                                    setState(() {
-                                                      _isProductAddedToCart =
-                                                          true;
-                                                    });
-                                                    var token =
-                                                        await userProvider
-                                                            .isAuthenticated();
-                                                    int response =
-                                                        await cart.addCartItem(
-                                                            productDetails
-                                                                .options[
-                                                                    _productOptionIndex]
-                                                                .id,
-                                                            appLanguage.appLocal
-                                                                .toString(),
-                                                            1,
-                                                            token[
-                                                                'Authorization']);
-                                                    setState(() {
-                                                      _isProductAddedToCart =
-                                                          false;
-                                                    });
-                                                    if (response == 0 ||
-                                                        response == 1) {
-                                                      setState(() {
-                                                        _isAddedToCart = true;
-                                                        oldProductId =
-                                                            productDetails
-                                                                .options[
-                                                                    _productOptionIndex]
-                                                                .id;
-                                                      });
-                                                      showModalBottomSheet(
-                                                          backgroundColor:
-                                                              Color(0xFFe8e8e8),
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .only(
-                                                              topRight: Radius
-                                                                  .circular(
-                                                                      10.0),
-                                                              topLeft: Radius
-                                                                  .circular(
-                                                                      10.0),
-                                                            ),
-                                                          ),
-                                                          context: context,
-                                                          builder:
-                                                              (context) =>
-                                                                  Container(
-                                                                    height:
-                                                                        150.0,
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            16.0,
-                                                                        right:
-                                                                            16.0,
-                                                                        top:
-                                                                            20.0,
-                                                                        bottom:
-                                                                            15.0),
-                                                                    child:
-                                                                        Column(
+                                                            .id,
+                                                        lang,
+                                                        1,
+                                                        token['Authorization']);
+                                                if (response == 0 ||
+                                                    response == 1) {
+                                                  setState(() {
+                                                    _isAddedToCart = true;
+                                                    oldProductId = productDetails
+                                                        .options[
+                                                            _productOptionIndex]
+                                                        .id;
+                                                    _isProductAddedToCart =
+                                                        false;
+                                                  });
+
+                                                  showModalBottomSheet(
+                                                      backgroundColor:
+                                                          Color(0xFFe8e8e8),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  10.0),
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  10.0),
+                                                        ),
+                                                      ),
+                                                      context: context,
+                                                      builder:
+                                                          (context) =>
+                                                              Container(
+                                                                height: 150.0,
+                                                                padding: const EdgeInsets
+                                                                        .only(
+                                                                    left: 16.0,
+                                                                    right: 16.0,
+                                                                    top: 20.0,
+                                                                    bottom:
+                                                                        15.0),
+                                                                child: Column(
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
                                                                       children: <
                                                                           Widget>[
-                                                                        Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          children: <
-                                                                              Widget>[
-                                                                            Text(
-                                                                              AppLocalization.of(context).translate("added_successfully_to_cart"),
-                                                                              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              width: 5.0,
-                                                                            ),
-                                                                            Container(
-                                                                              margin: const EdgeInsets.only(bottom: 6.0),
-                                                                              child: Icon(
-                                                                                Icons.check_circle,
-                                                                                color: CustomColors.kPAddedToCartIconColor,
-                                                                                size: 27,
-                                                                              ),
-                                                                            ),
-                                                                          ],
+                                                                        Text(
+                                                                          AppLocalization.of(context)
+                                                                              .translate("added_successfully_to_cart"),
+                                                                          style: TextStyle(
+                                                                              fontSize: 18.0,
+                                                                              fontWeight: FontWeight.bold),
                                                                         ),
                                                                         SizedBox(
                                                                           width:
                                                                               5.0,
                                                                         ),
-                                                                        Text(
-                                                                          '${AppLocalization.of(context).translate('total_purchase')} (${cart.allItemQuantity} ${AppLocalization.of(context).translate('order_items')}) ${(cart.totalPrice + productDetails.options[_productOptionIndex].price)} ${AppLocalization.of(context).translate('sar')}',
-                                                                          style:
-                                                                              TextStyle(fontSize: 12.0),
-                                                                        ),
-                                                                        SizedBox(
-                                                                          height:
-                                                                              20.0,
-                                                                        ),
-                                                                        Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.spaceEvenly,
-                                                                          children: <
-                                                                              Widget>[
-                                                                            GestureDetector(
-                                                                              onTap: () {
-                                                                                Navigator.of(context).pop();
-                                                                              },
-                                                                              child: Container(
-                                                                                height: 44.0,
-                                                                                width: MediaQuery.of(context).size.width / 2 - 30,
-                                                                                decoration: BoxDecoration(
-                                                                                  color: CustomColors.kTabBarIconColor,
-                                                                                  borderRadius: BorderRadius.circular(10.0),
-                                                                                ),
-                                                                                child: Center(
-                                                                                  child: Text(
-                                                                                    '${AppLocalization.of(context).translate("continue_shopping")}',
-                                                                                    style: TextStyle(color: Colors.white, fontSize: 17.0),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                            GestureDetector(
-                                                                              onTap: () async {
-                                                                                var token = await userProvider.isAuthenticated();
-                                                                                if (token['Authorization'] == 'none') {
-                                                                                  Navigator.of(context).pushNamed(LoginScreen.routeName);
-                                                                                  SharedPreferences.getInstance().then((prefs) {
-                                                                                    prefs.setString("redirection", 'toPayment');
-                                                                                  });
-                                                                                } else {
-                                                                                  var token = await userProvider.isAuthenticated();
-                                                                                  Provider.of<OrdersProvider>(context).getUserAddresses(token['Authorization']).then((address) {
-                                                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => CheckoutScreen(0, address)));
-                                                                                  });
-                                                                                }
-                                                                              },
-                                                                              child: Container(
-                                                                                height: 44.0,
-                                                                                width: MediaQuery.of(context).size.width / 2 - 30,
-                                                                                decoration: BoxDecoration(
-                                                                                  color: Theme.of(context).accentColor,
-                                                                                  borderRadius: BorderRadius.circular(10.0),
-                                                                                ),
-                                                                                child: Center(
-                                                                                  child: Text(
-                                                                                    '${AppLocalization.of(context).translate("checkout")}',
-                                                                                    style: TextStyle(color: Colors.white, fontSize: 17.0),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            )
-                                                                          ],
+                                                                        Container(
+                                                                          margin:
+                                                                              const EdgeInsets.only(bottom: 6.0),
+                                                                          child:
+                                                                              Icon(
+                                                                            Icons.check_circle,
+                                                                            color:
+                                                                                CustomColors.kPAddedToCartIconColor,
+                                                                            size:
+                                                                                27,
+                                                                          ),
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                  ));
-                                                    } else {
-                                                      print(
-                                                          'the comming reponse is $response');
-                                                    }
-                                                  }
-                                                : () {
-                                                    print('remind me');
-                                                  }
+                                                                    SizedBox(
+                                                                      width:
+                                                                          5.0,
+                                                                    ),
+                                                                    Text(
+                                                                      '${AppLocalization.of(context).translate('total_purchase')} (${_cartProvider.allItemQuantity} ${AppLocalization.of(context).translate('order_items')}) ${(totalPrice + (productDetails.options[_productOptionIndex].price - (productDetails.discount * productDetails.options[_productOptionIndex].price / 100))).toStringAsFixed(2)} ${AppLocalization.of(context).translate('sar')}',
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              12.0),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          20.0,
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      children: <
+                                                                          Widget>[
+                                                                        GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                          child:
+                                                                              Container(
+                                                                            height:
+                                                                                44.0,
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width / 2 - 30,
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              color: CustomColors.kTabBarIconColor,
+                                                                              borderRadius: BorderRadius.circular(10.0),
+                                                                            ),
+                                                                            child:
+                                                                                Center(
+                                                                              child: Text(
+                                                                                '${AppLocalization.of(context).translate("continue_shopping")}',
+                                                                                style: TextStyle(color: Colors.white, fontSize: 17.0),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        GestureDetector(
+                                                                          onTap:
+                                                                              () async {
+                                                                            var token =
+                                                                                await userProvider.isAuthenticated();
+                                                                            if (token['Authorization'] ==
+                                                                                'none') {
+                                                                              Navigator.of(context).pushNamed(LoginScreen.routeName);
+                                                                              SharedPreferences.getInstance().then((prefs) {
+                                                                                prefs.setString("redirection", 'toPayment');
+                                                                              });
+                                                                            } else {
+                                                                              var token = await userProvider.isAuthenticated();
+                                                                              Provider.of<OrdersProvider>(context).getUserAddresses(token['Authorization']).then((address) {
+                                                                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CheckoutScreen(0, address)));
+                                                                              });
+                                                                            }
+                                                                          },
+                                                                          child:
+                                                                              Container(
+                                                                            height:
+                                                                                44.0,
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width / 2 - 30,
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              color: Theme.of(context).accentColor,
+                                                                              borderRadius: BorderRadius.circular(10.0),
+                                                                            ),
+                                                                            child:
+                                                                                Center(
+                                                                              child: Text(
+                                                                                '${AppLocalization.of(context).translate("checkout")}',
+                                                                                style: TextStyle(color: Colors.white, fontSize: 17.0),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ));
+                                                } else {
+                                                  print(
+                                                      'the comming reponse is $response');
+                                                }
+                                              }
+                                            : () {
+                                                print('remind me');
+                                              }
                                     // : null,
                                     ,
                                     child: Row(
@@ -1305,8 +1329,6 @@ class _ProductDetailsState extends State<ProductDetails>
                                               const EdgeInsets.only(top: 6.0),
                                           child: !_isProductAddedToCart
                                               ? Text(
-//                                        _isProductChosen
-//                                            ?
                                                   (productDetails
                                                                   .options[
                                                                       _productOptionIndex]

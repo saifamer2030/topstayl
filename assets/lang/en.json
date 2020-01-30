@@ -280,7 +280,7 @@
   "user_data_is_changed": "Your Data changed successfully",
   "coupon_hint": "coupon includes only non-discounted products",
   "total_purchase": "Total cart price",
-  "free_shipping_hint": "congrats! you're qualified for free shipping",
+  "free_shipping_hint": "you're qualified for free shipping",
   "get_free_shipping_hint_1": "Add products worth ",
   "get_free_shipping_hint_2": " to get free shipping"
 }
