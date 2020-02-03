@@ -34,11 +34,11 @@ import 'helper/appLocalization.dart';
 import 'models/product_details_model.dart';
 
 void main() async {
+  runApp(MyApp());
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,
     DeviceOrientation.portraitUp,
   ]);
-  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {

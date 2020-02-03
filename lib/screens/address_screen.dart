@@ -103,7 +103,7 @@ class _AddressScreenState extends State<AddressScreen> {
           'otp': msg['otp']
         });
       } else {
-        print('----------${msg['msg']}------------');
+//        print('--------11--${msg['msg']}------------');
         Scaffold.of(context).showSnackBar(SnackBar(
           backgroundColor: Colors.red,
           content: Text(
