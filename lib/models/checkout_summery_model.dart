@@ -95,14 +95,20 @@ class PaymentModel {
 }
 
 class CheckoutSummery {
+  final int userCheckoutId;
   final double total;
   final double discount;
   final double availableCostForCoupon;
 
-  CheckoutSummery({this.total, this.discount, this.availableCostForCoupon});
+  CheckoutSummery(
+      {this.userCheckoutId,
+      this.total,
+      this.discount,
+      this.availableCostForCoupon});
 
   factory CheckoutSummery.fromJson(parsedSummery) {
     return CheckoutSummery(
+        userCheckoutId: parsedSummery['userCheckoutId'] as int,
         total: double.parse(parsedSummery['total']),
         discount: double.parse(parsedSummery['discount']),
         availableCostForCoupon:

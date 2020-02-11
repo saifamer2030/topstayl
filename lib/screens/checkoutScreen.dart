@@ -84,8 +84,8 @@ class _CheckoutScreenState extends State<CheckoutScreen>
           AppLocalization.of(context).translate('payment_method_screen_title'),
         ),
       ),
-      body: Provider<NetworkProvider>(
-        builder: (context) => NetworkProvider(),
+      body: Provider<NetworkProvider>.value(
+        value: NetworkProvider(),
         child: Consumer<NetworkProvider>(
           builder: (context, value, _) => Center(
               child: ConnectivityWidget(

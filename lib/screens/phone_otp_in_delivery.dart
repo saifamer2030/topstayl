@@ -58,6 +58,7 @@ class _PhoneOtpInDeliveryState extends State<PhoneOtpInDelivery> {
 
   var _vCodeKey = GlobalKey<FormState>();
   var _scaffoldKey = GlobalKey<ScaffoldState>();
+  var firstCode = FocusNode();
   var secondCode = FocusNode();
   var thirdCode = FocusNode();
   var fourCode = FocusNode();
@@ -205,11 +206,13 @@ class _PhoneOtpInDeliveryState extends State<PhoneOtpInDelivery> {
                             width: 30,
                             child: Center(
                               child: TextFormField(
+                                focusNode: firstCode,
                                 onChanged: (val) {
-                                  _num1 = val;
-//                                print(_verificationCode);
-                                  FocusScope.of(context)
-                                      .requestFocus(secondCode);
+                                  if (val != "") {
+                                    _num1 = val;
+                                    FocusScope.of(context)
+                                        .requestFocus(secondCode);
+                                  }
                                 },
                                 style: TextStyle(
                                     fontSize: 25.0,
@@ -229,9 +232,14 @@ class _PhoneOtpInDeliveryState extends State<PhoneOtpInDelivery> {
                             width: 30,
                             child: TextFormField(
                               onChanged: (val) {
-                                _num2 = val;
-//                                print(_verificationCode);
-                                FocusScope.of(context).requestFocus(thirdCode);
+                                if (val != "" || val != null) {
+                                  _num2 = val;
+                                  FocusScope.of(context)
+                                      .requestFocus(thirdCode);
+                                } else {
+                                  FocusScope.of(context)
+                                      .requestFocus(firstCode);
+                                }
                               },
                               style: TextStyle(
                                   fontSize: 25.0, fontWeight: FontWeight.bold),

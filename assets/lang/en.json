@@ -282,5 +282,8 @@
   "total_purchase": "Total cart price",
   "free_shipping_hint": "you're qualified for free shipping",
   "get_free_shipping_hint_1": "Add products worth ",
-  "get_free_shipping_hint_2": " to get free shipping"
+  "get_free_shipping_hint_2": " to get free shipping",
+  "privacy_policy" : "Privacy Policy",
+  "enter_phone" : "Enter phone number"
+
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,7 @@ import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/customer_support.dart';
 import 'package:topstyle/screens/login_screen.dart';
+import 'package:topstyle/screens/privacy_policy_screen.dart';
 import 'package:topstyle/screens/register_screen.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 
@@ -66,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(
-                margin: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                margin: const EdgeInsets.only(top: 15.0, bottom: 10.0),
                 width: 60.0,
                 height: 60.0,
                 decoration: BoxDecoration(
@@ -302,6 +304,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Icon(Icons.star, color: CustomColors.kTabBarIconColor),
                   title: Text(
                     AppLocalization.of(context).translate("rate_our_app"),
+                    style: TextStyle(
+                        color: CustomColors.kTabBarIconColor, fontSize: 16.0),
+                  ),
+                  trailing: Icon(
+                    Icons.arrow_forward_ios,
+                    color: CustomColors.kTabBarIconColor,
+                    size: 20.0,
+                  ),
+                ),
+              ),
+              Divider(
+                height: 1.0,
+                color: CustomColors.kPCardColor,
+                thickness: 1.5,
+              ),
+              Container(
+                margin:
+                    const EdgeInsets.only(left: 16.0, right: 16.0, top: 10.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Colors.white),
+                child: ListTile(
+                  onTap: () {
+                    Navigator.of(context)
+                        .pushNamed(PrivacyPolicyScreen.routeName);
+                  },
+                  leading: SvgPicture.asset(
+                    'assets/icons/privacy.svg',
+                    width: 25.0,
+                    height: 25.0,
+                    fit: BoxFit.fitHeight,
+                  ),
+                  title: Text(
+                    AppLocalization.of(context).translate("privacy_policy"),
                     style: TextStyle(
                         color: CustomColors.kTabBarIconColor, fontSize: 16.0),
                   ),

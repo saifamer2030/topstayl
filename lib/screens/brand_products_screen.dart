@@ -80,8 +80,8 @@ class _BrandProductsScreenState extends State<BrandProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<NetworkProvider>(
-      builder: (context) => NetworkProvider(),
+    return Provider<NetworkProvider>.value(
+      value: NetworkProvider(),
       child: Consumer<NetworkProvider>(
         builder: (context, value, _) => Center(
             child: Scaffold(

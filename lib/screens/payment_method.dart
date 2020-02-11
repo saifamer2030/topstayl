@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/models/checkout_summery_model.dart';
 import 'package:topstyle/models/set_order.dart';
 import 'package:topstyle/providers/cart_provider.dart';
@@ -146,11 +147,14 @@ class _PaymentMethodState extends State<PaymentMethod> {
 
     SetOrder orderData;
     var token = await userData.isAuthenticated();
+    var prefs = await SharedPreferences.getInstance();
+    int userCheckoutId = await prefs.getInt('userCheckoutId');
     orderData = await Provider.of<OrdersProvider>(context).addOrder(
         token['Authorization'],
         _paymentRadioGroup.toString(),
         coupon == null ? '' : coupon,
-        '');
+        '',
+        userCheckoutId);
     setState(() {
       _isBtnLoading = false;
     });

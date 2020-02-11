@@ -6,10 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/providers/user_provider.dart';
+import 'package:topstyle/screens/otp_screen_in_forget_pass.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 import 'package:topstyle/widgets/network_connection.dart';
-
-import 'confirm_otp.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   static String routeName = 'forget-passowrd';
@@ -28,7 +27,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   String email, phone;
   String countryCode = '+966', image;
 
-  _showPopupCountry() async {
+  _showPopupCountry2() async {
     return Theme.of(context).platform == TargetPlatform.iOS
         ? showCupertinoDialog(
             context: context,
@@ -179,6 +178,187 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 ));
   }
 
+  _showPopupCountry() async {
+    return showDialog(
+      context: context,
+      builder: (context) => Theme.of(context).platform == TargetPlatform.iOS
+          ? CupertinoAlertDialog(
+              title: Text(
+                AppLocalization.of(context).translate("choose_country"),
+              ),
+              content: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                      color: Colors.transparent,
+                      height: 240.0,
+                      margin: const EdgeInsets.only(top: 20.0),
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 50.0,
+                                    offset: Offset(1, 2),
+                                    color: Colors.grey.withOpacity(0.3),
+                                  )
+                                ]),
+                            child: ListTile(
+                              onTap: () {
+                                setState(() {
+                                  image = 'assets/icons/ksa_flag.png';
+                                  countryCode = '+966';
+                                  phone = '$countryCode$phone';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                              title: Text(
+                                AppLocalization.of(context).translate("ksa"),
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                              leading: Image.asset('assets/icons/ksa_flag.png'),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 50.0,
+                                    offset: Offset(1, 2),
+                                    color: Colors.grey.withOpacity(0.3),
+                                  )
+                                ]),
+                            child: ListTile(
+                              onTap: () {
+                                setState(() {
+                                  image = 'assets/icons/uae_flag.png';
+                                  countryCode = '+971';
+                                  phone = '$countryCode$phone';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                              leading: Image.asset('assets/icons/uae_flag.png'),
+                              title: Text(
+                                AppLocalization.of(context).translate("uae"),
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 50.0,
+                                    offset: Offset(1, 2),
+                                    color: Colors.grey.withOpacity(0.3),
+                                  )
+                                ]),
+                            child: ListTile(
+                              onTap: () {
+                                setState(() {
+                                  image = 'assets/icons/kw_flag.png';
+                                  countryCode = '+965';
+                                  phone = '$countryCode$phone';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                              leading: Image.asset('assets/icons/kw_flag.png'),
+                              title: Text(
+                                AppLocalization.of(context).translate("kw"),
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                            ),
+                          )
+                        ],
+                      ))),
+            )
+          : AlertDialog(
+              title: Center(
+                child: Text(
+                  AppLocalization.of(context).translate('choose_country'),
+                ),
+              ),
+              content: Container(
+                height: 240.0,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Theme.of(context).primaryColor),
+                      child: ListTile(
+                        onTap: () {
+                          setState(() {
+                            image = 'assets/icons/ksa_flag.png';
+                            countryCode = '+966';
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        title:
+                            Text(AppLocalization.of(context).translate("ksa")),
+                        leading: Image.asset('assets/icons/ksa_flag.png'),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Theme.of(context).primaryColor),
+                      child: ListTile(
+                        onTap: () {
+                          setState(() {
+                            image = 'assets/icons/uae_flag.png';
+                            countryCode = '+971';
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        leading: Image.asset('assets/icons/uae_flag.png'),
+                        title:
+                            Text(AppLocalization.of(context).translate("uae")),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Theme.of(context).primaryColor),
+                      child: ListTile(
+                        onTap: () {
+                          setState(() {
+                            image = 'assets/icons/kw_flag.png';
+                            countryCode = '+965';
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        leading: Image.asset('assets/icons/kw_flag.png'),
+                        title:
+                            Text(AppLocalization.of(context).translate("kw")),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+    );
+  }
+
   _doForget() {
     if (_isEmailMethodClicked) {
       if (!_emailFormKey.currentState.validate()) {
@@ -194,7 +374,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         });
         if (msg['msg'] == 2) {
 //          print(msg['otp']);
-          Navigator.pushReplacementNamed(context, ConfirmOtpScreen.routeName,
+          Navigator.pushReplacementNamed(
+              context, CustomOtpScreenInForgetPass.routeName,
               arguments: {'email': email, 'type': 'email', 'otp': msg['otp']});
         } else {
 //          print(msg);
@@ -224,7 +405,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         });
         if (msg['msg'] == 2) {
 //          print(msg['otp']);
-          Navigator.pushReplacementNamed(context, ConfirmOtpScreen.routeName,
+          Navigator.pushReplacementNamed(
+              context, CustomOtpScreenInForgetPass.routeName,
               arguments: {'phone': phone, 'type': 'phone', 'otp': msg['otp']});
         } else {
 //          print(msg);
@@ -486,19 +668,17 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                           phone = '$countryCode$value';
                                         },
                                         keyboardType: TextInputType.phone,
-                                        maxLength: 15,
+                                        maxLength: 9,
                                         inputFormatters: <TextInputFormatter>[
                                           WhitelistingTextInputFormatter
                                               .digitsOnly,
                                         ],
                                         decoration: InputDecoration(
                                           labelText: AppLocalization.of(context)
-                                              .translate("phone_in_login"),
+                                              .translate("enter_phone"),
                                           labelStyle: TextStyle(
                                               color: CustomColors
                                                   .kTabBarIconColor),
-                                          hintText: AppLocalization.of(context)
-                                              .translate("phone_hint"),
                                           hintStyle: TextStyle(
                                               fontSize: 16.0,
                                               color: Colors.grey,

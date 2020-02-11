@@ -169,158 +169,184 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String countryCode, image;
 
   _showPopupCountry() async {
-    return Theme.of(context).platform == TargetPlatform.iOS
-        ? showCupertinoDialog(
-            context: context,
-            builder: (context) => CupertinoAlertDialog(
+    return showDialog(
+      context: context,
+      builder: (context) => Theme.of(context).platform == TargetPlatform.iOS
+          ? CupertinoAlertDialog(
               title: Text(
                 AppLocalization.of(context).translate("choose_country"),
               ),
-              content: Container(
-                height: MediaQuery.of(context).size.height * 0.4,
-                width: MediaQuery.of(context).size.width,
-                child: Scaffold(
-                  body: Column(
-                    children: <Widget>[
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Theme.of(context).primaryColor),
-                        child: ListTile(
-                          onTap: () {
-                            setState(() {
-                              image = 'images/ksa_flag.png';
-                              countryCode = '+966';
-                              phone = '$countryCode$phone';
-                            });
-                            Navigator.of(context).pop();
-                          },
-                          title: Text(
-                            AppLocalization.of(context).translate("ksa"),
+              content: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                      color: Colors.transparent,
+                      height: 240.0,
+                      margin: const EdgeInsets.only(top: 20.0),
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 50.0,
+                                    offset: Offset(1, 2),
+                                    color: Colors.grey.withOpacity(0.3),
+                                  )
+                                ]),
+                            child: ListTile(
+                              onTap: () {
+                                setState(() {
+                                  image = 'assets/icons/ksa_flag.png';
+                                  countryCode = '+966';
+                                  phone = '$countryCode$phone';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                              title: Text(
+                                AppLocalization.of(context).translate("ksa"),
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                              leading: Image.asset('assets/icons/ksa_flag.png'),
+                            ),
                           ),
-                          leading: Image.asset('images/ksa_flag.png'),
-                        ),
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 50.0,
+                                    offset: Offset(1, 2),
+                                    color: Colors.grey.withOpacity(0.3),
+                                  )
+                                ]),
+                            child: ListTile(
+                              onTap: () {
+                                setState(() {
+                                  image = 'assets/icons/uae_flag.png';
+                                  countryCode = '+971';
+                                  phone = '$countryCode$phone';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                              leading: Image.asset('assets/icons/uae_flag.png'),
+                              title: Text(
+                                AppLocalization.of(context).translate("uae"),
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 50.0,
+                                    offset: Offset(1, 2),
+                                    color: Colors.grey.withOpacity(0.3),
+                                  )
+                                ]),
+                            child: ListTile(
+                              onTap: () {
+                                setState(() {
+                                  image = 'assets/icons/kw_flag.png';
+                                  countryCode = '+965';
+                                  phone = '$countryCode$phone';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                              leading: Image.asset('assets/icons/kw_flag.png'),
+                              title: Text(
+                                AppLocalization.of(context).translate("kw"),
+                                style: TextStyle(fontSize: 12.0),
+                              ),
+                            ),
+                          )
+                        ],
+                      ))),
+            )
+          : AlertDialog(
+              title: Center(
+                child: Text(
+                  AppLocalization.of(context).translate('choose_country'),
+                ),
+              ),
+              content: Container(
+                height: 240.0,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Theme.of(context).primaryColor),
+                      child: ListTile(
+                        onTap: () {
+                          setState(() {
+                            image = 'assets/icons/ksa_flag.png';
+                            countryCode = '+966';
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        title:
+                            Text(AppLocalization.of(context).translate("ksa")),
+                        leading: Image.asset('assets/icons/ksa_flag.png'),
                       ),
-                      SizedBox(
-                        height: 15.0,
+                    ),
+                    SizedBox(
+                      height: 16.0,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Theme.of(context).primaryColor),
+                      child: ListTile(
+                        onTap: () {
+                          setState(() {
+                            image = 'assets/icons/uae_flag.png';
+                            countryCode = '+971';
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        leading: Image.asset('assets/icons/uae_flag.png'),
+                        title:
+                            Text(AppLocalization.of(context).translate("uae")),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Theme.of(context).primaryColor),
-                        child: ListTile(
-                          onTap: () {
-                            setState(() {
-                              image = 'images/uae_flag.png';
-                              countryCode = '+971';
-                              phone = '$countryCode$phone';
-                            });
-                            Navigator.of(context).pop();
-                          },
-                          leading: Image.asset('images/uae_flag.png'),
-                          title: Text(
-                              AppLocalization.of(context).translate("uae")),
-                        ),
+                    ),
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Theme.of(context).primaryColor),
+                      child: ListTile(
+                        onTap: () {
+                          setState(() {
+                            image = 'assets/icons/kw_flag.png';
+                            countryCode = '+965';
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        leading: Image.asset('assets/icons/kw_flag.png'),
+                        title:
+                            Text(AppLocalization.of(context).translate("kw")),
                       ),
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Theme.of(context).primaryColor),
-                        child: ListTile(
-                          onTap: () {
-                            setState(() {
-                              image = 'images/kw_flag.png';
-                              countryCode = '+965';
-                            });
-                            Navigator.of(context).pop();
-                          },
-                          leading: Image.asset('images/kw_flag.png'),
-                          title:
-                              Text(AppLocalization.of(context).translate("kw")),
-                        ),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
                 ),
               ),
             ),
-          )
-        : showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => AlertDialog(
-                  title: Center(
-                    child: Text(AppLocalization.of(context)
-                        .translate("choose_country")),
-                  ),
-                  content: Container(
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Theme.of(context).primaryColor),
-                          child: ListTile(
-                            onTap: () {
-                              setState(() {
-                                image = 'assets/icons/ksa_flag.png';
-                                countryCode = '+966';
-                              });
-                              Navigator.of(context).pop();
-                            },
-                            title: Text(
-                                AppLocalization.of(context).translate("ksa")),
-                            leading: Image.asset('assets/icons/ksa_flag.png'),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Theme.of(context).primaryColor),
-                          child: ListTile(
-                            onTap: () {
-                              setState(() {
-                                image = 'assets/icons/uae_flag.png';
-                                countryCode = '+971';
-                              });
-                              Navigator.of(context).pop();
-                            },
-                            leading: Image.asset('assets/icons/uae_flag.png'),
-                            title: Text(
-                                AppLocalization.of(context).translate("uae")),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Theme.of(context).primaryColor),
-                          child: ListTile(
-                            onTap: () {
-                              setState(() {
-                                image = 'assets/icons/kw_flag.png';
-                                countryCode = '+965';
-                              });
-                              Navigator.of(context).pop();
-                            },
-                            leading: Image.asset('assets/icons/kw_flag.png'),
-                            title: Text(
-                                AppLocalization.of(context).translate("kw")),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ));
+    );
   }
 
   @override
@@ -347,7 +373,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
               child: Column(
-//            mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Container(
@@ -389,6 +414,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                           child: Text(
                             AppLocalization.of(context).translate("login_btn"),
+                            style: TextStyle(color: Colors.black),
                           ),
                         )
                       ],
@@ -425,8 +451,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             fontSize: 14.0,
                             color: Colors.grey,
                           ),
-                          contentPadding: const EdgeInsets.only(
-                              top: 15.0, left: 10.0, right: 10.0),
+                          contentPadding:
+                              const EdgeInsets.only(left: 10.0, right: 10.0),
                         ),
                       ),
                     ),
@@ -504,7 +530,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   color: Colors.grey,
                                 ),
                                 contentPadding: const EdgeInsets.only(
-                                    top: 15.0, left: 10.0, right: 10.0),
+                                    left: 10.0, right: 10.0),
                               ),
                             ),
                           ),
@@ -545,8 +571,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               fontSize: 14.0,
                               color: Colors.grey,
                             ),
-                            contentPadding: const EdgeInsets.only(
-                                top: 15.0, left: 10.0, right: 10.0)),
+                            contentPadding:
+                                const EdgeInsets.only(left: 10.0, right: 10.0)),
                       ),
                     ),
                     SizedBox(
@@ -580,8 +606,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             fontSize: 14.0,
                             color: Colors.grey,
                           ),
-                          contentPadding: const EdgeInsets.only(
-                              top: 15.0, left: 10.0, right: 10.0),
+                          contentPadding:
+                              const EdgeInsets.only(left: 10.0, right: 10.0),
                         ),
                       ),
                     ),

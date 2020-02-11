@@ -29,9 +29,9 @@ class _TabsScreenState extends State<TabsScreen> {
       'title_en': 'Categories',
       'title_ar': "الاقسام"
     },
-    {'page': CartScreen(), 'title_en': 'My Shopping Cart', 'title_ar': 'سلتي'},
+    {'page': CartScreen(), 'title_en': 'Shopping Cart', 'title_ar': 'السلة'},
     {'page': BrandsScreen(), 'title_en': 'Brands', 'title_ar': "الماركات"},
-    {'page': ProfileScreen(), 'title_en': 'My Profile', 'title_ar': "ملفي"}
+    {'page': ProfileScreen(), 'title_en': 'My Profile', 'title_ar': "حسابي"}
   ];
 
   int _selectedIndex = 0;
@@ -59,7 +59,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(appLanguage.fetchLocale().toString());
+//    print(appLanguage.fetchLocale().toString());
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -81,8 +81,8 @@ class _TabsScreenState extends State<TabsScreen> {
               : Container(),
         ],
       ),
-      body: Provider<NetworkProvider>(
-        builder: (context) => NetworkProvider(),
+      body: Provider<NetworkProvider>.value(
+        value: NetworkProvider(),
         child: Consumer<NetworkProvider>(
           builder: (context, value, _) => Center(
               child: ConnectivityWidget(

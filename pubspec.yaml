@@ -31,14 +31,14 @@ dependencies:
   location: ^2.3.5
   google_maps_flutter: ^0.5.21
   http: ^0.12.0+2
-  share: ^0.6.2+1
+  share: ^0.6.3+5
   path: ^1.6.4
-  connectivity: 0.4.6
+  connectivity: ^0.4.6+2
   geolocator: ^5.1.5
   flutter_svg: ^0.14.4
   webview_flutter: ^0.3.17
-  url_launcher:
-  shared_preferences:
+  url_launcher: ^5.4.1
+  shared_preferences: ^0.5.6+1
   flutter_webview_plugin: ^0.3.10+1
 #  ^0.3.10
 #  flutter_google_places: ^0.2.3
@@ -102,9 +102,10 @@ flutter:
     - assets/icons/apple_pay.png
     - assets/icons/lock.png
     - assets/icons/top_rated.png
+    - assets/icons/rm_keyboard.png
     - assets/icons/most_recent.png
+    - assets/icons/privacy.svg
     - assets/images/profile.png
-    - assets/images/form_bg.png
     - assets/images/logo.jpg
     - assets/images/antenna.png
     - assets/images/icon.png

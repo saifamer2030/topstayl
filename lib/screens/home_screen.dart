@@ -143,12 +143,16 @@ class _HomeScreenState extends State<HomeScreen>
                     borderRadius: BorderRadius.circular(10.0),
                     color: Colors.grey),
               )
-            : Image.network(
-                bannerUrl,
-                fit: BoxFit.cover,
+            : ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.network(
+                  bannerUrl,
+                  fit: BoxFit.fill,
+                ),
               ),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0), color: Colors.grey),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
       ),
     );
   }

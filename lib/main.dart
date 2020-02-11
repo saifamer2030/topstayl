@@ -8,7 +8,10 @@ import 'package:topstyle/providers/brands_provider.dart';
 import 'package:topstyle/providers/payment_provider.dart';
 import 'package:topstyle/providers/search_provider.dart';
 import 'package:topstyle/screens/customer_support.dart';
-import 'package:topstyle/screens/phone_opt_in_delivery.dart';
+import 'package:topstyle/screens/otp_screen_in_address.dart';
+import 'package:topstyle/screens/otp_screen_in_forget_pass.dart';
+import 'package:topstyle/screens/phone_otp_in_delivery.dart';
+import 'package:topstyle/screens/privacy_policy_screen.dart';
 
 import './constants/colors.dart';
 import './providers/cart_provider.dart';
@@ -98,6 +101,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             initialRoute: SplashScreen.routeName,
+//            home: CustomOtpScreen(),
             routes: {
               SplashScreen.routeName: (ctx) => SplashScreen(),
               TabsScreen.routeName: (ctx) => TabsScreen(),
@@ -113,7 +117,11 @@ class _MyAppState extends State<MyApp> {
               ForgetPasswordScreen.routeName: (ctx) => ForgetPasswordScreen(),
               ConfirmOtpScreen.routeName: (ctx) => ConfirmOtpScreen(),
               PhoneOtpInDelivery.routeName: (ctx) => PhoneOtpInDelivery(),
+              CustomOtpScreen.routeName: (ctx) => CustomOtpScreen(),
+              CustomOtpScreenInForgetPass.routeName: (ctx) =>
+                  CustomOtpScreenInForgetPass(),
               CustomerSupport.routeName: (ctx) => CustomerSupport(),
+              PrivacyPolicyScreen.routeName: (ctx) => PrivacyPolicyScreen(),
               ChangePasswordOtpScreen.routeName: (ctx) =>
                   ChangePasswordOtpScreen(),
             }, //end route

@@ -9,7 +9,7 @@ import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/providers/order_provider.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/address_from_map.dart';
-import 'package:topstyle/screens/phone_opt_in_delivery.dart';
+import 'package:topstyle/screens/otp_screen_in_address.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 import 'package:topstyle/widgets/connectivity_widget.dart';
 
@@ -89,13 +89,11 @@ class _AddressScreenState extends State<AddressScreen> {
       });
       if (msg['msg'] == 2) {
         print(msg['otp']);
-        Navigator.of(context)
-            .pushNamed(PhoneOtpInDelivery.routeName, arguments: {
+        Navigator.of(context).pushNamed(CustomOtpScreen.routeName, arguments: {
           'country': _countryId,
           'city': _selectedCity,
           'name': _nameCtr.text,
           'phone': _phone,
-//          'phone': _phoneCtr.text,
           'area': _areaCtr.text,
           'street': _streetCtr.text,
           'note': _noteCtr.text,
@@ -127,7 +125,9 @@ class _AddressScreenState extends State<AddressScreen> {
                 AppLocalization.of(context).translate("choose_country"),
               ),
               content: Material(
+                  color: Colors.transparent,
                   child: Container(
+                      color: Colors.transparent,
                       height: 240.0,
                       margin: const EdgeInsets.only(top: 20.0),
                       width: MediaQuery.of(context).size.width,
@@ -297,8 +297,8 @@ class _AddressScreenState extends State<AddressScreen> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Provider<NetworkProvider>(
-        builder: (context) => NetworkProvider(),
+      child: Provider<NetworkProvider>.value(
+        value: NetworkProvider(),
         child: Consumer<NetworkProvider>(
           builder: (context, value, _) => Center(
               child: ConnectivityWidget(
@@ -459,7 +459,7 @@ class _AddressScreenState extends State<AddressScreen> {
                                         color: CustomColors.kTabBarIconColor,
                                       ),
                                       contentPadding: const EdgeInsets.only(
-                                          top: 15.0, left: 10.0, right: 10.0),
+                                          left: 10.0, right: 10.0),
                                     ),
                                   ),
                                 ),

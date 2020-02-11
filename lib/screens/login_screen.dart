@@ -162,9 +162,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             RegisterScreen.routeName,
                             arguments: fromScreen);
                       },
-                      child: Text(AppLocalization.of(context)
-                          .translate("registration_from_title")),
-                    )
+                      child: Text(
+                        AppLocalization.of(context)
+                            .translate("registration_from_title"),
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(

@@ -67,10 +67,9 @@ class ProductsProvider with ChangeNotifier {
             });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body) != null) {
-//          print(jsonDecode(response.body)['data']);
+//          print(jsonDecode(response.body));
           productDetailsModelWithList =
               ProductDetailsModelWithList.fromJson(jsonDecode(response.body));
-//          print(jsonDecode(response.body)['data']);
 //          print(productDetailsModelWithList.productDetailsModel.name);
         }
       } else {

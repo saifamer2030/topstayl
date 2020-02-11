@@ -55,6 +55,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
 
   var _vCodeKey = GlobalKey<FormState>();
   var _scaffoldKey = GlobalKey<ScaffoldState>();
+  var firstCode = FocusNode();
   var secondCode = FocusNode();
   var thirdCode = FocusNode();
   var fourCode = FocusNode();
@@ -202,16 +203,21 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                             width: 30,
                             child: TextFormField(
                               autofocus: true,
+                              focusNode: firstCode,
                               onChanged: (val) {
-                                _num1 = val;
-//                                print(_verificationCode);
-                                FocusScope.of(context).requestFocus(secondCode);
+                                if (val != "") {
+                                  _num1 = val;
+                                  FocusScope.of(context)
+                                      .requestFocus(secondCode);
+                                }
                               },
                               keyboardType: TextInputType.number,
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(1),
                                 //WhitelistingTextInputFormatter.digitsOnly
                               ],
+                              style: TextStyle(
+                                  fontSize: 25.0, fontWeight: FontWeight.bold),
                               textInputAction: TextInputAction.next,
                             )),
                         SizedBox(
@@ -219,11 +225,18 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                         ),
                         Container(
                             width: 30,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0)),
                             child: TextFormField(
                               onChanged: (val) {
-                                _num2 = val;
-//                                print(_verificationCode);
-                                FocusScope.of(context).requestFocus(thirdCode);
+                                if (val != "" || val != null) {
+                                  _num2 = val;
+                                  FocusScope.of(context)
+                                      .requestFocus(thirdCode);
+                                } else {
+                                  FocusScope.of(context)
+                                      .requestFocus(firstCode);
+                                }
                               },
                               keyboardType: TextInputType.number,
                               textInputAction: TextInputAction.next,
@@ -231,6 +244,8 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                                 LengthLimitingTextInputFormatter(1),
                                 // WhitelistingTextInputFormatter.digitsOnly
                               ],
+                              style: TextStyle(
+                                  fontSize: 25.0, fontWeight: FontWeight.bold),
                               focusNode: secondCode,
                             )),
                         SizedBox(
@@ -244,6 +259,8 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                                 LengthLimitingTextInputFormatter(1),
                                 // WhitelistingTextInputFormatter.digitsOnly
                               ],
+                              style: TextStyle(
+                                  fontSize: 25.0, fontWeight: FontWeight.bold),
                               textInputAction: TextInputAction.next,
                               focusNode: thirdCode,
                               onChanged: (val) {
@@ -263,6 +280,8 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                                 LengthLimitingTextInputFormatter(1),
                                 //WhitelistingTextInputFormatter.digitsOnly
                               ],
+                              style: TextStyle(
+                                  fontSize: 25.0, fontWeight: FontWeight.bold),
                               textInputAction: TextInputAction.send,
                               focusNode: fourCode,
                               onChanged: (val) {

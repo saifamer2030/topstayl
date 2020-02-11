@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/models/checkout_summery_model.dart';
 import 'package:topstyle/models/city.dart';
 import 'package:topstyle/models/set_order.dart';
@@ -120,8 +121,8 @@ class OrdersProvider with ChangeNotifier {
     return _paymentStatus;
   }
 
-  Future<SetOrder> addOrder(
-      String token, String paymentId, String coupon, String checkoutId) async {
+  Future<SetOrder> addOrder(String token, String paymentId, String coupon,
+      String checkoutId, int userCheckoutId) async {
     SetOrder orderData;
     print(
         '------------------------------$checkoutId---------------------------------');
@@ -134,7 +135,8 @@ class OrdersProvider with ChangeNotifier {
       }, body: {
         'payment_id': paymentId,
         'coupon': coupon,
-        'checkoutId': checkoutId
+        'checkoutId': checkoutId,
+        'userCheckoutId': userCheckoutId.toString()
       });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body) != null) {
@@ -251,11 +253,15 @@ class OrdersProvider with ChangeNotifier {
         "Accept": "application/json",
       });
       if (response.statusCode == 200) {
+        var prefs = await SharedPreferences.getInstance();
+        prefs.setInt(
+            "userCheckoutId",
+            CheckoutSummery.fromJson(jsonDecode(response.body)['summary'])
+                .userCheckoutId);
         checkoutSummeryModel = CheckoutSummeryModel.fromJson(
             jsonDecode(response.body)['address'],
             jsonDecode(response.body)['payments'],
             jsonDecode(response.body)['summary']);
-//        print(jsonDecode(response.body)['summary']);
       } else {
         print('Reponse status code number : ${response.statusCode}');
       }
