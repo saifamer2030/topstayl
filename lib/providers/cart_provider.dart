@@ -4,12 +4,11 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:topstyle/helper/api_util.dart';
 
 import '../models/cart_item_model.dart';
 
 class CartItemProvider with ChangeNotifier {
-  final String baseUrl = 'https://topstylesa.com/api/';
-
   Future<Map<String, double>> applyCoupon(String token, String coupon) async {
     Map<String, double> couponValue = {
       'couponValue': 0.0,
@@ -17,8 +16,8 @@ class CartItemProvider with ChangeNotifier {
     };
     print('sfdvdfvfd');
     try {
-      final response =
-          await http.get('${baseUrl}useCoupon?coupon=$coupon', headers: {
+      final response = await http
+          .get('${ApiUtil.BASE_URL}useCoupon?coupon=$coupon', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       });
@@ -59,8 +58,8 @@ class CartItemProvider with ChangeNotifier {
         String guestId = prefs.getString('guestId') == null
             ? 'new'
             : prefs.getString('guestId');
-        final response =
-            await http.post('${baseUrl}cart/add/guest/$guestId', headers: {
+        final response = await http
+            .post('${ApiUtil.BASE_URL}cart/add/guest/$guestId', headers: {
           "Accept": "application/json",
         }, body: {
           'lang': lang,
@@ -88,7 +87,8 @@ class CartItemProvider with ChangeNotifier {
           print(response.statusCode);
         }
       } else {
-        final response = await http.post('${baseUrl}cart/add', headers: {
+        final response =
+            await http.post('${ApiUtil.BASE_URL}cart/add', headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
         }, body: {
@@ -136,7 +136,7 @@ class CartItemProvider with ChangeNotifier {
             ? 'g0'
             : prefs.getString('guestId');
         final response =
-            await http.get('${baseUrl}cart/guest/$guestId?lang=$lang');
+            await http.get('${ApiUtil.BASE_URL}cart/guest/$guestId?lang=$lang');
         if (response.statusCode == 200) {
           if (json.decode(response.body)['data'] != null) {
             _cartItems =
@@ -146,7 +146,7 @@ class CartItemProvider with ChangeNotifier {
         }
       } else {
         final response = await http.get(
-          '${baseUrl}cart?lang=$lang',
+          '${ApiUtil.BASE_URL}cart?lang=$lang',
           headers: {
             HttpHeaders.authorizationHeader: 'Bearer $token',
             "Accept": "application/json",
@@ -178,8 +178,8 @@ class CartItemProvider with ChangeNotifier {
       if (token == 'none') {
         var prefs = await SharedPreferences.getInstance();
         String guestId = prefs.getString('guestId');
-        final response =
-            await http.post('${baseUrl}cart/add/guest/$guestId', headers: {
+        final response = await http
+            .post('${ApiUtil.BASE_URL}cart/add/guest/$guestId', headers: {
           "Accept": "application/json",
         }, body: {
           'lang': lang,
@@ -193,7 +193,8 @@ class CartItemProvider with ChangeNotifier {
           msg = 6;
         }
       } else {
-        final response = await http.post('${baseUrl}cart/add', headers: {
+        final response =
+            await http.post('${ApiUtil.BASE_URL}cart/add', headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
         }, body: {
@@ -230,8 +231,8 @@ class CartItemProvider with ChangeNotifier {
       if (token == 'none') {
         var prefs = await SharedPreferences.getInstance();
         String guestId = prefs.getString('guestId');
-        final response =
-            await http.post('${baseUrl}cart/add/guest/$guestId', headers: {
+        final response = await http
+            .post('${ApiUtil.BASE_URL}cart/add/guest/$guestId', headers: {
           "Accept": "application/json",
         }, body: {
           'lang': lang,
@@ -245,7 +246,8 @@ class CartItemProvider with ChangeNotifier {
           msg = 6;
         }
       } else {
-        final response = await http.post('${baseUrl}cart/add', headers: {
+        final response =
+            await http.post('${ApiUtil.BASE_URL}cart/add', headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
         }, body: {

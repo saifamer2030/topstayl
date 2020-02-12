@@ -3,17 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:topstyle/helper/api_util.dart';
 
 class PaymentProvider with ChangeNotifier {
-  final String _baseUrl = 'https://topstylesa.com/api/';
-
-  //final String _topStyleUrl = 'https://api.topstyle-sa.com';
-
   Future<double> changePaymentMethod(int paymentId, String token) async {
     double _discount = 0.0;
     try {
       final response = await http.get(
-        '${_baseUrl}payDiscount?payId=$paymentId',
+        '${ApiUtil.BASE_URL}payDiscount?payId=$paymentId',
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",

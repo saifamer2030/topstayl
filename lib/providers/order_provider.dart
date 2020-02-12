@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:topstyle/helper/api_util.dart';
 import 'package:topstyle/models/checkout_summery_model.dart';
 import 'package:topstyle/models/city.dart';
 import 'package:topstyle/models/set_order.dart';
@@ -11,7 +12,6 @@ import 'package:topstyle/models/set_order.dart';
 import '../models/orders_model.dart' as odModel;
 
 class OrdersProvider with ChangeNotifier {
-  final String _baseUrl = 'https://topstylesa.com/api/';
   final String _checkoutUrl = 'https://test.oppwa.com/v1/checkouts';
   final String _entityId = '8ac7a4c76e91bcde016e9dcfb4b908cf';
   final String _paymentToken =
@@ -22,7 +22,7 @@ class OrdersProvider with ChangeNotifier {
     int result = -1;
     try {
       final response =
-          await http.get('${_baseUrl}order/$orderId/cancel', headers: {
+          await http.get('${ApiUtil.BASE_URL}order/$orderId/cancel', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       });
@@ -45,7 +45,7 @@ class OrdersProvider with ChangeNotifier {
     odModel.OrderDetailsModel _orderDetailsModel;
     print(token);
     try {
-      final response = await http.get('${_baseUrl}userOrder', headers: {
+      final response = await http.get('${ApiUtil.BASE_URL}userOrder', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       });
@@ -62,7 +62,7 @@ class OrdersProvider with ChangeNotifier {
 
   Future<List<odModel.OrderModel>> getUserOrder(String token) async {
     try {
-      final response = await http.get('${_baseUrl}userOrder', headers: {
+      final response = await http.get('${ApiUtil.BASE_URL}userOrder', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       });
@@ -129,7 +129,7 @@ class OrdersProvider with ChangeNotifier {
     print(
         '------------------------------$paymentId---------------------------------');
     try {
-      final response = await http.post('${_baseUrl}setOrder', headers: {
+      final response = await http.post('${ApiUtil.BASE_URL}setOrder', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       }, body: {
@@ -164,7 +164,7 @@ class OrdersProvider with ChangeNotifier {
     List<CityModel> _cites = [];
     try {
       final response =
-          await http.get('${_baseUrl}getCities/$countryId', headers: {
+          await http.get('${ApiUtil.BASE_URL}getCities/$countryId', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
       });
       if (response.statusCode == 200) {
@@ -191,7 +191,7 @@ class OrdersProvider with ChangeNotifier {
       String token) async {
     int responseNumber = 0;
     try {
-      final response = await http.post('${_baseUrl}address', headers: {
+      final response = await http.post('${ApiUtil.BASE_URL}address', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       }, body: {
@@ -225,7 +225,7 @@ class OrdersProvider with ChangeNotifier {
   Future<AddressModel> getUserAddresses(String token) async {
     AddressModel addressModel;
     try {
-      final response = await http.get('${_baseUrl}address', headers: {
+      final response = await http.get('${ApiUtil.BASE_URL}address', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       });
@@ -248,7 +248,7 @@ class OrdersProvider with ChangeNotifier {
   Future<CheckoutSummeryModel> getCheckoutData(String token) async {
     CheckoutSummeryModel checkoutSummeryModel;
     try {
-      final response = await http.get('${_baseUrl}checkout', headers: {
+      final response = await http.get('${ApiUtil.BASE_URL}checkout', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       });
@@ -276,8 +276,8 @@ class OrdersProvider with ChangeNotifier {
       String productId, String token) async {
     odModel.OrderDetailsModel orderDetailsModel;
     try {
-      final response =
-          await http.get('${_baseUrl}orderDetails/$productId', headers: {
+      final response = await http
+          .get('${ApiUtil.BASE_URL}orderDetails/$productId', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       });

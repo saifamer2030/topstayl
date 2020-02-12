@@ -2070,7 +2070,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
           ? Center(
               child: AdaptiveProgressIndicator(),
             )
-          : _products.length == 0 || _products == []
+          : _products.length == 0
               ? Container(
                   child: Center(
                     child: Text(AppLocalization.of(context)

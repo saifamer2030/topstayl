@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:topstyle/helper/api_util.dart';
 
 class UserProvider with ChangeNotifier {
   static final UserProvider _instance = UserProvider._internal();
@@ -14,14 +15,14 @@ class UserProvider with ChangeNotifier {
     return _instance;
   }
 
-  final String baseUrl = 'https://topstylesa.com/api/';
   bool _isAuth = false;
 
   Future<int> updateUserData(
       String token, String name, String phone, String email) async {
     int responseContent = 0;
     try {
-      final response = await http.post('${baseUrl}updateUser', headers: {
+      final response =
+          await http.post('${ApiUtil.BASE_URL}updateUser', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       }, body: {
@@ -87,7 +88,7 @@ class UserProvider with ChangeNotifier {
 //    var requestBody = jsonEncode(type == 'email'
 //        ? {'password': password, 'email': method}
 //        : {'password': password, 'phone': method});
-    final response = await http.post(baseUrl + 'setPassword',
+    final response = await http.post('${ApiUtil.BASE_URL}setPassword',
         body: type == 'email'
             ? {'password': password, 'email': method}
             : {'password': password, 'phone': method});
@@ -108,7 +109,7 @@ class UserProvider with ChangeNotifier {
 
   Future<bool> changeEmailOtp(String email, String password) async {
     bool isDone = false;
-    final response = await http.post(baseUrl + 'setPassword',
+    final response = await http.post('${ApiUtil.BASE_URL}setPassword',
         body: {'password': password, 'email': email});
     if (response.statusCode == 200) {
       if (jsonDecode(response.body).toString().contains('message')) {
@@ -125,8 +126,8 @@ class UserProvider with ChangeNotifier {
   Future<Map<String, dynamic>> otpByEmail(String email) async {
     var msg = {'msg': 0, 'otp': ''};
     try {
-      final response =
-          await http.post(baseUrl + 'otpEmail', body: {'email': email});
+      final response = await http
+          .post('${ApiUtil.BASE_URL}otpEmail', body: {'email': email});
       if (response.statusCode == 200) {
         if (jsonDecode(response.body).toString().contains('errors')) {
           // not sent and phone not found
@@ -153,8 +154,8 @@ class UserProvider with ChangeNotifier {
   Future<Map<String, dynamic>> otpByPhone(String phone, String check) async {
     var msg = {'msg': 0, 'otp': ''};
     try {
-      final response = await http
-          .post('${baseUrl}otp', body: {'phone': phone, 'check': check});
+      final response = await http.post('${ApiUtil.BASE_URL}otp',
+          body: {'phone': phone, 'check': check});
       if (response.statusCode == 200) {
         if (jsonDecode(response.body).toString().contains('error')) {
           // not sent and phone not found
@@ -183,7 +184,8 @@ class UserProvider with ChangeNotifier {
       String token, String oldPassword, String newPassword) async {
     var _resetMsg = 0;
     try {
-      final response = await http.post(baseUrl + 'resetPassword', headers: {
+      final response =
+          await http.post('${ApiUtil.BASE_URL}resetPassword', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       }, body: {
@@ -219,7 +221,7 @@ class UserProvider with ChangeNotifier {
       String guestId = prefs.getString('guestId') == null
           ? 'new'
           : prefs.getString('guestId');
-      final response = await http.post(baseUrl + 'register', body: {
+      final response = await http.post('${ApiUtil.BASE_URL}register', body: {
         'email': email,
         'name': name,
         'password': password,
@@ -305,7 +307,7 @@ class UserProvider with ChangeNotifier {
       String guestId = prefs.getString('guestId') == null
           ? 'new'
           : prefs.getString('guestId');
-      final response = await http.post(baseUrl + 'login',
+      final response = await http.post('${ApiUtil.BASE_URL}login',
           body: {'email': email, 'password': password, 'guestId': guestId});
       if (response.statusCode == 200) {
         if (json.decode(response.body).toString().contains('token')) {

@@ -18,8 +18,6 @@ import '../providers/products_provider.dart';
 class HomeScreen extends StatefulWidget {
   static const String routeName = 'home';
 
-//  final List<String> _images = slides;
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }

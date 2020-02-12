@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:topstyle/helper/api_util.dart';
 import 'package:topstyle/models/brand_model.dart';
 
 class BrandsProvider with ChangeNotifier {
@@ -9,7 +10,7 @@ class BrandsProvider with ChangeNotifier {
 
   Future<List<BrandModel>> allBrandsData() async {
     try {
-      final response = await http.get('https://topstylesa.com/api/brands');
+      final response = await http.get('${ApiUtil.BASE_URL}brands');
       if (response.statusCode == 200) {
         _allBrands = BrandModel.parsedJson(jsonDecode(response.body)['data']);
       }

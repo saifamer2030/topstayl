@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:topstyle/helper/api_util.dart';
 import 'package:topstyle/models/ads_model.dart';
 import 'package:topstyle/models/product_details_model.dart';
 
@@ -19,15 +20,12 @@ class ProductsProvider with ChangeNotifier {
   List<ProductsModel> _favorite = [];
   List<Ads> _ads = [];
 
-//  final String baseUrl = 'http://192.168.43.61/api/';
-  final String baseUrl = 'https://topstylesa.com/api/';
-
   Future<int> submitComment(
       String review, int productId, double rate, String token) async {
     int msg = 0;
 //    print(review);
     try {
-      final response = await http.post('${baseUrl}review', headers: {
+      final response = await http.post('${ApiUtil.BASE_URL}review', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
       }, body: {
@@ -56,15 +54,16 @@ class ProductsProvider with ChangeNotifier {
     try {
       final response = token == 'none'
           ? await http.get(
-              '${baseUrl}product/details/guest/$productId?lang=$lang',
+              '${ApiUtil.BASE_URL}product/details/guest/$productId?lang=$lang',
               headers: {
                   "Accept": "application/json",
                 })
-          : await http
-              .get('${baseUrl}product/details/$productId?lang=$lang', headers: {
-              HttpHeaders.authorizationHeader: 'Bearer $token',
-              "Accept": "application/json",
-            });
+          : await http.get(
+              '${ApiUtil.BASE_URL}product/details/$productId?lang=$lang',
+              headers: {
+                  HttpHeaders.authorizationHeader: 'Bearer $token',
+                  "Accept": "application/json",
+                });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body) != null) {
 //          print(jsonDecode(response.body));
@@ -88,7 +87,7 @@ class ProductsProvider with ChangeNotifier {
     bool isDone = false;
     try {
       final response = await http.get(
-        '${baseUrl}favorite/$productId',
+        '${ApiUtil.BASE_URL}favorite/$productId',
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
@@ -114,7 +113,7 @@ class ProductsProvider with ChangeNotifier {
       String lang, String token) async {
     try {
       final response = await http.get(
-        '${baseUrl}favorite?lang=$lang',
+        '${ApiUtil.BASE_URL}favorite?lang=$lang',
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
@@ -141,12 +140,12 @@ class ProductsProvider with ChangeNotifier {
     try {
       final response = token == 'none'
           ? await http.get(
-              '${baseUrl}filtter/guest?category=$category&lang=$lang&page=$pageNumber',
+              '${ApiUtil.BASE_URL}filtter/guest?category=$category&lang=$lang&page=$pageNumber',
               headers: {
                   "Accept": "application/json",
                 })
           : await http.get(
-              '${baseUrl}filtter/?category=$category&lang=$lang&page=$pageNumber',
+              '${ApiUtil.BASE_URL}filtter/?category=$category&lang=$lang&page=$pageNumber',
               headers: {
                   HttpHeaders.authorizationHeader: 'Bearer $token',
                   "Accept": "application/json",
@@ -180,12 +179,12 @@ class ProductsProvider with ChangeNotifier {
     try {
       final response = token == 'none'
           ? await http.get(
-              '${baseUrl}filtter/guest?category=$category&lang=$lang&order=$order&page=$pageNumber',
+              '${ApiUtil.BASE_URL}filtter/guest?category=$category&lang=$lang&order=$order&page=$pageNumber',
               headers: {
                   "Accept": "application/json",
                 })
           : await http.get(
-              '${baseUrl}filtter/?category=$category&lang=$lang&order=$order&page=$pageNumber',
+              '${ApiUtil.BASE_URL}filtter/?category=$category&lang=$lang&order=$order&page=$pageNumber',
               headers: {
                   HttpHeaders.authorizationHeader: 'Bearer $token',
                   "Accept": "application/json",
@@ -220,12 +219,12 @@ class ProductsProvider with ChangeNotifier {
     try {
       final response = token == 'none'
           ? await http.get(
-              '${baseUrl}products/guest/$category?lang=$lang&page=$pageNumber',
+              '${ApiUtil.BASE_URL}products/guest/$category?lang=$lang&page=$pageNumber',
               headers: {
                   "Accept": "application/json",
                 })
           : await http.get(
-              '${baseUrl}products/$category?lang=$lang&page=$pageNumber',
+              '${ApiUtil.BASE_URL}products/$category?lang=$lang&page=$pageNumber',
               headers: {
                 HttpHeaders.authorizationHeader: 'Bearer $token',
                 "Accept": "application/json",
@@ -251,10 +250,11 @@ class ProductsProvider with ChangeNotifier {
     List<ProductsModel> _allProducts = [];
     Map<String, dynamic> responseMap;
     try {
-      final response = await http
-          .get('${baseUrl}brandProducts/$brandId&page=$pageNumber', headers: {
-        "Accept": "application/json",
-      });
+      final response = await http.get(
+          '${ApiUtil.BASE_URL}brandProducts/$brandId&page=$pageNumber',
+          headers: {
+            "Accept": "application/json",
+          });
       if (response.statusCode == 200) {
         _allProducts = ProductsModel.parseProducts(
             jsonDecode(response.body)['data'] as List);
@@ -273,9 +273,9 @@ class ProductsProvider with ChangeNotifier {
   Future<List<Ads>> fetchAllProducts(String lang, String token) async {
     try {
       final response = token == 'none'
-          ? await http.get('${baseUrl}homePageGuest?lang=$lang')
+          ? await http.get('${ApiUtil.BASE_URL}homePageGuest?lang=$lang')
           : await http.get(
-              '${baseUrl}homePage?lang=$lang',
+              '${ApiUtil.BASE_URL}homePage?lang=$lang',
               headers: {
                 HttpHeaders.authorizationHeader: 'Bearer $token',
                 "Accept": "application/json",

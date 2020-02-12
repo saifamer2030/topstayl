@@ -2,15 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:topstyle/helper/api_util.dart';
 
 class SearchProvider with ChangeNotifier {
   List<SearchModel> _allProducts = [];
-  final String baseUrl = 'https://topstylesa.com/api/';
-
   Future<List<SearchModel>> search(String key, String lang) async {
     try {
       final response =
-          await http.get('${baseUrl}search?searchKey=$key&lang=$lang');
+          await http.get('${ApiUtil.BASE_URL}search?searchKey=$key&lang=$lang');
       if (response.statusCode == 200) {
         var _list = jsonDecode(response.body)['data'] as List;
         _allProducts = _list.map((p) => SearchModel.fromJson(p)).toList();
@@ -25,7 +24,9 @@ class SearchProvider with ChangeNotifier {
 
   List<SearchModel> search2(String key, String lang) {
     try {
-      http.get('${baseUrl}search?searchKey=$key&lang=$lang').then((response) {
+      http
+          .get('${ApiUtil.BASE_URL}search?searchKey=$key&lang=$lang')
+          .then((response) {
         if (response.statusCode == 200) {
           var _list = jsonDecode(response.body)['data'] as List;
           _allProducts = _list.map((p) => SearchModel.fromJson(p)).toList();
