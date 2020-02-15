@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/constants/colors.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/providers/languages_provider.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 
@@ -36,11 +37,11 @@ class _SettingChoiceScreenState extends State<SettingChoiceScreen> {
     bool isActive,
   ) {
     return Container(
-      width: 44.0,
+//      height: widgetSize.textField,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           border: isActive
-              ? Border.all(width: 2.0, color: Theme.of(context).accentColor)
+              ? Border.all(width: 1.0, color: Theme.of(context).accentColor)
               : null,
           color: Colors.white,
           boxShadow: [
@@ -129,7 +130,6 @@ class _SettingChoiceScreenState extends State<SettingChoiceScreen> {
     Function action,
   ) {
     return Container(
-      width: 44.0,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           border: isActive
@@ -164,53 +164,56 @@ class _SettingChoiceScreenState extends State<SettingChoiceScreen> {
       context: context,
       builder: (context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-        child: Column(
-//            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                alignment: Alignment.center,
-                child: Text(
-                  AppLocalization.of(context).translate("choose_lang"),
-                  style: TextStyle(fontWeight: FontWeight.bold),
+        child: SingleChildScrollView(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    AppLocalization.of(context).translate("choose_lang"),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: widgetSize.subTitle),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Divider(
-                height: 1.0,
-                color: Colors.grey,
-              ),
-              SizedBox(
-                height: 30.0,
-              ),
-              _buildLanguageChoice('عربي', context,
-                  _getLanguageCode(context) == 'ar' ? true : false, () {
-                _changeLanguage('ar');
-                Navigator.of(context).pop();
-                setState(() {
-                  _isArabicClicked = true;
-                  _isEnglishClicked = false;
-                });
+                SizedBox(
+                  height: 20.0,
+                ),
+                Divider(
+                  height: 1.0,
+                  color: Colors.grey,
+                ),
+                SizedBox(
+                  height: 30.0,
+                ),
+                _buildLanguageChoice('عربي', context,
+                    _getLanguageCode(context) == 'ar' ? true : false, () {
+                  _changeLanguage('ar');
+                  Navigator.of(context).pop();
+                  setState(() {
+                    _isArabicClicked = true;
+                    _isEnglishClicked = false;
+                  });
 
 //                Navigator.of(context).pop();
-              }),
-              SizedBox(
-                height: 15.0,
-              ),
-              _buildLanguageChoice('English', context,
-                  _getLanguageCode(context) == 'en' ? true : false, () {
-                _changeLanguage('en');
-                Navigator.of(context).pop();
-                setState(() {
-                  _isEnglishClicked = true;
-                  _isArabicClicked = false;
-                });
+                }),
+                SizedBox(
+                  height: 15.0,
+                ),
+                _buildLanguageChoice('English', context,
+                    _getLanguageCode(context) == 'en' ? true : false, () {
+                  _changeLanguage('en');
+                  Navigator.of(context).pop();
+                  setState(() {
+                    _isEnglishClicked = true;
+                    _isArabicClicked = false;
+                  });
 
 //                Navigator.of(context).pop();
-              }),
-            ]),
+                }),
+              ]),
+        ),
       ),
     );
   }
@@ -231,66 +234,68 @@ class _SettingChoiceScreenState extends State<SettingChoiceScreen> {
       context: context,
       builder: (context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              child: Text(
-                AppLocalization.of(context).translate("choose_country"),
-                style: TextStyle(fontWeight: FontWeight.bold),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                alignment: Alignment.center,
+                child: Text(
+                  AppLocalization.of(context).translate("choose_country"),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Divider(
-              height: 1.0,
-              color: Colors.grey,
-            ),
-            SizedBox(
-              height: 30.0,
-            ),
-            _buildCountryChoice(AppLocalization.of(context).translate("ksa"),
-                'assets/icons/ksa_flag.png', () {
-              setState(() {
-                _isKSAClicked = true;
-                _isKuwaitClicked = false;
-                _isUAEClicked = false;
-              });
-              _setCountry("KSA");
-              Navigator.of(context).pop();
-            }, context, _isKSAClicked),
-            SizedBox(
-              height: 10.0,
-            ),
-            _buildCountryChoice(AppLocalization.of(context).translate("uae"),
-                'assets/icons/uae_flag.png', () {
-              setState(() {
-                _isKSAClicked = false;
-                _isKuwaitClicked = false;
-                _isUAEClicked = true;
-              });
-              _setCountry("UAE");
-              Navigator.of(context).pop();
-            }, context, _isUAEClicked),
-            SizedBox(
-              height: 10.0,
-            ),
-            _buildCountryChoice(AppLocalization.of(context).translate("kw"),
-                'assets/icons/kw_flag.png', () {
-              setState(() {
-                _isKSAClicked = false;
-                _isKuwaitClicked = true;
-                _isUAEClicked = false;
-              });
-              _setCountry("KW");
-              Navigator.of(context).pop();
-            }, context, _isKuwaitClicked),
-            SizedBox(
-              height: 20.0,
-            ),
-          ],
+              SizedBox(
+                height: 20.0,
+              ),
+              Divider(
+                height: 1.0,
+                color: Colors.grey,
+              ),
+              SizedBox(
+                height: 30.0,
+              ),
+              _buildCountryChoice(AppLocalization.of(context).translate("ksa"),
+                  'assets/icons/ksa_flag.png', () {
+                setState(() {
+                  _isKSAClicked = true;
+                  _isKuwaitClicked = false;
+                  _isUAEClicked = false;
+                });
+                _setCountry("KSA");
+                Navigator.of(context).pop();
+              }, context, _isKSAClicked),
+              SizedBox(
+                height: 10.0,
+              ),
+              _buildCountryChoice(AppLocalization.of(context).translate("uae"),
+                  'assets/icons/uae_flag.png', () {
+                setState(() {
+                  _isKSAClicked = false;
+                  _isKuwaitClicked = false;
+                  _isUAEClicked = true;
+                });
+                _setCountry("UAE");
+                Navigator.of(context).pop();
+              }, context, _isUAEClicked),
+              SizedBox(
+                height: 10.0,
+              ),
+              _buildCountryChoice(AppLocalization.of(context).translate("kw"),
+                  'assets/icons/kw_flag.png', () {
+                setState(() {
+                  _isKSAClicked = false;
+                  _isKuwaitClicked = true;
+                  _isUAEClicked = false;
+                });
+                _setCountry("KW");
+                Navigator.of(context).pop();
+              }, context, _isKuwaitClicked),
+              SizedBox(
+                height: 20.0,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -303,13 +308,17 @@ class _SettingChoiceScreenState extends State<SettingChoiceScreen> {
     this._selectedCountry();
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Scaffold(
       appBar: AppBar(
         title: Text(
           AppLocalization.of(context).translate("settings"),
-          style: TextStyle(fontSize: 18.0),
+          style: TextStyle(fontSize: widgetSize.mainTitle),
         ),
         centerTitle: true,
       ),
@@ -334,7 +343,7 @@ class _SettingChoiceScreenState extends State<SettingChoiceScreen> {
                           title: Text(
                             AppLocalization.of(context)
                                 .translate("account_setting_in_settings_page"),
-                            style: TextStyle(fontSize: 16.0),
+                            style: TextStyle(fontSize: widgetSize.content),
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
@@ -358,7 +367,7 @@ class _SettingChoiceScreenState extends State<SettingChoiceScreen> {
                     title: Text(
                       AppLocalization.of(context)
                           .translate("country_in_settings_page"),
-                      style: TextStyle(fontSize: 16.0),
+                      style: TextStyle(fontSize: widgetSize.content),
                     ),
                     trailing: Icon(Icons.arrow_forward_ios, size: 20.0),
                   ),
@@ -381,7 +390,7 @@ class _SettingChoiceScreenState extends State<SettingChoiceScreen> {
                     title: Text(
                       AppLocalization.of(context)
                           .translate("language_in_settings_page"),
-                      style: TextStyle(fontSize: 16.0),
+                      style: TextStyle(fontSize: widgetSize.content),
                     ),
                     trailing: Icon(
                       Icons.arrow_forward_ios,

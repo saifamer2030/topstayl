@@ -34,14 +34,18 @@ class _SplashScreenState extends State<SplashScreen> {
     final deviceSize = MediaQuery.of(context);
     return Scaffold(
       body: Container(
-        child: Center(
-          child: Image.asset(
-            'assets/images/logo.jpg',
-            width: deviceSize.size.width / 2,
-            height: deviceSize.size.height / 12,
-            fit: BoxFit.fitHeight,
-          ),
-        ),
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/images/splash.jpg'),
+                fit: BoxFit.fill)),
+//        child: Center(
+//          child: Image.asset(
+//            'assets/images/logo.jpg',
+//            width: deviceSize.size.width / 2,
+//            height: deviceSize.size.height / 12,
+//            fit: BoxFit.fitHeight,
+//          ),
+//        ),
       ),
     );
   }

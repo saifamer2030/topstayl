@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/otp_screen_in_forget_pass.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
@@ -26,157 +27,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   var _scaffoldKey = GlobalKey<ScaffoldState>();
   String email, phone;
   String countryCode = '+966', image;
-
-  _showPopupCountry2() async {
-    return Theme.of(context).platform == TargetPlatform.iOS
-        ? showCupertinoDialog(
-            context: context,
-            builder: (context) => CupertinoAlertDialog(
-              title: Text('choose Country'),
-              content: Container(
-                height: MediaQuery.of(context).size.height * 0.4,
-                width: MediaQuery.of(context).size.width,
-                child: Scaffold(
-                  body: Column(
-                    children: <Widget>[
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Theme.of(context).primaryColor),
-                        child: ListTile(
-                          onTap: () {
-                            setState(() {
-                              image = 'assets/icons/ksa_flag.png';
-                              countryCode = '+966';
-                            });
-                            Navigator.of(context).pop();
-                          },
-                          title: Text(
-                              AppLocalization.of(context).translate("ksa")),
-                          leading: Image.asset('assets/icons/ksa_flag.png'),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Theme.of(context).primaryColor),
-                        child: ListTile(
-                          onTap: () {
-                            setState(() {
-                              image = 'assets/icons/uae_flag.png';
-                              countryCode = '+971';
-                            });
-                            Navigator.of(context).pop();
-                          },
-                          leading: Image.asset('assets/icons/uae_flag.png'),
-                          title: Text(
-                              AppLocalization.of(context).translate("uae")),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: Theme.of(context).primaryColor),
-                        child: ListTile(
-                          onTap: () {
-                            setState(() {
-                              image = 'assets/icons/kw_flag.png';
-                              countryCode = '+965';
-                            });
-                            Navigator.of(context).pop();
-                          },
-                          leading: Image.asset('assets/icons/kw_flag.png'),
-                          title:
-                              Text(AppLocalization.of(context).translate("kw")),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          )
-        : showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => AlertDialog(
-                  content: Container(
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Theme.of(context).primaryColor),
-                          child: ListTile(
-                            onTap: () {
-                              setState(() {
-                                image = 'assets/icons/ksa_flag.png';
-                                countryCode = '+966';
-                              });
-                              Navigator.of(context).pop();
-                            },
-                            title: Text(
-                                AppLocalization.of(context).translate("ksa")),
-                            leading: Image.asset('assets/icons/ksa_flag.png'),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Theme.of(context).primaryColor),
-                          child: ListTile(
-                            onTap: () {
-                              setState(() {
-                                image = 'assets/icons/uae_flag.png';
-                                countryCode = '+971';
-                              });
-                              Navigator.of(context).pop();
-                            },
-                            leading: Image.asset('assets/icons/uae_flag.png'),
-                            title: Text(
-                                AppLocalization.of(context).translate("uae")),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Theme.of(context).primaryColor),
-                          child: ListTile(
-                            onTap: () {
-                              setState(() {
-                                image = 'assets/icons/kw_flag.png';
-                                countryCode = '+965';
-                              });
-                              Navigator.of(context).pop();
-                            },
-                            leading: Image.asset('assets/icons/kw_flag.png'),
-                            title: Text(
-                                AppLocalization.of(context).translate("kw")),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  title: Center(
-                    child: Text(
-                      AppLocalization.of(context).translate("choose_country"),
-                    ),
-                  ),
-                ));
-  }
 
   _showPopupCountry() async {
     return showDialog(
@@ -217,7 +67,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                               },
                               title: Text(
                                 AppLocalization.of(context).translate("ksa"),
-                                style: TextStyle(fontSize: 12.0),
+                                style: TextStyle(
+                                    fontSize: widgetSize.textFieldError),
                               ),
                               leading: Image.asset('assets/icons/ksa_flag.png'),
                             ),
@@ -248,7 +99,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                               leading: Image.asset('assets/icons/uae_flag.png'),
                               title: Text(
                                 AppLocalization.of(context).translate("uae"),
-                                style: TextStyle(fontSize: 12.0),
+                                style: TextStyle(
+                                    fontSize: widgetSize.textFieldError),
                               ),
                             ),
                           ),
@@ -278,7 +130,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                               leading: Image.asset('assets/icons/kw_flag.png'),
                               title: Text(
                                 AppLocalization.of(context).translate("kw"),
-                                style: TextStyle(fontSize: 12.0),
+                                style: TextStyle(
+                                    fontSize: widgetSize.textFieldError),
                               ),
                             ),
                           )
@@ -307,8 +160,10 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           });
                           Navigator.of(context).pop();
                         },
-                        title:
-                            Text(AppLocalization.of(context).translate("ksa")),
+                        title: Text(
+                          AppLocalization.of(context).translate("ksa"),
+                          style: TextStyle(fontSize: widgetSize.textFieldError),
+                        ),
                         leading: Image.asset('assets/icons/ksa_flag.png'),
                       ),
                     ),
@@ -328,8 +183,10 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           Navigator.of(context).pop();
                         },
                         leading: Image.asset('assets/icons/uae_flag.png'),
-                        title:
-                            Text(AppLocalization.of(context).translate("uae")),
+                        title: Text(
+                          AppLocalization.of(context).translate("uae"),
+                          style: TextStyle(fontSize: widgetSize.textFieldError),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -348,8 +205,10 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           Navigator.of(context).pop();
                         },
                         leading: Image.asset('assets/icons/kw_flag.png'),
-                        title:
-                            Text(AppLocalization.of(context).translate("kw")),
+                        title: Text(
+                          AppLocalization.of(context).translate("kw"),
+                          style: TextStyle(fontSize: widgetSize.textFieldError),
+                        ),
                       ),
                     )
                   ],
@@ -445,17 +304,19 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     _checkInternetConnection();
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
           AppLocalization.of(context).translate("forget_pass_title"),
-          style: TextStyle(
-            fontSize: 19.0,
-          ),
+          style: TextStyle(fontSize: widgetSize.mainTitle),
         ),
       ),
       body: SingleChildScrollView(
@@ -479,7 +340,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 child: Text(
                   AppLocalization.of(context)
                       .translate("method_receive_verification"),
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: widgetSize.subTitle,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
               SizedBox(
@@ -494,11 +357,17 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 },
                 child: !_isEmailMethodClicked
                     ? Container(
-                        padding: const EdgeInsets.all(15.0),
+                        height: widgetSize.textField,
+                        padding: const EdgeInsets.all(10.0),
                         decoration: BoxDecoration(
-                          color: CustomColors.kSecondaryColor,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  offset: Offset(1, 2),
+                                  blurRadius: 55.0)
+                            ]),
                         child: Text(
                           AppLocalization.of(context).translate("userEmail"),
                           textAlign: TextAlign.center,
@@ -507,7 +376,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     : Container(
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
-                          color: CustomColors.kSecondaryColor,
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                offset: Offset(1, 2),
+                                blurRadius: 55.0)
+                          ],
                           borderRadius: BorderRadius.circular(10.0),
                           border: _isEmailMethodClicked
                               ? Border.all(
@@ -530,7 +405,15 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                     fontSize: 16.0),
                               ),
                             ),
+                            SizedBox(height: 10.0),
                             Container(
+                              height: widgetSize.textField,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1.0,
+                                    color: CustomColors.kPCardColor),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
                               child: Form(
                                 key: _emailFormKey,
                                 child: TextFormField(
@@ -549,11 +432,17 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                   },
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    errorStyle: TextStyle(
+                                        fontSize: widgetSize.textFieldError),
                                     hintText: AppLocalization.of(context)
                                         .translate("email_hint"),
                                     hintStyle: TextStyle(
-                                        color: CustomColors.kTabBarIconColor,
-                                        fontSize: 16.0),
+                                      fontSize: widgetSize.subTitle,
+                                      color: Colors.grey,
+                                    ),
+                                    contentPadding: const EdgeInsets.only(
+                                        left: 10.0, right: 10.0, bottom: 5.0),
                                   ),
                                 ),
                               ),
@@ -574,11 +463,17 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 },
                 child: !_isPhoneMethodClicked
                     ? Container(
-                        padding: const EdgeInsets.all(15.0),
+                        height: widgetSize.textField,
+                        padding: const EdgeInsets.all(10.0),
                         decoration: BoxDecoration(
-                          color: CustomColors.kSecondaryColor,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  offset: Offset(1, 2),
+                                  blurRadius: 55.0)
+                            ]),
                         child: Text(
                           AppLocalization.of(context)
                               .translate("phone_in_login"),
@@ -588,7 +483,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     : Container(
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
-                          color: CustomColors.kSecondaryColor,
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                offset: Offset(1, 2),
+                                blurRadius: 55.0)
+                          ],
                           borderRadius: BorderRadius.circular(10.0),
                           border: _isPhoneMethodClicked
                               ? Border.all(
@@ -715,7 +616,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       : Text(
                           AppLocalization.of(context).translate("send_btn"),
                           style: TextStyle(
-                              fontSize: 18.0,
+                              fontSize: widgetSize.mainTitle,
                               fontWeight: FontWeight.bold,
                               color: Colors.white),
                         ),

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/checkoutScreen.dart';
 import 'package:topstyle/screens/forget_password.dart';
@@ -102,15 +103,20 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     String fromScreen = ModalRoute.of(context).settings.arguments as String;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           AppLocalization.of(context).translate('login_btn'),
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: widgetSize.mainTitle, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -122,7 +128,6 @@ class _LoginScreenState extends State<LoginScreen> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Column(
-//            mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Container(
@@ -151,8 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {},
                         child: Text(
                           AppLocalization.of(context).translate("login_btn"),
-                          style:
-                              TextStyle(color: Theme.of(context).accentColor),
+                          style: TextStyle(
+                              color: Theme.of(context).accentColor,
+                              fontSize: widgetSize.subTitle),
                         ),
                       ),
                     ),
@@ -165,7 +171,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         AppLocalization.of(context)
                             .translate("registration_from_title"),
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(
+                            color: Colors.black, fontSize: widgetSize.subTitle),
                       ),
                     ),
                   ],
@@ -174,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 30.0,
                 ),
                 Container(
-                  height: 44.0,
+                  height: widgetSize.textField,
                   decoration: BoxDecoration(
                     border:
                         Border.all(width: 1.0, color: CustomColors.kPCardColor),
@@ -202,17 +209,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        errorStyle: TextStyle(fontSize: 12.0),
+                        errorStyle:
+                            TextStyle(fontSize: widgetSize.textFieldError),
                         hintText:
                             AppLocalization.of(context).translate("userEmail"),
                         hintStyle: TextStyle(
-                          fontSize: 14.0,
+                          fontSize: widgetSize.subTitle,
                           color: Colors.grey,
                         ),
                         contentPadding: const EdgeInsets.only(
-                          left: 10.0,
-                          right: 10.0,
-                        ),
+                            left: 10.0, right: 10.0, bottom: 10.0),
                       ),
                     ),
                   ),
@@ -221,38 +227,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 20.0,
                 ),
                 Container(
-                  height: 44.0,
+                  height: widgetSize.textField,
                   decoration: BoxDecoration(
                     border:
                         Border.all(width: 1.0, color: CustomColors.kPCardColor),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  child: Center(
-                    child: TextFormField(
-                      obscureText: _isNotVisible,
-                      focusNode: this.focusPassword,
-                      textInputAction: TextInputAction.done,
-                      onSaved: (value) {
-                        _loginMap['password'] = value;
-                      },
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: AppLocalization.of(context)
-                            .translate('password_hint'),
-                        hintStyle: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.grey,
-                        ),
-                        suffixIcon: IconButton(
-                          color: Colors.grey,
-                          onPressed: () => _setPassVisible(),
-                          icon: Icon(_isNotVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                        ),
-                        contentPadding: const EdgeInsets.only(
-                            top: 15.0, left: 10.0, right: 10.0),
+                  child: TextFormField(
+                    obscureText: _isNotVisible,
+                    focusNode: this.focusPassword,
+                    textInputAction: TextInputAction.done,
+                    onSaved: (value) {
+                      _loginMap['password'] = value;
+                    },
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: AppLocalization.of(context)
+                          .translate('password_hint'),
+                      hintStyle: TextStyle(
+                        fontSize: widgetSize.subTitle,
+                        color: Colors.grey,
                       ),
+                      suffixIcon: IconButton(
+                        color: Colors.grey,
+                        onPressed: () => _setPassVisible(),
+                        icon: Icon(_isNotVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                      ),
+                      contentPadding: const EdgeInsets.only(
+                          left: 10.0, right: 10.0, top: 5.0),
                     ),
                   ),
                 ),
@@ -260,7 +264,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 30.0,
                 ),
                 Container(
-                  height: 44.0,
+                  height: widgetSize.textField,
                   margin: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
@@ -280,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             AppLocalization.of(context)
                                 .translate("login_form_title"),
                             style: TextStyle(
-                                fontSize: 16.0,
+                                fontSize: widgetSize.mainTitle,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -299,7 +303,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text(
                       AppLocalization.of(context).translate("forget_password"),
                       style: TextStyle(
-                        fontSize: 14.0,
+                        fontSize: widgetSize.subTitle,
                       ),
                     ),
                   ),

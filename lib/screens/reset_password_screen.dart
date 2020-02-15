@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 import 'package:topstyle/widgets/network_connection.dart';
@@ -129,15 +130,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     }
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           AppLocalization.of(context)
               .translate("change_password_in_account_setting_page"),
-          style: TextStyle(fontSize: 18.0),
+          style: TextStyle(fontSize: widgetSize.mainTitle),
         ),
         centerTitle: true,
       ),

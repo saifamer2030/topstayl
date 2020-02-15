@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/products_model.dart';
 import 'package:topstyle/providers/languages_provider.dart';
 import 'package:topstyle/providers/network_provider.dart';
@@ -1989,10 +1990,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                 ? 'none'
                 : userData['Authorization'])
         .then((products) {
-      var list = products['data'] as List;
-      _products.addAll(List<ProductsModel>.from(list));
-      lastPage = products['last_page'];
-      print('call product num $pageNumber and lenght is ${_products.length}');
+      if (products != null) {
+        var list = products['data'] as List;
+        _products.addAll(List<ProductsModel>.from(list));
+        lastPage = products['last_page'];
+      }
+
+//      print('call product num $pageNumber and lenght is ${_products.length}');
       setState(() {
         _isLoading = false;
         _seeMoreLoading = false;
@@ -2046,15 +2050,19 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
     _controller.dispose();
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Scaffold(
       appBar: AppBar(
         title: Text(
           AppLocalization.of(context).translate(widget.subCategoryName != ''
               ? "${widget.subCategoryName}"
               : '${widget.categoryName}'),
-          style: TextStyle(fontSize: 18.0),
+          style: TextStyle(fontSize: widgetSize.mainTitle),
         ),
         centerTitle: true,
         actions: <Widget>[

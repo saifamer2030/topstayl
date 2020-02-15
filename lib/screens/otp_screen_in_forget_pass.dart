@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/change_password_otp.dart';
@@ -18,15 +19,19 @@ class CustomOtpScreenInForgetPass extends StatefulWidget {
 
 class _CustomOtpScreenInForgetPassState
     extends State<CustomOtpScreenInForgetPass> {
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
           AppLocalization.of(context).translate("forget_pass_title"),
           style: TextStyle(
-            fontSize: 19.0,
+            fontSize: widgetSize.mainTitle,
           ),
         ),
       ),
@@ -158,6 +163,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   var forgetMethod;
+
   @override
   Widget build(BuildContext context) {
     forgetMethod = ModalRoute.of(context).settings.arguments as Map;
@@ -176,7 +182,7 @@ class _OtpScreenState extends State<OtpScreen> {
                           height: deviceScreen.size.height * 0.35,
                           child: LayoutBuilder(builder: (context, constrains) {
                             return Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 deviceScreen.size.height > 736.0
                                     ? Container(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/screens/see_more_screen.dart';
 
 import '../constants/colors.dart';
@@ -29,8 +30,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       _brushes = false,
       _makeupBrushesTools = false;
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
+
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Column(
       children: <Widget>[
         Container(
@@ -159,10 +165,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 .translate("all_products"),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: CustomColors.kTabBarIconColor),
+                                color: CustomColors.kTabBarIconColor,
+                                fontSize: widgetSize.subTitle),
                           ),
                           trailing: Icon(Icons.arrow_forward_ios,
-                              size: 18.0, color: CustomColors.kTabBarIconColor),
+                              size: widgetSize.subTitle,
+                              color: CustomColors.kTabBarIconColor),
                         ),
                         Divider(
                           height: 1.0,
@@ -179,13 +187,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             AppLocalization.of(context).translate("face"),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: CustomColors.kTabBarIconColor),
+                                color: CustomColors.kTabBarIconColor,
+                                fontSize: widgetSize.subTitle),
                           ),
                           trailing: Icon(
                               _face
                                   ? Icons.keyboard_arrow_up
                                   : Icons.keyboard_arrow_down,
-                              size: 30.0,
+                              size: widgetSize.subTitle + 10,
                               color: CustomColors.kTabBarIconColor),
                           selected: _face,
                         ),
@@ -212,6 +221,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                     title: Text(
                                       AppLocalization.of(context)
                                           .translate("Foundation"),
+                                      style: TextStyle(
+                                          fontSize: widgetSize.subTitle),
                                     ),
                                   ),
                                   Divider(
@@ -232,6 +243,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                     title: Text(
                                       AppLocalization.of(context)
                                           .translate("Concealer"),
+                                      style: TextStyle(
+                                          fontSize: widgetSize.subTitle),
                                     ),
                                   ),
                                   Divider(
@@ -252,6 +265,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                     title: Text(
                                       AppLocalization.of(context)
                                           .translate("Highlighter"),
+                                      style: TextStyle(
+                                          fontSize: widgetSize.subTitle),
                                     ),
                                   ),
                                   Divider(
@@ -272,6 +287,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                     title: Text(
                                       AppLocalization.of(context)
                                           .translate("Powder"),
+                                      style: TextStyle(
+                                          fontSize: widgetSize.subTitle),
                                     ),
                                   ),
                                   Divider(
@@ -292,6 +309,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                     title: Text(
                                       AppLocalization.of(context)
                                           .translate("Face Brimer"),
+                                      style: TextStyle(
+                                          fontSize: widgetSize.subTitle),
                                     ),
                                   ),
                                   Divider(
@@ -313,6 +332,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                     title: Text(
                                       AppLocalization.of(context)
                                           .translate("Makeup Fixing Spray"),
+                                      style: TextStyle(
+                                          fontSize: widgetSize.subTitle),
                                     ),
                                   ),
                                   Divider(
@@ -334,6 +355,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                     title: Text(
                                       AppLocalization.of(context)
                                           .translate("BB And CC Cream"),
+                                      style: TextStyle(
+                                          fontSize: widgetSize.subTitle),
                                     ),
                                   ),
                                   Divider(
@@ -353,13 +376,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             AppLocalization.of(context).translate("eyes"),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: CustomColors.kTabBarIconColor),
+                                color: CustomColors.kTabBarIconColor,
+                                fontSize: widgetSize.subTitle),
                           ),
                           trailing: Icon(
                               _eyes
                                   ? Icons.keyboard_arrow_up
                                   : Icons.keyboard_arrow_down,
-                              size: 30.0,
+                              size: widgetSize.subTitle + 10,
                               color: CustomColors.kTabBarIconColor),
                           selected: _eyes,
                         ),
@@ -388,6 +412,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Mascara"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -408,6 +434,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Eyeshadow"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -428,6 +456,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Eyeliner"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -448,6 +478,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Brimer"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -468,6 +500,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Glitter"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -489,13 +523,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             AppLocalization.of(context).translate("lips"),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: CustomColors.kTabBarIconColor),
+                                color: CustomColors.kTabBarIconColor,
+                                fontSize: widgetSize.subTitle),
                           ),
                           trailing: Icon(
                               _lips
                                   ? Icons.keyboard_arrow_up
                                   : Icons.keyboard_arrow_down,
-                              size: 30.0,
+                              size: widgetSize.subTitle + 10,
                               color: CustomColors.kTabBarIconColor),
                           selected: _lips,
                         ),
@@ -523,6 +558,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Lip Set"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -543,6 +580,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Lip Gloss"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -563,6 +602,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Lip Liner"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -583,6 +624,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Lipstick"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -604,13 +647,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             AppLocalization.of(context).translate("eyebrow"),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: CustomColors.kTabBarIconColor),
+                                color: CustomColors.kTabBarIconColor,
+                                fontSize: widgetSize.subTitle),
                           ),
                           trailing: Icon(
                               _eyeBrow
                                   ? Icons.keyboard_arrow_up
                                   : Icons.keyboard_arrow_down,
-                              size: 30.0,
+                              size: widgetSize.subTitle + 10,
                               color: CustomColors.kTabBarIconColor),
                           selected: _eyeBrow,
                         ),
@@ -639,6 +683,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Eyebrow Mascara"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -660,6 +706,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Eyebrow Gel & Powder"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -681,6 +729,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Eyebrow Pencil"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -702,13 +752,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             AppLocalization.of(context).translate("Cheek"),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: CustomColors.kTabBarIconColor),
+                                color: CustomColors.kTabBarIconColor,
+                                fontSize: widgetSize.subTitle),
                           ),
                           trailing: Icon(
                               _cheek
                                   ? Icons.keyboard_arrow_up
                                   : Icons.keyboard_arrow_down,
-                              size: 30.0,
+                              size: widgetSize.subTitle + 10,
                               color: CustomColors.kTabBarIconColor),
                           selected: _cheek,
                         ),
@@ -736,6 +787,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Contour"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -757,6 +810,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Cheek Blusher"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -779,13 +834,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 .translate("makeup_brushes_tools"),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: CustomColors.kTabBarIconColor),
+                                color: CustomColors.kTabBarIconColor,
+                                fontSize: widgetSize.subTitle),
                           ),
                           trailing: Icon(
                               _makeupBrushesTools
                                   ? Icons.keyboard_arrow_up
                                   : Icons.keyboard_arrow_down,
-                              size: 30.0,
+                              size: widgetSize.subTitle + 10,
                               color: CustomColors.kTabBarIconColor),
                           selected: _makeupBrushesTools,
                         ),
@@ -813,6 +869,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Eye Brushes"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -834,6 +892,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Face Brushes"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -855,6 +915,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       title: Text(
                                         AppLocalization.of(context)
                                             .translate("Eyebrow Brushes"),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                     ),
                                     Divider(
@@ -903,10 +965,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                     .translate("all_products"),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: CustomColors.kTabBarIconColor),
+                                    color: CustomColors.kTabBarIconColor,
+                                    fontSize: widgetSize.subTitle),
                               ),
                               trailing: Icon(Icons.arrow_forward_ios,
-                                  size: 18.0,
+                                  size: widgetSize.subTitle,
                                   color: CustomColors.kTabBarIconColor),
                             ),
                             Divider(
@@ -928,11 +991,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 AppLocalization.of(context)
                                     .translate("Women Perfumes"),
                                 style: TextStyle(
-                                    fontSize: 14.0,
+                                    fontSize: widgetSize.subTitle,
                                     fontWeight: FontWeight.bold),
                               ),
                               trailing: Icon(Icons.arrow_forward_ios,
-                                  size: 18.0,
+                                  size: widgetSize.subTitle,
                                   color: CustomColors.kTabBarIconColor),
                             ),
                             Divider(
@@ -954,11 +1017,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 AppLocalization.of(context)
                                     .translate("Men Perfumes"),
                                 style: TextStyle(
-                                    fontSize: 14.0,
+                                    fontSize: widgetSize.subTitle,
                                     fontWeight: FontWeight.bold),
                               ),
                               trailing: Icon(Icons.arrow_forward_ios,
-                                  size: 18.0,
+                                  size: widgetSize.subTitle,
                                   color: CustomColors.kTabBarIconColor),
                             ),
                             Divider(
@@ -980,11 +1043,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 AppLocalization.of(context)
                                     .translate("Unisex Perfumes"),
                                 style: TextStyle(
-                                    fontSize: 14.0,
+                                    fontSize: widgetSize.subTitle,
                                     fontWeight: FontWeight.bold),
                               ),
                               trailing: Icon(Icons.arrow_forward_ios,
-                                  size: 18.0,
+                                  size: widgetSize.subTitle,
                                   color: CustomColors.kTabBarIconColor),
                             ),
                             Divider(
@@ -1006,11 +1069,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 AppLocalization.of(context)
                                     .translate("Niche Perfumes"),
                                 style: TextStyle(
-                                    fontSize: 14.0,
+                                    fontSize: widgetSize.subTitle,
                                     fontWeight: FontWeight.bold),
                               ),
                               trailing: Icon(Icons.arrow_forward_ios,
-                                  size: 18.0,
+                                  size: widgetSize.subTitle,
                                   color: CustomColors.kTabBarIconColor),
                             ),
                             Divider(
@@ -1032,11 +1095,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 AppLocalization.of(context)
                                     .translate("Hair Mist"),
                                 style: TextStyle(
-                                    fontSize: 14.0,
+                                    fontSize: widgetSize.subTitle,
                                     fontWeight: FontWeight.bold),
                               ),
                               trailing: Icon(Icons.arrow_forward_ios,
-                                  size: 18.0,
+                                  size: widgetSize.subTitle,
                                   color: CustomColors.kTabBarIconColor),
                             ),
                             Divider(
@@ -1066,10 +1129,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                         .translate("all_products"),
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: CustomColors.kTabBarIconColor),
+                                        color: CustomColors.kTabBarIconColor,
+                                        fontSize: widgetSize.subTitle),
                                   ),
                                   trailing: Icon(Icons.arrow_forward_ios,
-                                      size: 18.0,
+                                      size: widgetSize.subTitle,
                                       color: CustomColors.kTabBarIconColor),
                                 ),
                                 Divider(
@@ -1092,10 +1156,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                         .translate("Lip Care"),
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 14.0),
+                                        fontSize: widgetSize.subTitle),
                                   ),
                                   trailing: Icon(Icons.arrow_forward_ios,
-                                      size: 18.0,
+                                      size: widgetSize.subTitle,
                                       color: CustomColors.kTabBarIconColor),
                                 ),
                                 Divider(
@@ -1118,10 +1182,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                         .translate("Hands Care"),
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 14.0),
+                                        fontSize: widgetSize.subTitle),
                                   ),
                                   trailing: Icon(Icons.arrow_forward_ios,
-                                      size: 18.0,
+                                      size: widgetSize.subTitle,
                                       color: CustomColors.kTabBarIconColor),
                                 ),
                                 Divider(
@@ -1144,10 +1208,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                         .translate("Face Care"),
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 14.0),
+                                        fontSize: widgetSize.subTitle),
                                   ),
                                   trailing: Icon(Icons.arrow_forward_ios,
-                                      size: 18.0,
+                                      size: widgetSize.subTitle,
                                       color: CustomColors.kTabBarIconColor),
                                 ),
                                 Divider(
@@ -1171,10 +1235,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                         .translate("Eye And Lash Care"),
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 14.0),
+                                        fontSize: widgetSize.subTitle),
                                   ),
                                   trailing: Icon(Icons.arrow_forward_ios,
-                                      size: 18.0,
+                                      size: widgetSize.subTitle,
                                       color: CustomColors.kTabBarIconColor),
                                 ),
                                 Divider(
@@ -1197,10 +1261,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                         .translate("Hair Care"),
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 14.0),
+                                        fontSize: widgetSize.subTitle),
                                   ),
                                   trailing: Icon(Icons.arrow_forward_ios,
-                                      size: 18.0,
+                                      size: widgetSize.subTitle,
                                       color: CustomColors.kTabBarIconColor),
                                 ),
                                 Divider(
@@ -1223,10 +1287,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                         .translate("Body Care"),
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 14.0),
+                                        fontSize: widgetSize.subTitle),
                                   ),
                                   trailing: Icon(Icons.arrow_forward_ios,
-                                      size: 18.0,
+                                      size: widgetSize.subTitle,
                                       color: CustomColors.kTabBarIconColor),
                                 ),
                                 Divider(
@@ -1257,10 +1321,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color:
-                                                CustomColors.kTabBarIconColor),
+                                                CustomColors.kTabBarIconColor,
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                       trailing: Icon(Icons.arrow_forward_ios,
-                                          size: 18.0,
+                                          size: widgetSize.subTitle,
                                           color: CustomColors.kTabBarIconColor),
                                     ),
                                     Divider(
@@ -1283,10 +1348,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             .translate("Nail Polish"),
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 14.0),
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                       trailing: Icon(Icons.arrow_forward_ios,
-                                          size: 18.0,
+                                          size: widgetSize.subTitle,
                                           color: CustomColors.kTabBarIconColor),
                                     ),
                                     Divider(
@@ -1310,10 +1375,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             .translate("Nail Polish Remover"),
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 14.0),
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                       trailing: Icon(Icons.arrow_forward_ios,
-                                          size: 18.0,
+                                          size: widgetSize.subTitle,
                                           color: CustomColors.kTabBarIconColor),
                                     ),
                                     Divider(
@@ -1336,10 +1401,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             .translate("Nail Tools"),
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 14.0),
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                       trailing: Icon(Icons.arrow_forward_ios,
-                                          size: 18.0,
+                                          size: widgetSize.subTitle,
                                           color: CustomColors.kTabBarIconColor),
                                     ),
                                     Divider(
@@ -1362,10 +1427,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             .translate("Nail Care"),
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 14.0),
+                                            fontSize: widgetSize.subTitle),
                                       ),
                                       trailing: Icon(Icons.arrow_forward_ios,
-                                          size: 18.0,
+                                          size: widgetSize.subTitle,
                                           color: CustomColors.kTabBarIconColor),
                                     ),
                                     Divider(
@@ -1397,11 +1462,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: CustomColors
-                                                    .kTabBarIconColor),
+                                                    .kTabBarIconColor,
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                           trailing: Icon(
                                               Icons.arrow_forward_ios,
-                                              size: 18.0,
+                                              size: widgetSize.subTitle,
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
@@ -1422,11 +1488,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                 .translate("Hair Device"),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 14.0),
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                           trailing: Icon(
                                               Icons.arrow_forward_ios,
-                                              size: 18.0,
+                                              size: widgetSize.subTitle,
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
@@ -1452,11 +1518,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                 .translate("Body Device"),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 14.0),
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                           trailing: Icon(
                                               Icons.arrow_forward_ios,
-                                              size: 18.0,
+                                              size: widgetSize.subTitle,
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
@@ -1482,11 +1548,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                 .translate("Face Device"),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 14.0),
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                           trailing: Icon(
                                               Icons.arrow_forward_ios,
-                                              size: 18.0,
+                                              size: widgetSize.subTitle,
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
@@ -1518,11 +1584,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: CustomColors
-                                                    .kTabBarIconColor),
+                                                    .kTabBarIconColor,
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                           trailing: Icon(
                                               Icons.arrow_forward_ios,
-                                              size: 18.0,
+                                              size: widgetSize.subTitle,
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
@@ -1543,11 +1610,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                 .translate("Pureness"),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 14.0),
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                           trailing: Icon(
                                               Icons.arrow_forward_ios,
-                                              size: 18.0,
+                                              size: widgetSize.subTitle,
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
@@ -1573,11 +1640,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                 .translate("Bella"),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 14.0),
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                           trailing: Icon(
                                               Icons.arrow_forward_ios,
-                                              size: 18.0,
+                                              size: widgetSize.subTitle,
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
@@ -1603,11 +1670,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                 .translate("Diva"),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 14.0),
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                           trailing: Icon(
                                               Icons.arrow_forward_ios,
-                                              size: 18.0,
+                                              size: widgetSize.subTitle,
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
@@ -1633,11 +1700,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                 .translate("Beauteous"),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 14.0),
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                           trailing: Icon(
                                               Icons.arrow_forward_ios,
-                                              size: 18.0,
+                                              size: widgetSize.subTitle,
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
@@ -1663,11 +1730,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                 .translate("Lens me"),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 14.0),
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                           trailing: Icon(
                                               Icons.arrow_forward_ios,
-                                              size: 18.0,
+                                              size: widgetSize.subTitle,
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
@@ -1694,11 +1761,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                     "Solution For Lenses"),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 14.0),
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                           trailing: Icon(
                                               Icons.arrow_forward_ios,
-                                              size: 18.0,
+                                              size: widgetSize.subTitle,
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),

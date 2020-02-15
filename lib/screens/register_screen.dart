@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/checkoutScreen.dart';
 import 'package:topstyle/screens/login_screen.dart';
@@ -207,7 +208,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               },
                               title: Text(
                                 AppLocalization.of(context).translate("ksa"),
-                                style: TextStyle(fontSize: 12.0),
+                                style: TextStyle(
+                                    fontSize: widgetSize.textFieldError),
                               ),
                               leading: Image.asset('assets/icons/ksa_flag.png'),
                             ),
@@ -238,7 +240,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               leading: Image.asset('assets/icons/uae_flag.png'),
                               title: Text(
                                 AppLocalization.of(context).translate("uae"),
-                                style: TextStyle(fontSize: 12.0),
+                                style: TextStyle(
+                                    fontSize: widgetSize.textFieldError),
                               ),
                             ),
                           ),
@@ -268,7 +271,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               leading: Image.asset('assets/icons/kw_flag.png'),
                               title: Text(
                                 AppLocalization.of(context).translate("kw"),
-                                style: TextStyle(fontSize: 12.0),
+                                style: TextStyle(
+                                    fontSize: widgetSize.textFieldError),
                               ),
                             ),
                           )
@@ -297,8 +301,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           });
                           Navigator.of(context).pop();
                         },
-                        title:
-                            Text(AppLocalization.of(context).translate("ksa")),
+                        title: Text(
+                          AppLocalization.of(context).translate("ksa"),
+                          style: TextStyle(fontSize: widgetSize.textFieldError),
+                        ),
                         leading: Image.asset('assets/icons/ksa_flag.png'),
                       ),
                     ),
@@ -318,8 +324,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           Navigator.of(context).pop();
                         },
                         leading: Image.asset('assets/icons/uae_flag.png'),
-                        title:
-                            Text(AppLocalization.of(context).translate("uae")),
+                        title: Text(
+                          AppLocalization.of(context).translate("uae"),
+                          style: TextStyle(fontSize: widgetSize.textFieldError),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -338,8 +346,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           Navigator.of(context).pop();
                         },
                         leading: Image.asset('assets/icons/kw_flag.png'),
-                        title:
-                            Text(AppLocalization.of(context).translate("kw")),
+                        title: Text(
+                          AppLocalization.of(context).translate("kw"),
+                          style: TextStyle(fontSize: widgetSize.textFieldError),
+                        ),
                       ),
                     )
                   ],
@@ -349,11 +359,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
-    SharedPreferences.getInstance().then((p) {
-      print(p.getString('redirection'));
-    });
+//    SharedPreferences.getInstance().then((p) {
+//      print(p.getString('redirection'));
+//    });
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     String fromScreen = ModalRoute.of(context).settings.arguments as String;
     print(fromScreen);
     return Scaffold(
@@ -361,7 +375,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         appBar: AppBar(
           title: Text(
             AppLocalization.of(context).translate('registration_from_title'),
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: widgetSize.mainTitle, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
         ),
@@ -403,7 +418,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               AppLocalization.of(context)
                                   .translate("registration_from_title"),
                               style: TextStyle(
-                                  color: Theme.of(context).accentColor),
+                                  color: Theme.of(context).accentColor,
+                                  fontSize: widgetSize.subTitle),
                             ),
                           ),
                         ),
@@ -414,7 +430,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                           child: Text(
                             AppLocalization.of(context).translate("login_btn"),
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: widgetSize.subTitle),
                           ),
                         )
                       ],
@@ -423,7 +441,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       height: 10.0,
                     ),
                     Container(
-                      height: 44.0,
+                      height: widgetSize.textField,
                       decoration: BoxDecoration(
                         border: Border.all(
                             width: 1.0, color: CustomColors.kPCardColor),
@@ -444,15 +462,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          errorStyle: TextStyle(fontSize: 12.0),
+                          errorStyle:
+                              TextStyle(fontSize: widgetSize.textFieldError),
                           hintText:
                               AppLocalization.of(context).translate("userName"),
                           hintStyle: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: widgetSize.subTitle,
                             color: Colors.grey,
                           ),
-                          contentPadding:
-                              const EdgeInsets.only(left: 10.0, right: 10.0),
+                          contentPadding: const EdgeInsets.only(
+                              left: 10.0, right: 10.0, bottom: 6.0),
                         ),
                       ),
                     ),
@@ -496,7 +515,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         Expanded(
                           child: Container(
-                            height: 44.0,
+                            height: widgetSize.textField,
                             decoration: BoxDecoration(
                               border: Border.all(
                                   width: 1.0, color: CustomColors.kPCardColor),
@@ -522,15 +541,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ],
                               decoration: InputDecoration(
                                 border: InputBorder.none,
-                                errorStyle: TextStyle(fontSize: 12.0),
+                                errorStyle: TextStyle(
+                                    fontSize: widgetSize.textFieldError),
                                 hintText: AppLocalization.of(context)
                                     .translate("phone_in_login"),
                                 hintStyle: TextStyle(
-                                  fontSize: 14.0,
+                                  fontSize: widgetSize.subTitle,
                                   color: Colors.grey,
                                 ),
                                 contentPadding: const EdgeInsets.only(
-                                    left: 10.0, right: 10.0),
+                                  left: 10.0,
+                                  right: 10.0,
+                                  bottom: 6.0,
+                                ),
                               ),
                             ),
                           ),
@@ -541,7 +564,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       height: 10.0,
                     ),
                     Container(
-                      height: 44.0,
+                      height: widgetSize.textField,
                       decoration: BoxDecoration(
                         border: Border.all(
                             width: 1.0, color: CustomColors.kPCardColor),
@@ -563,23 +586,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                            errorStyle: TextStyle(fontSize: 12.0),
+                            errorStyle:
+                                TextStyle(fontSize: widgetSize.textFieldError),
                             border: InputBorder.none,
                             hintText: AppLocalization.of(context)
                                 .translate("userEmail"),
                             hintStyle: TextStyle(
-                              fontSize: 14.0,
+                              fontSize: widgetSize.subTitle,
                               color: Colors.grey,
                             ),
-                            contentPadding:
-                                const EdgeInsets.only(left: 10.0, right: 10.0)),
+                            contentPadding: const EdgeInsets.only(
+                                left: 10.0, right: 10.0, bottom: 6.0)),
                       ),
                     ),
                     SizedBox(
                       height: 10.0,
                     ),
                     Container(
-                      height: 44.0,
+                      height: widgetSize.textField,
                       decoration: BoxDecoration(
                         border: Border.all(
                             width: 1.0, color: CustomColors.kPCardColor),
@@ -599,15 +623,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         obscureText: true,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          errorStyle: TextStyle(fontSize: 12.0),
+                          errorStyle:
+                              TextStyle(fontSize: widgetSize.textFieldError),
                           hintText:
                               AppLocalization.of(context).translate("password"),
                           hintStyle: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: widgetSize.subTitle,
                             color: Colors.grey,
                           ),
                           contentPadding:
-                              const EdgeInsets.only(left: 10.0, right: 10.0),
+                              const EdgeInsets.only(left: 10.0, right: 10.0 , bottom: 6.0),
                         ),
                       ),
                     ),
@@ -615,7 +640,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       height: 15.0,
                     ),
                     Container(
-                      height: 44.0,
+                      height: widgetSize.textField,
                       margin: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                       decoration: BoxDecoration(
                         color: Theme.of(context).accentColor,
@@ -627,7 +652,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ? null
                             : () {
                                 _checkInternetConnection(fromScreen);
-//                          _checkInternetConnection();
                               },
                         child: _isLoading
                             ? AdaptiveProgressIndicator()
@@ -635,7 +659,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 AppLocalization.of(context)
                                     .translate("registration_from_title"),
                                 style: TextStyle(
-                                    fontSize: 16.0,
+                                    fontSize: widgetSize.mainTitle,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),
                               ),

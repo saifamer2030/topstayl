@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/providers/languages_provider.dart';
 import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/screens/search_screen.dart';
@@ -50,23 +51,27 @@ class _TabsScreenState extends State<TabsScreen> {
         title: FittedBox(
           child: Text(
             title,
-            style: TextStyle(fontSize: 13.0),
+            style: TextStyle(fontSize: widgetSize.iconText),
           ),
         ));
   }
 
   AppLanguageProvider appLanguage = AppLanguageProvider();
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
 
   @override
   Widget build(BuildContext context) {
-//    print(appLanguage.fetchLocale().toString());
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Scaffold(
       appBar: AppBar(
         title: Text(
           appLanguage.fetchLocale().toString() != 'en'
               ? _mainPages[_selectedIndex]['title_ar']
               : _mainPages[_selectedIndex]['title_en'],
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: widgetSize.mainTitle),
         ),
         centerTitle: true,
         elevation: 4.0,

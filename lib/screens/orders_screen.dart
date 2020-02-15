@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/orders_model.dart';
 import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/providers/user_provider.dart';
@@ -22,13 +23,17 @@ class OrdersScreen extends StatelessWidget {
         .getUserOrder(token['Authorization']);
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Scaffold(
       appBar: AppBar(
         title: Text(
           AppLocalization.of(context).translate("myOrders_page_title"),
-          style: TextStyle(fontSize: 18.0),
+          style: TextStyle(fontSize: widgetSize.mainTitle),
         ),
         centerTitle: true,
       ),
@@ -52,8 +57,10 @@ class OrdersScreen extends StatelessWidget {
                           itemCount: orderData.length,
                         )
                       : Center(
-                          child: Text(AppLocalization.of(context)
-                              .translate('no_order')),
+                          child: Text(
+                            AppLocalization.of(context).translate('no_order'),
+                            style: TextStyle(fontSize: widgetSize.content),
+                          ),
                         );
                 } else {
                   return Center(

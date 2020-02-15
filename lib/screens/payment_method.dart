@@ -148,7 +148,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
     SetOrder orderData;
     var token = await userData.isAuthenticated();
     var prefs = await SharedPreferences.getInstance();
-    int userCheckoutId = await prefs.getInt('userCheckoutId');
+    int userCheckoutId = prefs.getInt('userCheckoutId');
     orderData = await Provider.of<OrdersProvider>(context).addOrder(
         token['Authorization'],
         _paymentRadioGroup.toString(),
@@ -712,26 +712,6 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                     .toStringAsFixed(2);
                                 _doCreditCardPayment(total);
                               }
-
-//
-//                                print('----------------Copuon Cost---------\n');
-//                                print('copon value $couponValue');
-//                                print(
-//                                    '----------------Payment Discount Cost---------\n');
-//                                print(
-//                                    'payment discount value $_paymentDiscount');
-//                                print(
-//                                    '----------------cash on delivery fees Cost---------\n');
-//                                print(
-//                                    'payment discount value $_cashOnDeliveryValueFees');
-//                                print('----------------total Cost---------\n');
-//                                _netTotal = checkoutData.summery.total -
-//                                    couponValue -
-//                                    checkoutData.summery.discount -
-//                                    _paymentDiscount +
-//                                    _shippingCost +
-//                                    _cashOnDeliveryValueFees;
-//                                print(_netTotal);
                             }
                           : null,
                       child: _isBtnLoading

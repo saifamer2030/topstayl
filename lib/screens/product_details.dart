@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/cart_item_model.dart';
 import 'package:topstyle/models/product_details_model.dart';
 import 'package:topstyle/providers/cart_provider.dart';
@@ -455,8 +456,13 @@ class _ProductDetailsState extends State<ProductDetails>
     // We have to do it
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
+
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return _isLoading
         ? Scaffold(
             body: Center(
@@ -478,7 +484,8 @@ class _ProductDetailsState extends State<ProductDetails>
                         title: Text(
                           AppLocalization.of(context).translate("details"),
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: widgetSize.mainTitle,
+                              fontWeight: FontWeight.bold),
                         ),
                         actions: <Widget>[
                           Consumer<CartItemProvider>(
@@ -555,7 +562,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                     productDetails.brand,
                                     style: TextStyle(
                                         color: Color(0xFF009bff),
-                                        fontSize: 14.0),
+                                        fontSize: widgetSize.subTitle),
                                   ),
                                 ],
                               ),
@@ -572,7 +579,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                     productDetails.name,
                                     style: TextStyle(
                                         color: CustomColors.kTabBarIconColor,
-                                        fontSize: 16.0,
+                                        fontSize: widgetSize.content,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ],
@@ -589,13 +596,13 @@ class _ProductDetailsState extends State<ProductDetails>
                                         : '${productDetails.options[0].price.toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
                                     style: productDetails.discount == 0
                                         ? TextStyle(
-                                            fontSize: 16.0,
+                                            fontSize: widgetSize.content,
                                             fontWeight: FontWeight.bold,
                                             color:
                                                 Theme.of(context).accentColor,
                                           )
                                         : TextStyle(
-                                            fontSize: 16.0,
+                                            fontSize: widgetSize.content,
 //                                  fontWeight: FontWeight.bold,
                                             decoration:
                                                 TextDecoration.lineThrough,
@@ -611,7 +618,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                               ? '${((productDetails.options[_productOptionIndex].price) - ((productDetails.options[_productOptionIndex].price) * (productDetails.discount) / 100)).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}'
                                               : '${((productDetails.options[0].price) - ((productDetails.options[0].price) * (productDetails.discount) / 100)).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
                                           style: TextStyle(
-                                            fontSize: 16.0,
+                                            fontSize: widgetSize.content,
                                             color: Colors.red,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -632,14 +639,13 @@ class _ProductDetailsState extends State<ProductDetails>
                               child: Text(
                                 '(${AppLocalization.of(context).translate('vat_included')})',
                                 style: TextStyle(
-                                    fontSize: 10.0, color: Colors.grey),
+                                    fontSize: widgetSize.textFieldError,
+                                    color: Colors.grey),
                               ),
                             ),
                             Container(
                               margin: const EdgeInsets.only(
-                                left: 16.0,
-                                right: 16.0,
-                              ),
+                                  left: 16.0, right: 16.0, top: 10.0),
                               child: Wrap(
                                 children: <Widget>[
                                   productDetails.options[0].type == 'color'
@@ -653,10 +659,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                               ? '${AppLocalization.of(context).translate("color")} ${productDetails.options[_productOptionIndex].optionName}'
                                               : '',
                                           style: TextStyle(
-                                            color:
-                                                CustomColors.kTabBarIconColor,
-                                            fontSize: 16.0,
-                                          ),
+                                              color:
+                                                  CustomColors.kTabBarIconColor,
+                                              fontSize: widgetSize.content),
                                         )
                                       : Text(
                                           _isProductChosen &&
@@ -668,10 +673,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                               ? '${AppLocalization.of(context).translate("size")} ${productDetails.options[_productOptionIndex].value}'
                                               : '',
                                           style: TextStyle(
-                                            color:
-                                                CustomColors.kTabBarIconColor,
-                                            fontSize: 16.0,
-                                          )),
+                                              color:
+                                                  CustomColors.kTabBarIconColor,
+                                              fontSize: widgetSize.content)),
                                 ],
                               ),
                             ),
@@ -751,12 +755,14 @@ class _ProductDetailsState extends State<ProductDetails>
                                           },
                                           child: Text(
                                             '(${AppLocalization.of(context).translate("be_the_first_to_review")})',
-                                            style: TextStyle(fontSize: 14.0),
+                                            style: TextStyle(
+                                                fontSize: widgetSize.subTitle),
                                           ),
                                         )
                                       : Text(
                                           '(${productDetails.reviewers} ${AppLocalization.of(context).translate("review")})',
-                                          style: TextStyle(fontSize: 14.0),
+                                          style: TextStyle(
+                                              fontSize: widgetSize.subTitle),
                                         ),
                                 ],
                               ),
@@ -795,7 +801,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                       Text(
                                         AppLocalization.of(context)
                                             .translate("fast_delivery"),
-                                        style: TextStyle(fontSize: 12.0),
+                                        style: TextStyle(
+                                            fontSize:
+                                                widgetSize.textFieldError),
                                       )
                                     ],
                                   )),
@@ -815,7 +823,9 @@ class _ProductDetailsState extends State<ProductDetails>
                                         Text(
                                           AppLocalization.of(context)
                                               .translate("original_product"),
-                                          style: TextStyle(fontSize: 12.0),
+                                          style: TextStyle(
+                                              fontSize:
+                                                  widgetSize.textFieldError),
                                         ),
                                       ],
                                     ),
@@ -845,7 +855,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                   Text(
                                     AppLocalization.of(context)
                                         .translate("payment_when_receiving"),
-                                    style: TextStyle(fontSize: 12.0),
+                                    style: TextStyle(
+                                        fontSize: widgetSize.textFieldError),
                                   ),
                                 ],
                               ),
@@ -884,7 +895,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                     child: Wrap(spacing: 10.0, children: [
                                       Text(
                                         productDetails.description,
-                                        style: TextStyle(fontSize: 14.0),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.content2),
                                         softWrap: true,
                                       ),
                                     ]),
@@ -911,7 +923,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                                           'no_specification')
                                                   : productDetails
                                                       .options[0].specification,
-                                          style: TextStyle(fontSize: 14.0),
+                                          style: TextStyle(
+                                              fontSize: widgetSize.content2),
                                           softWrap: true,
                                         ),
                                       ],
@@ -939,7 +952,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                     ? '${AppLocalization.of(context).translate("review")} (${productDetails.reviewers})'
                                     : '',
                                 style: TextStyle(
-                                    fontSize: 16.0,
+                                    fontSize: widgetSize.content,
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -951,7 +964,7 @@ class _ProductDetailsState extends State<ProductDetails>
                               child: Text(
                                 AppLocalization.of(context)
                                     .translate("review_product"),
-                                style: TextStyle(fontSize: 16.0),
+                                style: TextStyle(fontSize: widgetSize.content),
                               ),
                             ),
                             Container(
@@ -1030,6 +1043,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                         AppLocalization.of(context)
                                             .translate("see_more_review"),
                                         style: TextStyle(
+                                          fontSize: widgetSize.content2,
                                           decoration: TextDecoration.underline,
                                           decorationColor: Colors.black,
                                           color: CustomColors.kTabBarIconColor,
@@ -1046,7 +1060,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                       AppLocalization.of(context)
                                           .translate("you_may_also_like"),
                                       style: TextStyle(
-                                          fontSize: 18.0,
+                                          fontSize: widgetSize.content,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   )
@@ -1063,15 +1077,16 @@ class _ProductDetailsState extends State<ProductDetails>
                         ),
                       ),
                       bottomNavigationBar: Container(
+                        height: widgetSize.textField,
                         margin: const EdgeInsets.only(
-                            left: 16.0, right: 16.0, bottom: 10.0),
+                            left: 16.0, right: 16.0, bottom: 22.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Expanded(
                               flex: 4,
                               child: Container(
-                                height: 45.0,
+                                height: widgetSize.textField,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
                                   color: _isProductChosen
@@ -1168,7 +1183,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                           AppLocalization.of(context)
                                                                               .translate("added_successfully_to_cart"),
                                                                           style: TextStyle(
-                                                                              fontSize: 18.0,
+                                                                              fontSize: widgetSize.content,
                                                                               fontWeight: FontWeight.bold),
                                                                         ),
                                                                         SizedBox(
@@ -1197,7 +1212,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                       '${AppLocalization.of(context).translate('total_purchase')} (${_cartProvider.allItemQuantity} ${AppLocalization.of(context).translate('order_items')}) ${(totalPrice + (productDetails.options[_productOptionIndex].price - (productDetails.discount * productDetails.options[_productOptionIndex].price / 100))).toStringAsFixed(2)} ${AppLocalization.of(context).translate('sar')}',
                                                                       style: TextStyle(
                                                                           fontSize:
-                                                                              12.0),
+                                                                              widgetSize.textFieldError),
                                                                     ),
                                                                     SizedBox(
                                                                       height:
@@ -1229,7 +1244,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                                 Center(
                                                                               child: Text(
                                                                                 '${AppLocalization.of(context).translate("continue_shopping")}',
-                                                                                style: TextStyle(color: Colors.white, fontSize: 17.0),
+                                                                                style: TextStyle(color: Colors.white, fontSize: widgetSize.content),
                                                                               ),
                                                                             ),
                                                                           ),
@@ -1267,7 +1282,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                                 Center(
                                                                               child: Text(
                                                                                 '${AppLocalization.of(context).translate("checkout")}',
-                                                                                style: TextStyle(color: Colors.white, fontSize: 17.0),
+                                                                                style: TextStyle(color: Colors.white, fontSize: widgetSize.content),
                                                                               ),
                                                                             ),
                                                                           ),
@@ -1362,7 +1377,8 @@ class _ProductDetailsState extends State<ProductDetails>
 //                                                .translate("select_one_option"),
                                                   style: TextStyle(
                                                       color: Colors.white,
-                                                      fontSize: 18.0,
+                                                      fontSize:
+                                                          widgetSize.content,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 )
@@ -1379,9 +1395,9 @@ class _ProductDetailsState extends State<ProductDetails>
                               child: Consumer<ProductDetailsModel>(
                                 builder: (context, prod, child) =>
                                     FloatingActionButton(
-                                        backgroundColor: Color(0xFFe8e8e8),
+                                        backgroundColor: Colors.white,
+//                                        Color(0xFFe8e8e8),
                                         onPressed: () async {
-//                            print(productDetails.isFavorite);
                                           var user = await userProvider
                                               .isAuthenticated();
                                           if (user['Authorization'] != 'none') {
@@ -1401,11 +1417,13 @@ class _ProductDetailsState extends State<ProductDetails>
                                             ? Icon(
                                                 Icons.favorite,
                                                 color: Colors.red,
-                                                size: 30.0,
+                                                size:
+                                                    widgetSize.favoriteIconSize,
                                               )
                                             : Icon(
                                                 Icons.favorite_border,
-                                                size: 30.0,
+                                                size:
+                                                    widgetSize.favoriteIconSize,
                                                 color: CustomColors
                                                     .kTabBarIconColor,
                                               )

@@ -12,10 +12,6 @@ import 'package:topstyle/models/set_order.dart';
 import '../models/orders_model.dart' as odModel;
 
 class OrdersProvider with ChangeNotifier {
-  final String _checkoutUrl = 'https://test.oppwa.com/v1/checkouts';
-  final String _entityId = '8ac7a4c76e91bcde016e9dcfb4b908cf';
-  final String _paymentToken =
-      "Bearer OGFjN2E0Yzc2ZTkxYmNkZTAxNmU5ZGNmNmYyOTA4Y2J8Q3M2SlpHOWEzWg==";
   List<odModel.OrderModel> _orders = [];
 
   Future<int> cancelOrder(String token, String orderId) async {
@@ -83,13 +79,13 @@ class OrdersProvider with ChangeNotifier {
   Future<String> requestCheckoutId(String amount) async {
     String checkoutId = '';
     try {
-      final response = await http.post(_checkoutUrl, headers: {
-        "Authorization": _paymentToken
+      final response = await http.post(ApiUtil.CHECKOUT_URL, headers: {
+        "Authorization": ApiUtil.PAYMENT_TOKEN
       }, body: {
-        "entityId": _entityId,
+        "entityId": ApiUtil.ENTITY_ID,
         "amount": amount,
-        "currency": "SAR",
-        "paymentType": "DB"
+        "currency": ApiUtil.CURRENCY,
+        "paymentType": ApiUtil.PAYMENT_TYPE
       });
       if (response.statusCode == 200) {
         checkoutId = jsonDecode(response.body)['id'];
@@ -106,8 +102,8 @@ class OrdersProvider with ChangeNotifier {
     String _paymentStatus = '';
     try {
       final response = await http.get(
-        'https://test.oppwa.com/v1/checkouts/$checkoutId/payment?entityId=$_entityId',
-        headers: {"Authorization": _paymentToken},
+        '${ApiUtil.CHECKOUT_URL}$checkoutId/payment?entityId=${ApiUtil.ENTITY_ID}',
+        headers: {"Authorization": ApiUtil.PAYMENT_TOKEN},
       );
       if (response.statusCode == 200) {
         _paymentStatus = jsonDecode(response.body)['result']['code'];

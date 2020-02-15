@@ -56,7 +56,7 @@ class DetailsModel {
         brand: json['brand'] as String,
         image: json['image'] as String,
         type: json['type'] as String,
-        value: json['value']);
+        value: json['value'] as String);
   }
 }
 

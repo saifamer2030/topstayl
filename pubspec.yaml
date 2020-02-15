@@ -40,6 +40,7 @@ dependencies:
   url_launcher: ^5.4.1
   shared_preferences: ^0.5.6+1
   flutter_webview_plugin: ^0.3.10+1
+  cached_network_image: ^2.0.0
 #  ^0.3.10
 #  flutter_google_places: ^0.2.3
 
@@ -56,8 +57,8 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/icon.png"
-  adaptive_icon_background: "#ffffff"
+  image_path: "assets/images/icon.jpeg"
+  adaptive_icon_background: "#000000"
   adaptive_icon_foreground: "assets/images/icon_adaptive.png"
 
 
@@ -105,11 +106,12 @@ flutter:
     - assets/icons/rm_keyboard.png
     - assets/icons/most_recent.png
     - assets/icons/privacy.svg
+    - assets/images/icon.jpeg
     - assets/images/profile.png
     - assets/images/logo.jpg
     - assets/images/antenna.png
-    - assets/images/icon.png
     - assets/images/icon_adaptive.png
+    - assets/images/splash.jpg
     - assets/lang/en.json
     - assets/lang/ar.json
   #  - images/a_dot_ham.jpeg

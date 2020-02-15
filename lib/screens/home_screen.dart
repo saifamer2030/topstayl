@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/ads_model.dart';
 import 'package:topstyle/screens/see_more_screen.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
@@ -55,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                   )
                   .toList(),
-              autoplay: false,
+              autoplay: true,
               dotIncreaseSize: 1.2,
               dotSize: 10.0,
               dotSpacing: 17.0,
@@ -95,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen>
               children: <Widget>[
                 Text(
                   AppLocalization.of(context).translate("see_more"),
-                  style: TextStyle(fontSize: 14.0),
+                  style: TextStyle(fontSize: widgetSize.subTitle),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
@@ -248,9 +249,13 @@ class _HomeScreenState extends State<HomeScreen>
     super.didChangeDependencies();
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     final makeupProducts = Provider.of<ProductsProvider>(
       context,
     ).makeup;
@@ -273,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen>
                           onTap: () {
                             if (adsBanner.adsType == 'Category') {
                               String categoryName = adsBanner.adsValue;
-                              print(categoryName);
+//                              print(categoryName);
 //                              Navigator.of(context).push(MaterialPageRoute(
 //                                  builder: (context) =>
 //                                      SeeMoreScreen('adsBanner.adsType')));
@@ -303,7 +308,9 @@ class _HomeScreenState extends State<HomeScreen>
                     child: Text(
                       AppLocalization.of(context)
                           .translate("category_in_nav_bar"),
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: widgetSize.content),
                     ),
                   ),
                   Container(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/brand_model.dart';
 import 'package:topstyle/providers/brands_provider.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
@@ -58,8 +59,12 @@ class _BrandsScreenState extends State<BrandsScreen> {
     print(_filteredBrands.length);
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return _isLoading
         ? Center(
             child: AdaptiveProgressIndicator(),
@@ -107,7 +112,8 @@ class _BrandsScreenState extends State<BrandsScreen> {
                                       child: BrandItem(
                                           _filteredBrands[index].brandId,
                                           _filteredBrands[index].brandName,
-                                          _filteredBrands[index].brandImage),
+                                          _filteredBrands[index].brandImage,
+                                          widgetSize.content),
                                     ),
                                   )
                                 : ListView.builder(
@@ -117,7 +123,8 @@ class _BrandsScreenState extends State<BrandsScreen> {
                                       child: BrandItem(
                                           _brands[index].brandId,
                                           _brands[index].brandName,
-                                          _brands[index].brandImage),
+                                          _brands[index].brandImage,
+                                          widgetSize.content),
                                     ),
                                   ),
                       ),

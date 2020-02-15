@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/models/products_model.dart';
 import 'package:topstyle/providers/brands_provider.dart';
 import 'package:topstyle/providers/payment_provider.dart';
@@ -33,54 +33,31 @@ import './screens/profile_screen.dart';
 import './screens/register_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/tabs_screen.dart';
-import 'helper/appLocalization.dart';
 import 'models/product_details_model.dart';
 
-void main() async {
-  runApp(MyApp());
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitDown,
-    DeviceOrientation.portraitUp,
-  ]);
-}
+void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: ProductsProvider()),
-          ChangeNotifierProvider.value(value: CartItemProvider()),
-          ChangeNotifierProvider.value(value: OrdersProvider()),
-          ChangeNotifierProvider.value(value: UserProvider()),
-          ChangeNotifierProvider.value(value: AppLanguageProvider()),
-          ChangeNotifierProvider.value(value: ProductsModel()),
-          ChangeNotifierProvider.value(value: ProductDetailsModel()),
-          ChangeNotifierProvider.value(value: PaymentProvider()),
-          ChangeNotifierProvider.value(value: BrandsProvider()),
-          ChangeNotifierProvider.value(value: SearchProvider()),
-        ],
-        child: Consumer<AppLanguageProvider>(builder: (context, model, child) {
+      providers: [
+        ChangeNotifierProvider.value(value: ProductsProvider()),
+        ChangeNotifierProvider.value(value: CartItemProvider()),
+        ChangeNotifierProvider.value(value: OrdersProvider()),
+        ChangeNotifierProvider.value(value: UserProvider()),
+        ChangeNotifierProvider.value(value: AppLanguageProvider()),
+        ChangeNotifierProvider.value(value: ProductsModel()),
+        ChangeNotifierProvider.value(value: ProductDetailsModel()),
+        ChangeNotifierProvider.value(value: PaymentProvider()),
+        ChangeNotifierProvider.value(value: BrandsProvider()),
+        ChangeNotifierProvider.value(value: SearchProvider()),
+      ],
+      child: Consumer<AppLanguageProvider>(
+        builder: (context, model, child) {
           return MaterialApp(
-            locale: model.fetchLocale() ?? Locale('ar', ''),
-            supportedLocales: [
-              Locale('en', 'US'),
-              Locale('ar', ''),
-            ],
-            localizationsDelegates: [
-              AppLocalization.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              DefaultCupertinoLocalizations.delegate
-            ],
-            debugShowCheckedModeBanner: false,
             title: "TOP STYLE",
+            locale: model.fetchLocale() ?? Locale('ar', ''),
             theme: ThemeData(
               primaryColor: CustomColors.kPrimaryColor,
               accentColor: CustomColors.kAccentColor,
@@ -100,8 +77,19 @@ class _MyAppState extends State<MyApp> {
                 subhead: TextStyle(fontSize: 14),
               ),
             ),
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: [
+              AppLocalization.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              DefaultCupertinoLocalizations.delegate
+            ],
+            supportedLocales: [
+              const Locale('ar'),
+              const Locale('en', 'US'),
+            ],
             initialRoute: SplashScreen.routeName,
-//            home: CustomOtpScreen(),
             routes: {
               SplashScreen.routeName: (ctx) => SplashScreen(),
               TabsScreen.routeName: (ctx) => TabsScreen(),
@@ -124,8 +112,10 @@ class _MyAppState extends State<MyApp> {
               PrivacyPolicyScreen.routeName: (ctx) => PrivacyPolicyScreen(),
               ChangePasswordOtpScreen.routeName: (ctx) =>
                   ChangePasswordOtpScreen(),
-            }, //end route
+            },
           );
-        })); //multi provider
+        },
+      ),
+    );
   }
 }

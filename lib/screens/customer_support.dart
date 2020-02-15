@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 class CustomerSupport extends StatelessWidget {
@@ -35,11 +36,18 @@ class CustomerSupport extends StatelessWidget {
     }
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalization.of(context).translate('customer_support')),
+        title: Text(
+          AppLocalization.of(context).translate('customer_support'),
+          style: TextStyle(fontSize: widgetSize.mainTitle),
+        ),
       ),
       body: Container(
         margin: const EdgeInsets.symmetric(
@@ -49,31 +57,31 @@ class CustomerSupport extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: Container(),
-              flex: 1,
             ),
-            Expanded(
-              child: Container(
-                child: Column(
-                  children: <Widget>[
-                    Image.asset(
-                      'assets/icons/headphone.png',
-                      width: 84.6,
-                      height: 90.0,
-                      fit: BoxFit.cover,
-                    ),
-                    SizedBox(
-                      height: 16.0,
-                    ),
-                    Text(
-                      AppLocalization.of(context)
-                          .translate('customer_support_msg'),
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16.0),
-                    ),
-                  ],
-                ),
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Image.asset(
+                    'assets/icons/headphone.png',
+                    width: 80.0,
+                    height: 90.0,
+                    fit: BoxFit.contain,
+                  ),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  Text(
+                    AppLocalization.of(context)
+                        .translate('customer_support_msg'),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: widgetSize.subTitle),
+                  ),
+                ],
               ),
-              flex: 1,
+            ),
+            SizedBox(
+              height: 10.0,
             ),
             Expanded(
               child: Container(
@@ -83,7 +91,7 @@ class CustomerSupport extends StatelessWidget {
                     GestureDetector(
                       onTap: _callPhone,
                       child: Container(
-                        height: 40.0,
+                        height: widgetSize.textField,
                         decoration: BoxDecoration(
                             border: Border.all(
                                 width: 1.0, color: CustomColors.kPCardColor),
@@ -106,8 +114,11 @@ class CustomerSupport extends StatelessWidget {
                             SizedBox(
                               width: 8.0,
                             ),
-                            Text(AppLocalization.of(context)
-                                .translate('contact_us')),
+                            Text(
+                              AppLocalization.of(context)
+                                  .translate('contact_us'),
+                              style: TextStyle(fontSize: widgetSize.subTitle),
+                            ),
                           ],
                         ),
                       ),
@@ -142,7 +153,9 @@ class CustomerSupport extends StatelessWidget {
                               width: 8.0,
                             ),
                             Text(
-                                AppLocalization.of(context).translate('whats')),
+                              AppLocalization.of(context).translate('whats'),
+                              style: TextStyle(fontSize: widgetSize.subTitle),
+                            ),
                           ],
                         ),
                       ),
@@ -175,7 +188,9 @@ class CustomerSupport extends StatelessWidget {
                               width: 8.0,
                             ),
                             Text(
-                                AppLocalization.of(context).translate('email')),
+                              AppLocalization.of(context).translate('email'),
+                              style: TextStyle(fontSize: widgetSize.subTitle),
+                            ),
                           ],
                         ),
                       ),

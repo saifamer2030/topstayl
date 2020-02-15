@@ -8,6 +8,7 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/customer_support.dart';
 import 'package:topstyle/screens/login_screen.dart';
@@ -57,8 +58,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 //    print("$_isUserLoggedIn and Name is :" + userData['name']);
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return _isLoading
         ? Center(
             child: AdaptiveProgressIndicator(),
@@ -84,14 +89,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18.0,
+                    fontSize: widgetSize.mainTitle,
                     color: CustomColors.kTabBarIconColor),
               ),
               _isUserLoggedIn
                   ? Text(
                       userData['email'],
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14.0),
+                      style: TextStyle(
+                        fontSize: widgetSize.subTitle,
+                      ),
                     )
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -110,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             "${AppLocalization.of(context).translate('login_form_title')} ",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 14.0,
+                                fontSize: widgetSize.subTitle,
                                 color: Theme.of(context).accentColor),
                           ),
                         ),
@@ -126,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Text(
                             " ${AppLocalization.of(context).translate('registration_from_title')}",
                             style: TextStyle(
-                                fontSize: 14.0,
+                                fontSize: widgetSize.subTitle,
                                 color: Theme.of(context).accentColor),
                           ),
                         )
@@ -154,10 +161,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               .translate("wish_list_profile_page"),
                           style: TextStyle(
                               color: CustomColors.kTabBarIconColor,
-                              fontSize: 16.0),
+                              fontSize: widgetSize.content),
                         ),
                         trailing: Icon(Icons.arrow_forward_ios,
-                            size: 20.0, color: CustomColors.kTabBarIconColor),
+                            size: widgetSize.content,
+                            color: CustomColors.kTabBarIconColor),
                       ),
                     )
                   : Container(),
@@ -185,11 +193,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           AppLocalization.of(context)
                               .translate("my_order_in_profile_page"),
                           style: TextStyle(
-                              color: CustomColors.kTabBarIconColor,
-                              fontSize: 16.0),
+                            color: CustomColors.kTabBarIconColor,
+                            fontSize: widgetSize.content,
+                          ),
                         ),
                         trailing: Icon(Icons.arrow_forward_ios,
-                            size: 20.0, color: CustomColors.kTabBarIconColor),
+                            size: widgetSize.content,
+                            color: CustomColors.kTabBarIconColor),
                       ),
                     )
                   : Container(),
@@ -219,10 +229,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: Text(
                     AppLocalization.of(context).translate("settings"),
                     style: TextStyle(
-                        color: CustomColors.kTabBarIconColor, fontSize: 16.0),
+                      color: CustomColors.kTabBarIconColor,
+                      fontSize: widgetSize.content,
+                    ),
                   ),
                   trailing: Icon(Icons.arrow_forward_ios,
-                      size: 20.0, color: CustomColors.kTabBarIconColor),
+                      size: widgetSize.content,
+                      color: CustomColors.kTabBarIconColor),
                 ),
               ),
               Divider(
@@ -249,10 +262,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: Text(
                     AppLocalization.of(context).translate("invite_friends"),
                     style: TextStyle(
-                        color: CustomColors.kTabBarIconColor, fontSize: 16.0),
+                      color: CustomColors.kTabBarIconColor,
+                      fontSize: widgetSize.content,
+                    ),
                   ),
                   trailing: Icon(Icons.arrow_forward_ios,
-                      size: 20.0, color: CustomColors.kTabBarIconColor),
+                      size: widgetSize.content,
+                      color: CustomColors.kTabBarIconColor),
                 ),
               ),
               Divider(
@@ -275,13 +291,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: Text(
                     AppLocalization.of(context).translate("customer_support"),
                     style: TextStyle(
-                        color: CustomColors.kTabBarIconColor, fontSize: 16.0),
+                      color: CustomColors.kTabBarIconColor,
+                      fontSize: widgetSize.content,
+                    ),
                   ),
-                  trailing: Icon(
-                    Icons.arrow_forward_ios,
-                    color: CustomColors.kTabBarIconColor,
-                    size: 20.0,
-                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                      color: CustomColors.kTabBarIconColor,
+                      size: widgetSize.content),
                 ),
               ),
               Divider(
@@ -305,13 +321,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: Text(
                     AppLocalization.of(context).translate("rate_our_app"),
                     style: TextStyle(
-                        color: CustomColors.kTabBarIconColor, fontSize: 16.0),
+                        color: CustomColors.kTabBarIconColor,
+                        fontSize: widgetSize.content),
                   ),
-                  trailing: Icon(
-                    Icons.arrow_forward_ios,
-                    color: CustomColors.kTabBarIconColor,
-                    size: 20.0,
-                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                      color: CustomColors.kTabBarIconColor,
+                      size: widgetSize.content),
                 ),
               ),
               Divider(
@@ -339,13 +354,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: Text(
                     AppLocalization.of(context).translate("privacy_policy"),
                     style: TextStyle(
-                        color: CustomColors.kTabBarIconColor, fontSize: 16.0),
+                        color: CustomColors.kTabBarIconColor,
+                        fontSize: widgetSize.content),
                   ),
-                  trailing: Icon(
-                    Icons.arrow_forward_ios,
-                    color: CustomColors.kTabBarIconColor,
-                    size: 20.0,
-                  ),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                      color: CustomColors.kTabBarIconColor,
+                      size: widgetSize.content),
                 ),
               ),
               Divider(
@@ -379,7 +393,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             AppLocalization.of(context)
                                                 .translate('no'),
                                             style: TextStyle(
-                                                fontSize: 12.0,
+                                                fontSize: widgetSize.subTitle,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -399,7 +413,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 .translate('logout'),
                                             style: TextStyle(
                                                 color: Colors.red,
-                                                fontSize: 12.0,
+                                                fontSize: widgetSize.subTitle,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -417,7 +431,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             AppLocalization.of(context)
                                                 .translate('no'),
                                             style: TextStyle(
-                                                fontSize: 12.0,
+                                                fontSize: widgetSize.content,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -437,7 +451,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 .translate('logout'),
                                             style: TextStyle(
                                                 color: Colors.red,
-                                                fontSize: 12.0,
+                                                fontSize: widgetSize.subTitle,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -450,13 +464,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           AppLocalization.of(context).translate("logout"),
                           style: TextStyle(
                               color: CustomColors.kTabBarIconColor,
-                              fontSize: 16.0),
+                              fontSize: widgetSize.content),
                         ),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios,
-                          color: CustomColors.kTabBarIconColor,
-                          size: 20.0,
-                        ),
+                        trailing: Icon(Icons.arrow_forward_ios,
+                            color: CustomColors.kTabBarIconColor,
+                            size: widgetSize.content),
                       ),
                     )
                   : Container(),

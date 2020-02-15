@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
@@ -50,10 +51,11 @@ class OrderItemInOrderDetails extends StatelessWidget {
                     decoration: BoxDecoration(color: Colors.white),
                     child: Container(
                       margin: const EdgeInsets.only(top: 5.0),
-                      child: Image.network(
-                        productImage,
+                      child: CachedNetworkImage(
+                        imageUrl: productImage,
                         width: 90.0,
                         height: 90.0,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

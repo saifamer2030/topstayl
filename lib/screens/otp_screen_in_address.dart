@@ -184,14 +184,12 @@ class _OtpScreenState extends State<OtpScreen> {
                           height: deviceScreen.size.height * 0.35,
                           child: LayoutBuilder(builder: (context, constrains) {
                             return Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 deviceScreen.size.height > 736.0
                                     ? Container(
-                                        margin:
-                                            const EdgeInsets.only(bottom: 20.0),
-                                        width: 100.0,
-                                        height: 70.0,
+                                        width: constrains.maxHeight * 0.25,
+                                        height: constrains.maxHeight * 0.15,
                                         child: Image.asset(
                                           'assets/images/logo.jpg',
                                           fit: BoxFit.contain,
@@ -220,11 +218,11 @@ class _OtpScreenState extends State<OtpScreen> {
                                   child: buildPinRow(),
                                 ),
                                 SizedBox(
-                                  height: constrains.maxHeight * 0.05,
+                                  height: constrains.maxHeight * 0.1,
                                 ),
                                 buildResendNumber(),
                                 SizedBox(
-                                  height: constrains.maxHeight * 0.1,
+                                  height: constrains.maxHeight * 0.10,
                                 ),
                               ],
                             );

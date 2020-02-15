@@ -171,7 +171,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
 
   @override
   Widget build(BuildContext context) {
-//    print(widget.checkoutId);
+//    print('checkout id : ${widget.checkoutId}');
     return Provider<NetworkProvider>.value(
       value: NetworkProvider(),
       child: Consumer<NetworkProvider>(
@@ -181,7 +181,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             networkProvider: value,
             child: WebviewScaffold(
               url:
-                  'https://topstylesa.com/api/payment?checkoutId=${widget.checkoutId}',
+                  'https://api.topstylesa.com/api/payment?checkoutId=${widget.checkoutId}',
               withZoom: true,
               appBar: AppBar(
                 title: Text(
