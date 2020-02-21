@@ -6,6 +6,7 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/set_order.dart';
 import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/providers/order_provider.dart';
@@ -169,9 +170,12 @@ class _PaymentWebViewState extends State<PaymentWebView> {
     super.dispose();
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
-//    print('checkout id : ${widget.checkoutId}');
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Provider<NetworkProvider>.value(
       value: NetworkProvider(),
       child: Consumer<NetworkProvider>(
@@ -181,12 +185,12 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             networkProvider: value,
             child: WebviewScaffold(
               url:
-                  'https://api.topstylesa.com/api/payment?checkoutId=${widget.checkoutId}',
+                  'https://topstylesa.com/api/payment?checkoutId=${widget.checkoutId}',
               withZoom: true,
               appBar: AppBar(
                 title: Text(
                   AppLocalization.of(context).translate('payment_title'),
-                  style: TextStyle(fontSize: 18.0),
+                  style: TextStyle(fontSize: widgetSize.mainTitle),
                 ),
                 centerTitle: true,
               ),

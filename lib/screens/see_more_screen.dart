@@ -115,16 +115,18 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
     }
   }
 
-  _doFilterWithMultiCategory(int pageNumber) async {
+  _doFilter(int pageNumber) async {
     final String myLang = appLanguage.appLocal.toString();
     var user = await userProvider.isAuthenticated();
     setState(() {
       _seeMoreLoading = true;
     });
     String filterContent = '';
-    filterBody.forEach((f) => filterContent = '$filterContent,$f');
-    print(filterBody.toString().substring(1, filterBody.toString().length - 1));
-    print(filterContent);
+//    filterBody.forEach((f) => filterContent = '$filterContent,$f');
+//    print(filterBody.toString().substring(1, filterBody.toString().length - 1));
+//    print(filterContent);
+    filterContent =
+        filterBody.toString().substring(1, filterBody.toString().length - 1);
     Provider.of<ProductsProvider>(context)
         .allDataInSeeMoreWithMultiFilter(filterContent, myLang, pageNumber,
             user['Authorization'] == 'none' ? 'none' : user['Authorization'])
@@ -136,16 +138,17 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
         if (_isFilteredData && pageNumberOrdered == 1) {
           _products.clear();
         }
-        var list = data['data'] as List;
+        var list = data['data'] as List ?? [];
         _isFrom = 'filter';
-        lastPageFiltered = data['last_page'];
-        _products.addAll(List<ProductsModel>.from(list));
-//        print('dataaaaa length : ${_products.length}');
+        lastPageFiltered = data['last_page'] as int;
+        if (list != null) {
+          _products.addAll(List<ProductsModel>.from(list));
+        }
       });
     });
   }
 
-  _doFilter(int numberOfPage) async {
+  _doSort(int numberOfPage) async {
 //    print(
 //        'page number is $numberOfPage and last index is $lastPageFiltered and product length is ${_products.length}');
     final String lang = appLanguage.appLocal.toString();
@@ -241,7 +244,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
 
                           print('index :$pageNumberOrdered');
                           print('is filterd :$_isFilteredData');
-                          _doFilter(pageNumberOrdered);
+                          _doSort(pageNumberOrdered);
                           Navigator.of(context).pop();
                         },
                         child: Column(
@@ -289,7 +292,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
 
                           print('index :$pageNumberOrdered');
                           print('is filterd :$_isFilteredData');
-                          _doFilter(pageNumberOrdered);
+                          _doSort(pageNumberOrdered);
                           Navigator.of(context).pop();
 //                             _checkInternetConnection();
                         },
@@ -1509,7 +1512,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                 _careTool = val;
                                               });
                                               _populateFilterBody(
-                                                  'Lip Care', val);
+                                                  'Lips Care', val);
                                             },
                                           ),
                                           Text(
@@ -1892,8 +1895,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
 
                                     print('index :$pageNumberOrdered');
                                     print('is filterd :$_isFilteredData');
-                                    _doFilterWithMultiCategory(
-                                        pageNumberOrdered);
+                                    _doFilter(pageNumberOrdered);
                                     Navigator.of(context).pop();
 //                             _checkInternetConnection();
                                   },
@@ -2012,12 +2014,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
       if (_isFrom == 'filter') {
         print(_isFrom);
         if (pageNumberOrdered <= lastPageFiltered) {
-          _doFilterWithMultiCategory(pageNumberOrdered);
+          _doFilter(pageNumberOrdered);
         }
       } else if (_isFrom == 'sort') {
         print(_isFrom);
         if (pageNumberOrdered <= lastPageFiltered) {
-          _doFilter(pageNumberOrdered);
+          _doSort(pageNumberOrdered);
         }
       }
       print(pageNumberOrdered);

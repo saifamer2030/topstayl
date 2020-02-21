@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/providers/languages_provider.dart';
 import 'package:topstyle/providers/search_provider.dart';
 import 'package:topstyle/screens/product_details.dart';
+import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 
 class SearchProduct extends SearchDelegate<SearchModel> {
   @override
@@ -40,7 +42,11 @@ class SearchProduct extends SearchDelegate<SearchModel> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Container();
+//    return Container();
+    return ExerciseList(
+      query: query,
+      lang: _languageProvider.fetchLocale().toString(),
+    );
   }
 }
 
@@ -61,11 +67,11 @@ class ExerciseList extends StatelessWidget {
               itemCount: snapshot.data.length,
               itemBuilder: (context, position) {
                 return ListTile(
-                  leading: Image.network(
-                    snapshot.data[position].image,
-                    width: 35.0,
-                    height: 30.0,
-                    fit: BoxFit.fitWidth,
+                  leading: CachedNetworkImage(
+                    imageUrl: snapshot.data[position].image,
+                    width: 40.0,
+                    height: 40.0,
+                    fit: BoxFit.fill,
                   ),
                   title: Text(snapshot.data[position].name),
                   onTap: () {
@@ -85,8 +91,7 @@ class ExerciseList extends StatelessWidget {
           }
         } else {
           return Center(
-            child: Text(AppLocalization.of(context)
-                .translate('no_products_for_your_search')),
+            child: AdaptiveProgressIndicator(),
           );
         }
       },

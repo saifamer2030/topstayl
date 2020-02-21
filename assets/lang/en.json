@@ -183,7 +183,7 @@
   "Mascara": "Mascara",
   "Eyeshadow": "Eyeshadow",
   "Eyeliner": "Eyeliner",
-  "Brimer": "Brimer",
+  "Brimer": "Eye Primer",
   "Glitter": "Glitter",
   "Lip Set": "Lip Set",
   "Lip Liner": "Lip Liner",
@@ -284,6 +284,9 @@
   "get_free_shipping_hint_1": "Add products worth ",
   "get_free_shipping_hint_2": " to get free shipping",
   "privacy_policy" : "Privacy Policy",
-  "enter_phone" : "Enter phone number"
+  "enter_phone" : "Enter phone number",
+  "remind email hint" : "Enter the email you want to be reminded of when the product is available",
+  "product not available" : "Sold out"
+
 
 }

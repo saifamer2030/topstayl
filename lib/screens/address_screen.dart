@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/city.dart';
 import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/providers/order_provider.dart';
@@ -107,7 +108,8 @@ class _AddressScreenState extends State<AddressScreen> {
           content: Text(
             AppLocalization.of(context).translate("try_again_later"),
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15.0, fontFamily: 'tajawal'),
+            style:
+                TextStyle(fontSize: widgetSize.content2, fontFamily: 'tajawal'),
           ),
         ));
       }
@@ -154,7 +156,8 @@ class _AddressScreenState extends State<AddressScreen> {
                               },
                               title: Text(
                                 AppLocalization.of(context).translate("ksa"),
-                                style: TextStyle(fontSize: 12.0),
+                                style: TextStyle(
+                                    fontSize: widgetSize.textFieldError),
                               ),
                               leading: Image.asset('assets/icons/ksa_flag.png'),
                             ),
@@ -184,7 +187,8 @@ class _AddressScreenState extends State<AddressScreen> {
                               leading: Image.asset('assets/icons/uae_flag.png'),
                               title: Text(
                                 AppLocalization.of(context).translate("uae"),
-                                style: TextStyle(fontSize: 12.0),
+                                style: TextStyle(
+                                    fontSize: widgetSize.textFieldError),
                               ),
                             ),
                           ),
@@ -213,7 +217,8 @@ class _AddressScreenState extends State<AddressScreen> {
                               leading: Image.asset('assets/icons/kw_flag.png'),
                               title: Text(
                                 AppLocalization.of(context).translate("kw"),
-                                style: TextStyle(fontSize: 12.0),
+                                style: TextStyle(
+                                    fontSize: widgetSize.textFieldError),
                               ),
                             ),
                           )
@@ -242,8 +247,10 @@ class _AddressScreenState extends State<AddressScreen> {
                           });
                           Navigator.of(context).pop();
                         },
-                        title:
-                            Text(AppLocalization.of(context).translate("ksa")),
+                        title: Text(
+                          AppLocalization.of(context).translate("ksa"),
+                          style: TextStyle(fontSize: widgetSize.textFieldError),
+                        ),
                         leading: Image.asset('assets/icons/ksa_flag.png'),
                       ),
                     ),
@@ -263,8 +270,10 @@ class _AddressScreenState extends State<AddressScreen> {
                           Navigator.of(context).pop();
                         },
                         leading: Image.asset('assets/icons/uae_flag.png'),
-                        title:
-                            Text(AppLocalization.of(context).translate("uae")),
+                        title: Text(
+                          AppLocalization.of(context).translate("uae"),
+                          style: TextStyle(fontSize: widgetSize.textFieldError),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -283,8 +292,10 @@ class _AddressScreenState extends State<AddressScreen> {
                           Navigator.of(context).pop();
                         },
                         leading: Image.asset('assets/icons/kw_flag.png'),
-                        title:
-                            Text(AppLocalization.of(context).translate("kw")),
+                        title: Text(
+                          AppLocalization.of(context).translate("kw"),
+                          style: TextStyle(fontSize: widgetSize.textFieldError),
+                        ),
                       ),
                     )
                   ],
@@ -294,8 +305,12 @@ class _AddressScreenState extends State<AddressScreen> {
     );
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return SingleChildScrollView(
       child: Provider<NetworkProvider>.value(
         value: NetworkProvider(),
@@ -336,13 +351,16 @@ class _AddressScreenState extends State<AddressScreen> {
                     },
                     leading: Icon(
                       CupertinoIcons.location,
-                      size: 30,
+                      size: widgetSize.favoriteIconSize,
                     ),
-                    title: Text(AppLocalization.of(context)
-                        .translate('choose_location_from_map')),
+                    title: Text(
+                      AppLocalization.of(context)
+                          .translate('choose_location_from_map'),
+                      style: TextStyle(fontSize: widgetSize.content2),
+                    ),
                     trailing: Icon(
                       Icons.arrow_forward_ios,
-                      size: 18.0,
+                      size: widgetSize.content,
                     ),
                   ),
                   Divider(
@@ -361,7 +379,8 @@ class _AddressScreenState extends State<AddressScreen> {
                             AppLocalization.of(context)
                                 .translate('address_details_hint'),
                             style: TextStyle(
-                                fontSize: 16.0, fontWeight: FontWeight.bold),
+                                fontSize: widgetSize.subTitle,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         Container(
@@ -380,11 +399,14 @@ class _AddressScreenState extends State<AddressScreen> {
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   contentPadding: const EdgeInsets.only(
-                                      left: 8.0, right: 8.0),
+                                    left: 8.0,
+                                    right: 8.0,
+                                  ),
                                   hintText: AppLocalization.of(context)
                                       .translate("userName"),
                                   hintStyle: TextStyle(
-                                      color: CustomColors.kTabBarIconColor)),
+                                      color: CustomColors.kTabBarIconColor,
+                                      fontSize: widgetSize.subTitle)),
                             ),
                           ),
                         ),
@@ -420,7 +442,8 @@ class _AddressScreenState extends State<AddressScreen> {
                                         countryCode == null
                                             ? '+966'
                                             : countryCode,
-                                        style: TextStyle(fontSize: 14.0),
+                                        style: TextStyle(
+                                            fontSize: widgetSize.content),
                                         textDirection: TextDirection.ltr,
                                       ),
                                       Icon(Icons.arrow_drop_down),
@@ -438,28 +461,38 @@ class _AddressScreenState extends State<AddressScreen> {
                                         color: CustomColors.kPCardColor),
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
-                                  child: TextFormField(
+                                  child: Directionality(
                                     textDirection: TextDirection.ltr,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _phone = '$countryCode$value';
-                                      });
-                                    },
-                                    keyboardType: TextInputType.phone,
-                                    inputFormatters: <TextInputFormatter>[
-                                      WhitelistingTextInputFormatter.digitsOnly,
-                                      LengthLimitingTextInputFormatter(9),
-                                    ],
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: AppLocalization.of(context)
-                                          .translate("phone_in_login"),
-                                      hintStyle: TextStyle(
-                                        fontSize: 14.0,
-                                        color: CustomColors.kTabBarIconColor,
+                                    child: TextFormField(
+                                      textDirection: TextDirection.ltr,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _phone = '$countryCode$value';
+                                        });
+                                      },
+                                      style: TextStyle(
+                                          fontSize: widgetSize.content),
+                                      keyboardType: TextInputType.phone,
+                                      inputFormatters: <TextInputFormatter>[
+                                        WhitelistingTextInputFormatter
+                                            .digitsOnly,
+                                        LengthLimitingTextInputFormatter(9),
+                                      ],
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: 'xxxxxxxxx',
+
+//                                      AppLocalization.of(context)
+//                                          .translate("phone_in_login"),
+                                        hintStyle: TextStyle(
+                                          fontSize: widgetSize.content,
+                                          color: CustomColors.kTabBarIconColor,
+                                        ),
+                                        contentPadding: const EdgeInsets.only(
+                                            left: 10.0,
+                                            right: 10.0,
+                                            bottom: 4.0),
                                       ),
-                                      contentPadding: const EdgeInsets.only(
-                                          left: 10.0, right: 10.0),
                                     ),
                                   ),
                                 ),
@@ -650,35 +683,6 @@ class _AddressScreenState extends State<AddressScreen> {
                             trailing: Icon(Icons.keyboard_arrow_down),
                           ),
                         ),
-//                  Container(
-//                    height: 50.0,
-//                    margin: const EdgeInsets.only(
-//                        left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
-//                    decoration: BoxDecoration(
-//                      border: Border.all(
-//                          width: 1.0, color: CustomColors.kPCardColor),
-//                      borderRadius: BorderRadius.circular(8.0),
-//                    ),
-//                    child: Center(
-//                      child: TextFormField(
-//                        controller: _areaCtr,
-//                        onChanged: (val) {
-//                          setState(() {
-//                            _areaCtr.text = val;
-//                          });
-//                        },
-//                        decoration: InputDecoration(
-//                            border: InputBorder.none,
-//                            contentPadding:
-//                                const EdgeInsets.only(left: 8.0, right: 8.0),
-//                            hintText: AppLocalization.of(context)
-//                                .translate("neighborhood_hint"),
-//                            hintStyle: TextStyle(
-//                                color: CustomColors.kTabBarIconColor)),
-////
-//                      ),
-//                    ),
-//                  ),
                         Container(
                           height: 50.0,
                           margin: const EdgeInsets.only(
@@ -781,6 +785,7 @@ class _AddressScreenState extends State<AddressScreen> {
                                     AppLocalization.of(context)
                                         .translate("save_location"),
                                     style: TextStyle(
+                                        fontSize: widgetSize.mainTitle,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
                                   ),

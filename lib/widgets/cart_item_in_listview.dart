@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -80,8 +81,8 @@ class _CartItemListViewState extends State<CartItemListView> {
                     decoration: BoxDecoration(color: Colors.white),
                     child: Container(
                       margin: const EdgeInsets.only(top: 5.0),
-                      child: Image.network(
-                        widget.productImageUrl,
+                      child: CachedNetworkImage(
+                        imageUrl: widget.productImageUrl,
                         width: 90.0,
                         height: 90.0,
                       ),
@@ -266,42 +267,45 @@ class _CartItemListViewState extends State<CartItemListView> {
                                         ),
                                       ),
                               )
-                            : Container(
-                                width: 75.0,
-                                height: 30.0,
-                                padding: const EdgeInsets.all(3.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  color: Color(0xFFe8e8e8),
-                                ),
-                                child: widget.value != null
-                                    ? Center(
-                                        child: widget.isAvailable == 1 &&
-                                                widget.availableQuantity > 0 &&
-                                                widget.quantity <=
-                                                    widget.availableQuantity
-                                            ? Text(
-                                                '${widget.value} ${AppLocalization.of(context).translate("ml")}',
-                                                style:
-                                                    TextStyle(fontSize: 12.0),
-                                              )
-                                            : Row(
-                                                children: <Widget>[
-                                                  Text(
+                            : widget.type == 'size'
+                                ? Container(
+                                    width: 75.0,
+                                    height: 30.0,
+                                    padding: const EdgeInsets.all(3.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      color: Color(0xFFe8e8e8),
+                                    ),
+                                    child: widget.value != null
+                                        ? Center(
+                                            child: widget.isAvailable == 1 &&
+                                                    widget.availableQuantity >
+                                                        0 &&
+                                                    widget.quantity <=
+                                                        widget.availableQuantity
+                                                ? Text(
                                                     '${widget.value} ${AppLocalization.of(context).translate("ml")}',
                                                     style: TextStyle(
                                                         fontSize: 12.0),
-                                                  ),
-                                                  Icon(
-                                                    Icons.clear,
-                                                    size: 17,
-                                                    color: CustomColors
-                                                        .kTabBarIconColor,
-                                                  ),
-                                                ],
-                                              ))
-                                    : Container(),
-                              ),
+                                                  )
+                                                : Row(
+                                                    children: <Widget>[
+                                                      Text(
+                                                        '${widget.value} ${AppLocalization.of(context).translate("ml")}',
+                                                        style: TextStyle(
+                                                            fontSize: 12.0),
+                                                      ),
+                                                      Icon(
+                                                        Icons.clear,
+                                                        size: 17,
+                                                        color: CustomColors
+                                                            .kTabBarIconColor,
+                                                      ),
+                                                    ],
+                                                  ))
+                                        : Container(),
+                                  )
+                                : Container(),
                         widget.isAvailable == 1 &&
                                 widget.availableQuantity > 0 &&
                                 widget.quantity <= widget.availableQuantity

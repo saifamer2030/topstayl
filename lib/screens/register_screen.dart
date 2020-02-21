@@ -363,9 +363,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
-//    SharedPreferences.getInstance().then((p) {
-//      print(p.getString('redirection'));
-//    });
     screenConfig = ScreenConfig(context);
     widgetSize = WidgetSize(screenConfig);
     String fromScreen = ModalRoute.of(context).settings.arguments as String;
@@ -521,38 +518,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   width: 1.0, color: CustomColors.kPCardColor),
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child: TextFormField(
+                            child: Directionality(
                               textDirection: TextDirection.ltr,
-                              validator: (value) {
-                                return (value.isEmpty ||
-                                        value.length < 9 ||
-                                        value.length > 15)
-                                    ? AppLocalization.of(context).translate(
-                                        "phone_validation_length_msg")
-                                    : null;
-                              },
-                              onSaved: (value) {
-                                _registerMap['phone'] = '$countryCode$value';
-                              },
-                              keyboardType: TextInputType.phone,
-                              inputFormatters: <TextInputFormatter>[
-                                WhitelistingTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(9),
-                              ],
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                errorStyle: TextStyle(
-                                    fontSize: widgetSize.textFieldError),
-                                hintText: AppLocalization.of(context)
-                                    .translate("phone_in_login"),
-                                hintStyle: TextStyle(
-                                  fontSize: widgetSize.subTitle,
-                                  color: Colors.grey,
-                                ),
-                                contentPadding: const EdgeInsets.only(
-                                  left: 10.0,
-                                  right: 10.0,
-                                  bottom: 6.0,
+                              child: TextFormField(
+                                textDirection: TextDirection.ltr,
+                                validator: (value) {
+                                  return (value.isEmpty ||
+                                          value.length < 9 ||
+                                          value.length > 15)
+                                      ? AppLocalization.of(context).translate(
+                                          "phone_validation_length_msg")
+                                      : null;
+                                },
+                                onSaved: (value) {
+                                  _registerMap['phone'] = '$countryCode$value';
+                                },
+                                style: TextStyle(fontSize: widgetSize.content),
+                                keyboardType: TextInputType.phone,
+                                inputFormatters: <TextInputFormatter>[
+                                  WhitelistingTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(9),
+                                ],
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  errorStyle: TextStyle(
+                                      fontSize: widgetSize.textFieldError),
+                                  hintText: 'xxxxxxxxx',
+//                                  AppLocalization.of(context)
+//                                      .translate("phone_in_login"),
+                                  hintStyle: TextStyle(
+                                      fontSize: widgetSize.subTitle,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold),
+                                  contentPadding: const EdgeInsets.only(
+                                    left: 10.0,
+                                    right: 10.0,
+                                    bottom: 6.0,
+                                  ),
                                 ),
                               ),
                             ),
@@ -631,8 +633,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             fontSize: widgetSize.subTitle,
                             color: Colors.grey,
                           ),
-                          contentPadding:
-                              const EdgeInsets.only(left: 10.0, right: 10.0 , bottom: 6.0),
+                          contentPadding: const EdgeInsets.only(
+                              left: 10.0, right: 10.0, bottom: 6.0),
                         ),
                       ),
                     ),

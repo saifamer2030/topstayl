@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 import 'package:topstyle/widgets/connectivity_widget.dart';
@@ -84,8 +85,13 @@ class _AddressFromMapState extends State<AddressFromMap> {
     }
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
+
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return _isLoading
         ? Provider<NetworkProvider>.value(
             value: NetworkProvider(),
@@ -99,7 +105,7 @@ class _AddressFromMapState extends State<AddressFromMap> {
                       title: Text(
                         AppLocalization.of(context)
                             .translate('delivery_location'),
-                        style: TextStyle(fontSize: 16.0),
+                        style: TextStyle(fontSize: widgetSize.mainTitle),
                       ),
                     ),
                     body: Center(
@@ -113,7 +119,7 @@ class _AddressFromMapState extends State<AddressFromMap> {
               centerTitle: true,
               title: Text(
                 AppLocalization.of(context).translate('delivery_location'),
-                style: TextStyle(fontSize: 16.0),
+                style: TextStyle(fontSize: widgetSize.mainTitle),
               ),
             ),
             body: Stack(
@@ -188,7 +194,7 @@ class _AddressFromMapState extends State<AddressFromMap> {
                           hintText: AppLocalization.of(context)
                               .translate('address_search_hint'),
                           hintStyle: TextStyle(
-                            fontSize: 18.0,
+                            fontSize: widgetSize.content,
                           ),
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(
@@ -273,7 +279,8 @@ class _AddressFromMapState extends State<AddressFromMap> {
                   color: Theme.of(context).accentColor,
                   child: Text(
                     AppLocalization.of(context).translate('confirm_location'),
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Colors.white, fontSize: widgetSize.content),
                   )),
             ));
   }

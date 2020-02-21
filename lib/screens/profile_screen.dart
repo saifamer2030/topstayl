@@ -313,35 +313,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: Colors.white),
                 child: ListTile(
                   onTap: () {
-//              Navigator.of(context).push(
-//                  MaterialPageRoute(builder: (context) => PaymentWebView()));
-                  },
-                  leading:
-                      Icon(Icons.star, color: CustomColors.kTabBarIconColor),
-                  title: Text(
-                    AppLocalization.of(context).translate("rate_our_app"),
-                    style: TextStyle(
-                        color: CustomColors.kTabBarIconColor,
-                        fontSize: widgetSize.content),
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                      color: CustomColors.kTabBarIconColor,
-                      size: widgetSize.content),
-                ),
-              ),
-              Divider(
-                height: 1.0,
-                color: CustomColors.kPCardColor,
-                thickness: 1.5,
-              ),
-              Container(
-                margin:
-                    const EdgeInsets.only(left: 16.0, right: 16.0, top: 10.0),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.white),
-                child: ListTile(
-                  onTap: () {
                     Navigator.of(context)
                         .pushNamed(PrivacyPolicyScreen.routeName);
                   },

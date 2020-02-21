@@ -23,6 +23,7 @@ class ProductDetailsModel extends ChangeNotifier {
   final String description;
   final String category;
   final String brand;
+  final int brandId;
   final int discount;
   final double ratting;
   int isFavorite;
@@ -36,6 +37,7 @@ class ProductDetailsModel extends ChangeNotifier {
       this.description,
       this.category,
       this.brand,
+      this.brandId,
       this.discount,
       this.ratting,
       this.isFavorite = 0,
@@ -50,6 +52,7 @@ class ProductDetailsModel extends ChangeNotifier {
       description: json['description'] as String,
       category: json['category'] as String,
       brand: json['brand'] as String,
+      brandId: json['brand_id'] as int,
       discount: json['discount'] as int,
       ratting: double.parse(json['ratting']),
       isFavorite: json['isFavorite'] as int,

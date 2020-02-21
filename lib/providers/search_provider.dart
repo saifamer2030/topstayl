@@ -8,8 +8,11 @@ class SearchProvider with ChangeNotifier {
   List<SearchModel> _allProducts = [];
   Future<List<SearchModel>> search(String key, String lang) async {
     try {
-      final response =
-          await http.get('${ApiUtil.BASE_URL}search?searchKey=$key&lang=$lang');
+      final response = await http
+          .get('${ApiUtil.BASE_URL}search?searchKey=$key&lang=$lang', headers: {
+        "APPKEY": ApiUtil.APPKEY,
+        "Accept": "application/json",
+      });
       if (response.statusCode == 200) {
         var _list = jsonDecode(response.body)['data'] as List;
         _allProducts = _list.map((p) => SearchModel.fromJson(p)).toList();
@@ -24,9 +27,10 @@ class SearchProvider with ChangeNotifier {
 
   List<SearchModel> search2(String key, String lang) {
     try {
-      http
-          .get('${ApiUtil.BASE_URL}search?searchKey=$key&lang=$lang')
-          .then((response) {
+      http.get('${ApiUtil.BASE_URL}search?searchKey=$key&lang=$lang', headers: {
+        "APPKEY": ApiUtil.APPKEY,
+        "Accept": "application/json",
+      }).then((response) {
         if (response.statusCode == 200) {
           var _list = jsonDecode(response.body)['data'] as List;
           _allProducts = _list.map((p) => SearchModel.fromJson(p)).toList();

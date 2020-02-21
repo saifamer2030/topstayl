@@ -14,6 +14,7 @@ import 'package:topstyle/providers/languages_provider.dart';
 import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/providers/order_provider.dart';
 import 'package:topstyle/providers/user_provider.dart';
+import 'package:topstyle/screens/brand_products_screen.dart';
 import 'package:topstyle/screens/cart_screen.dart';
 import 'package:topstyle/screens/checkoutScreen.dart';
 import 'package:topstyle/screens/login_screen.dart';
@@ -53,7 +54,9 @@ class _ProductDetailsState extends State<ProductDetails>
   List<String> optionColor;
   TabController _tabController;
   String comment = '';
+  String remindEmail = '';
   var _commentController = TextEditingController();
+  var _remindEmailController = TextEditingController();
 
   ProductDetailsModel productDetails;
   ProductDetailsModelWithList productDetailsModelWithList;
@@ -392,7 +395,7 @@ class _ProductDetailsState extends State<ProductDetails>
                           alignment: Alignment.center,
                           width: double.infinity,
                           child: TextField(
-                            controller: _commentController,
+                            controller: _remindEmailController,
                             decoration: InputDecoration(
                               hintStyle: TextStyle(
                                   color: CustomColors.kTabBarIconColor),
@@ -423,6 +426,10 @@ class _ProductDetailsState extends State<ProductDetails>
                                         _initRatting = 0.0;
                                       });
                                       Navigator.of(context).pop();
+                                    } else {
+                                      setSetter(() {
+                                        _isSent = false;
+                                      });
                                     }
                                   });
                                 }
@@ -454,6 +461,112 @@ class _ProductDetailsState extends State<ProductDetails>
 
   getMoreComment() async {
     // We have to do it
+  }
+
+  _remindMe(int poid) async {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        content: StatefulBuilder(
+            builder: (context, setSetter) => Container(
+                  height: 150,
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        child: FittedBox(
+                          child: Text(
+                            AppLocalization.of(context)
+                                .translate("remind email hint"),
+                            style: TextStyle(fontSize: widgetSize.subTitle),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintStyle:
+                                TextStyle(color: CustomColors.kTabBarIconColor),
+                            hintText:
+                                AppLocalization.of(context).translate("email"),
+                          ),
+                          onChanged: (c) {
+                            Pattern pattern =
+                                r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                            RegExp regex = new RegExp(pattern);
+                            if (regex.hasMatch(c)) {
+                              setSetter(() {
+                                remindEmail = c;
+                              });
+                            } else {
+                              setSetter(() {
+                                remindEmail = null;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      GestureDetector(
+                        onTap: (remindEmail != '' &&
+                                remindEmail != null &&
+                                remindEmail.contains('@'))
+                            ? () async {
+                                setSetter(() {
+                                  _isSent = true;
+                                });
+                                int result =
+                                    await Provider.of<ProductsProvider>(context)
+                                        .sendEmailReminder(
+                                            remindEmail, poid.toString());
+                                if (result == 1) {
+                                  setSetter(() {
+                                    remindEmail = '';
+                                  });
+                                }
+                                setSetter(() {
+                                  _isSent = false;
+                                });
+                                Navigator.of(context).pop();
+                              }
+                            : null,
+                        child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: remindEmail != '' &&
+                                        remindEmail != null &&
+                                        remindEmail.contains('@')
+                                    ? CustomColors.kAccentColor
+                                    : Colors.grey),
+                            width: double.infinity,
+                            height: widgetSize.textField,
+                            child: Center(
+                                child: _isSent
+                                    ? AdaptiveProgressIndicator()
+                                    : Text(
+                                        AppLocalization.of(context)
+                                            .translate("Remind_me"),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ))),
+                      ),
+                    ],
+                  ),
+                )),
+      ),
+    );
   }
 
   ScreenConfig screenConfig;
@@ -558,11 +671,22 @@ class _ProductDetailsState extends State<ProductDetails>
                                   left: 16.0, right: 16.0, top: 20.0),
                               child: Wrap(
                                 children: <Widget>[
-                                  Text(
-                                    productDetails.brand,
-                                    style: TextStyle(
-                                        color: Color(0xFF009bff),
-                                        fontSize: widgetSize.subTitle),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BrandProductsScreen(
+                                                      productDetails.brand,
+                                                      productDetails.brandId
+                                                          .toString())));
+                                    },
+                                    child: Text(
+                                      productDetails.brand,
+                                      style: TextStyle(
+                                          color: Color(0xFF009bff),
+                                          fontSize: widgetSize.subTitle),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -663,34 +787,37 @@ class _ProductDetailsState extends State<ProductDetails>
                                                   CustomColors.kTabBarIconColor,
                                               fontSize: widgetSize.content),
                                         )
-                                      : Text(
-                                          _isProductChosen &&
-                                                  productDetails
-                                                          .options[
-                                                              _productOptionIndex]
-                                                          .value !=
-                                                      null
-                                              ? '${AppLocalization.of(context).translate("size")} ${productDetails.options[_productOptionIndex].value}'
-                                              : '',
-                                          style: TextStyle(
-                                              color:
-                                                  CustomColors.kTabBarIconColor,
-                                              fontSize: widgetSize.content)),
+                                      : productDetails.options[0].type == 'size'
+                                          ? Text(
+                                              _isProductChosen &&
+                                                      productDetails
+                                                              .options[
+                                                                  _productOptionIndex]
+                                                              .value !=
+                                                          null
+                                                  ? '${AppLocalization.of(context).translate("size")} ${productDetails.options[_productOptionIndex].value}'
+                                                  : '',
+                                              style: TextStyle(
+                                                  color: CustomColors
+                                                      .kTabBarIconColor,
+                                                  fontSize: widgetSize.content))
+                                          : Container(),
                                 ],
                               ),
                             ),
-                            Container(
-                              width: double.infinity,
-                              height: productDetails.options[0].type == 'color'
-                                  ? 30.0
-                                  : 30.0,
-                              margin: const EdgeInsets.only(
-                                left: 16.0,
-                                right: 16.0,
-                                top: 10.0,
-                              ),
-                              child: _buildProductOption(),
-                            ),
+                            productDetails.options[0].type == 'color' ||
+                                    productDetails.options[0].type == 'size'
+                                ? Container(
+                                    width: double.infinity,
+                                    height: 30.0,
+                                    margin: const EdgeInsets.only(
+                                      left: 16.0,
+                                      right: 16.0,
+                                      top: 10.0,
+                                    ),
+                                    child: _buildProductOption(),
+                                  )
+                                : Container(),
                             Container(
                               margin: const EdgeInsets.only(
                                 left: 16.0,
@@ -1298,7 +1425,10 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 }
                                               }
                                             : () {
-                                                print('remind me');
+                                                _remindMe(productDetails
+                                                    .options[
+                                                        _productOptionIndex]
+                                                    .id);
                                               }
                                     // : null,
                                     ,

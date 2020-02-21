@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/checkout_summery_model.dart';
 import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/screens/address_screen.dart';
@@ -37,8 +38,12 @@ class _CheckoutScreenState extends State<CheckoutScreen>
     super.dispose();
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -82,6 +87,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
         centerTitle: true,
         title: Text(
           AppLocalization.of(context).translate('payment_method_screen_title'),
+          style: TextStyle(fontSize: widgetSize.mainTitle),
         ),
       ),
       body: Provider<NetworkProvider>.value(

@@ -3,7 +3,7 @@ class ApiUtil {
   // Testing
   //  static const String CHECKOUT_URL = "https://test.oppwa.com/v1/checkouts";
   // live
-  static const String CHECKOUT_URL = "https://oppwa.com/v1/checkouts/";
+  static const String CHECKOUT_URL = "https://oppwa.com/v1/checkouts";
   // Testing Entity ID
 //  static const String ENTITY_ID = "8ac7a4c76e91bcde016e9dcfb4b908cf";
   // Live Entity ID
@@ -15,4 +15,8 @@ class ApiUtil {
       "Bearer OGFjZGE0Y2M2ZmYwNmNiZTAxNzAwYWJkNzJhOTY0MDh8Q1EzaEJYZVhjag==";
   static const String CURRENCY = "SAR";
   static const String PAYMENT_TYPE = "DB";
+  static const String GOOGLE_API_KEY =
+      'AIzaSyCNsvOGMDb-O9l49lKNFRiiHpRqxteJSDw';
+  static const String APPKEY =
+      "\$2y\$10\$KJ3TeIlrtus.CbeCdcrieOeX2lChyCW4Fi0IG/hYttXEfadTqmY.O";
 }

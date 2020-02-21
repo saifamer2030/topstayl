@@ -404,8 +404,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                           MaterialPageRoute(
                                             builder: (context) => SeeMoreScreen(
                                                 categoryName: 'Makeup',
-                                                subCategoryName:
-                                                    'BB And CC Cream'),
+                                                subCategoryName: 'Mascara'),
                                           ),
                                         );
                                       },

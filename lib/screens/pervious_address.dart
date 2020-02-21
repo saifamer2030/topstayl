@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/checkout_summery_model.dart';
 import 'package:topstyle/screens/checkoutScreen.dart';
 
@@ -8,17 +9,13 @@ class PreviousAddress extends StatelessWidget {
   final AddressModel addressModel;
 
   PreviousAddress(this.addressModel);
-
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Scaffold(
-//      appBar: AppBar(
-//        centerTitle: true,
-//        title: Text(
-//          AppLocalization.of(context).translate('previous_location'),
-//          style: TextStyle(fontSize: 18.0),
-//        ),
-//      ),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
         child: Column(
@@ -29,6 +26,7 @@ class PreviousAddress extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     AppLocalization.of(context).translate('previous_location'),
+                    style: TextStyle(fontSize: widgetSize.subTitle),
                   ),
                   SizedBox(
                     height: 16.0,
@@ -42,13 +40,14 @@ class PreviousAddress extends StatelessWidget {
                     title: Text(
                       addressModel.userName,
                       style: TextStyle(
-                          fontSize: 14.0,
+                          fontSize: widgetSize.subTitle,
                           fontWeight: FontWeight.bold,
                           color: Colors.black),
                     ),
                     subtitle: Text(
                       '${addressModel.phone}\n ${addressModel.country}،${addressModel.city}،${addressModel.area}',
-                      style: TextStyle(fontSize: 14.0, color: Colors.black),
+                      style: TextStyle(
+                          fontSize: widgetSize.subTitle, color: Colors.black),
                     ),
                     isThreeLine: true,
                   ),
@@ -69,7 +68,7 @@ class PreviousAddress extends StatelessWidget {
                         .translate('add_new_address')),
                     trailing: Icon(
                       Icons.arrow_forward_ios,
-                      size: 18.0,
+                      size: widgetSize.content,
                     ),
                   ),
                   Divider(
@@ -97,7 +96,9 @@ class PreviousAddress extends StatelessWidget {
                 child: Text(
                   AppLocalization.of(context).translate("continue_to_payment"),
                   style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: widgetSize.content),
                 ),
               ),
             ),

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/checkout_summery_model.dart';
 import 'package:topstyle/models/set_order.dart';
 import 'package:topstyle/providers/cart_provider.dart';
@@ -119,11 +121,12 @@ class _PaymentMethodState extends State<PaymentMethod> {
       _isBtnLoading = true;
     });
     var token = await userData.isAuthenticated();
-    String checkoutId =
-        await Provider.of<OrdersProvider>(context).requestCheckoutId(total);
-    if (checkoutId != null) {
-      print(
-          '------------------------------------------ $checkoutId-----------------------------------');
+    var prefs = await SharedPreferences.getInstance();
+    var data = jsonDecode(prefs.getString('userData')) as Map;
+    String checkoutId = await Provider.of<OrdersProvider>(context)
+        .requestCheckoutId(
+            total, prefs.getInt('userCheckoutId'), data['email']);
+    if (checkoutId != '') {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PaymentWebView(
           token['Authorization'],
@@ -183,8 +186,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
 
   Future<void> _doApplePay() async {
     try {
-      final response =
-          await channel.invokeMethod("applePay", ["Called From Flutter"]);
+      final response = await channel.invokeMethod("applePay", ["Caming Soon"]);
       print('The Result From Swift : $response');
     } catch (e) {
       print(e.toString());
@@ -192,8 +194,12 @@ class _PaymentMethodState extends State<PaymentMethod> {
     //print('hello apple pay');
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return _isLoading
         ? Center(child: AdaptiveProgressIndicator())
         : SingleChildScrollView(
@@ -209,8 +215,9 @@ class _PaymentMethodState extends State<PaymentMethod> {
                 children: <Widget>[
                   Text(
                     AppLocalization.of(context).translate("delivery_location"),
-                    style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: widgetSize.subTitle,
+                        fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     height: 16.0,
@@ -227,29 +234,31 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                 Text(
                                   checkoutData.address.userName,
                                   style: TextStyle(
-                                      fontSize: 16.0,
+                                      fontSize: widgetSize.subTitle,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(
                                   checkoutData.address.phone,
-                                  style: TextStyle(fontSize: 12.0),
+                                  style: TextStyle(
+                                      fontSize: widgetSize.textFieldError),
                                 ),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Text(
-                                      '${checkoutData.address.country}،${checkoutData.address.city}،${checkoutData.address.area}،${checkoutData.address.street}'
+                                      '${checkoutData.address.country ?? ''}،${checkoutData.address.city ?? ''}،${checkoutData.address.area ?? ''}،${checkoutData.address.street ?? ''}'
                                                   .length >
                                               50
-                                          ? '${checkoutData.address.country}،${checkoutData.address.city}،${checkoutData.address.area}،${checkoutData.address.street}'
+                                          ? '${checkoutData.address.country ?? ''}،${checkoutData.address.city ?? ''}،${checkoutData.address.area ?? ''}،${checkoutData.address.street ?? ''}'
                                               .substring(0, 49)
-                                          : '${checkoutData.address.country}،${checkoutData.address.city}،${checkoutData.address.area}،${checkoutData.address.street}',
-                                      style: TextStyle(fontSize: 14.0),
+                                          : '${checkoutData.address.country ?? ''}،${checkoutData.address.city ?? ''}،${checkoutData.address.area ?? ''}،${checkoutData.address.street ?? ''}',
+                                      style: TextStyle(
+                                          fontSize: widgetSize.content),
                                     ),
                                     Icon(
                                       Icons.arrow_forward_ios,
-                                      size: 18.0,
+                                      size: widgetSize.subTitle,
                                     ),
                                   ],
                                 )
@@ -272,8 +281,9 @@ class _PaymentMethodState extends State<PaymentMethod> {
                   Text(
                     AppLocalization.of(context)
                         .translate("choose_payment_method"),
-                    style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: widgetSize.subTitle,
+                        fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     height: 8.0,
@@ -294,14 +304,18 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                   title: Text(
                                     AppLocalization.of(context)
                                         .translate("payment_when_receiving"),
-                                    style: TextStyle(fontSize: 16.0),
+                                    style: TextStyle(
+                                        fontSize: widgetSize.subTitle),
                                   ),
                                   subtitle: Text(
                                     '${AppLocalization.of(context).translate('fee_in_cash_on_delivery')} ${checkoutData.payments[0].cost} ${AppLocalization.of(context).translate('sar')} ',
-                                    style: TextStyle(fontSize: 12.0),
+                                    style: TextStyle(
+                                        fontSize: widgetSize.textFieldError),
                                   ),
-                                  trailing:
-                                      SvgPicture.asset('assets/icons/cash.svg'),
+                                  trailing: SvgPicture.asset(
+                                    'assets/icons/cash.svg',
+                                    fit: BoxFit.contain,
+                                  ),
                                 ),
                               ),
                             )
@@ -336,18 +350,20 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                   title: Text(
                                     AppLocalization.of(context)
                                         .translate("apple_pay"),
-                                    style: TextStyle(fontSize: 16.0),
+                                    style: TextStyle(
+                                        fontSize: widgetSize.subTitle),
                                   ),
                                   subtitle: Container(
                                       child: Text(
                                     '${AppLocalization.of(context).translate('discount_electronic_payment')} ${checkoutData.payments[2].cost} ${checkoutData.payments[2].isPercentage ? '%' : AppLocalization.of(context).translate('sar')}',
-                                    style: TextStyle(fontSize: 12.0),
+                                    style: TextStyle(
+                                        fontSize: widgetSize.textFieldError),
                                   )),
                                   trailing: Image.asset(
                                     'assets/icons/apple_pay.png',
                                     width: 38.8,
                                     height: 16.0,
-                                    fit: BoxFit.fitHeight,
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
                               ),
@@ -381,31 +397,32 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                 Text(
                                   AppLocalization.of(context)
                                       .translate("credit_card"),
-                                  style: TextStyle(fontSize: 16.0),
+                                  style:
+                                      TextStyle(fontSize: widgetSize.subTitle),
                                 ),
                                 Image.asset(
                                   'assets/icons/visa.png',
                                   width: 38.8,
                                   height: 16.0,
-                                  fit: BoxFit.fitWidth,
+                                  fit: BoxFit.contain,
                                 ),
                                 Image.asset(
                                   'assets/icons/master.png',
                                   width: 19.8,
                                   height: 12.0,
-                                  fit: BoxFit.fitWidth,
+                                  fit: BoxFit.contain,
                                 ),
                                 Image.asset(
                                   'assets/icons/amex.png',
                                   width: 17.8,
                                   height: 12.0,
-                                  fit: BoxFit.fitWidth,
+                                  fit: BoxFit.contain,
                                 ),
                                 Image.asset(
                                   'assets/icons/mada.png',
                                   width: 35.0,
                                   height: 12.0,
-                                  fit: BoxFit.fitWidth,
+                                  fit: BoxFit.contain,
                                 ),
                               ],
                             ),
@@ -415,7 +432,8 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                 child: Text(
                                   '${AppLocalization.of(context).translate('discount_electronic_payment')} ${checkoutData.payments[2].cost} ${checkoutData.payments[2].isPercentage ? '%' : AppLocalization.of(context).translate('sar')}',
                                   style: TextStyle(
-                                      fontSize: 12.0, color: Colors.grey),
+                                      fontSize: widgetSize.textFieldError,
+                                      color: Colors.grey),
                                 ))
                           ],
                         )
@@ -432,6 +450,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                     height: 32.0,
                   ),
                   Container(
+                    height: 50.0,
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 5.0, bottom: 5.0),
                     decoration: BoxDecoration(
@@ -454,7 +473,8 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                 hintText: AppLocalization.of(context)
                                     .translate("coupon"),
                                 hintStyle: TextStyle(
-                                    color: CustomColors.kTabBarIconColor)),
+                                    color: CustomColors.kTabBarIconColor,
+                                    fontSize: widgetSize.subTitle + 1)),
 //
                           ),
                         ),
@@ -487,8 +507,12 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                             Navigator.of(context).pop();
                                           },
                                           child: Text(
-                                              AppLocalization.of(context)
-                                                  .translate('ok')),
+                                            AppLocalization.of(context)
+                                                .translate('ok'),
+                                            style: TextStyle(
+                                                fontSize:
+                                                    widgetSize.subTitle + 1),
+                                          ),
                                         )
                                       ],
                                     ),
@@ -510,7 +534,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                 : Icon(
                                     Icons.check_circle,
                                     color: CustomColors.kPAddedToCartIconColor,
-                                    size: 30.0,
+                                    size: widgetSize.favoriteIconSize,
                                   ),
                           ),
                         ),
@@ -523,8 +547,9 @@ class _PaymentMethodState extends State<PaymentMethod> {
                   Text(
                     AppLocalization.of(context)
                         .translate("order_summary_title"),
-                    style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: widgetSize.content,
+                        fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     height: 16.0,
@@ -534,13 +559,13 @@ class _PaymentMethodState extends State<PaymentMethod> {
                     children: <Widget>[
                       Text(
                         AppLocalization.of(context).translate("purchase_price"),
-                        style: TextStyle(fontSize: 14.0),
+                        style: TextStyle(fontSize: widgetSize.subTitle),
                       ),
                       Text(
                         checkoutData != null
                             ? '${checkoutData.summery.total - checkoutData.summery.discount} ${AppLocalization.of(context).translate("sar")}'
                             : '',
-                        style: TextStyle(fontSize: 14.0),
+                        style: TextStyle(fontSize: widgetSize.subTitle),
                       ),
                     ],
                   ),
@@ -552,7 +577,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                     children: <Widget>[
                       Text(
                         AppLocalization.of(context).translate("shipping_cost"),
-                        style: TextStyle(fontSize: 14.0),
+                        style: TextStyle(fontSize: widgetSize.subTitle),
                       ),
                       checkoutData != null
                           ? Text(
@@ -565,7 +590,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                       .translate('free_shipping')
                                   : '${checkoutData.address.cost} ${AppLocalization.of(context).translate("sar")}',
                               style: TextStyle(
-                                  fontSize: 14.0,
+                                  fontSize: widgetSize.subTitle,
                                   color: Theme.of(context).accentColor,
                                   fontWeight: FontWeight.bold),
                             )
@@ -582,11 +607,11 @@ class _PaymentMethodState extends State<PaymentMethod> {
                             Text(
                               AppLocalization.of(context)
                                   .translate("cash_on_delivery_fee_hint"),
-                              style: TextStyle(fontSize: 14.0),
+                              style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                             Text(
                               '$_cashOnDeliveryValueFees ${AppLocalization.of(context).translate("sar")}',
-                              style: TextStyle(fontSize: 14.0),
+                              style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                           ],
                         )
@@ -595,11 +620,11 @@ class _PaymentMethodState extends State<PaymentMethod> {
                           children: <Widget>[
                             Text(
                               AppLocalization.of(context).translate("discount"),
-                              style: TextStyle(fontSize: 14.0),
+                              style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                             Text(
                               '$_paymentDiscount ${AppLocalization.of(context).translate("sar")}',
-                              style: TextStyle(fontSize: 14.0),
+                              style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                           ],
                         ),
@@ -610,7 +635,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                       ? Text(
                           '(${AppLocalization.of(context).translate("coupon_hint")})',
                           style: TextStyle(
-                              fontSize: 10.0,
+                              fontSize: widgetSize.textFieldError - 1,
                               color: Colors.red,
                               fontWeight: FontWeight.bold),
                         )
@@ -627,11 +652,11 @@ class _PaymentMethodState extends State<PaymentMethod> {
                           children: <Widget>[
                             Text(
                               '${AppLocalization.of(context).translate("coupon_value")}($coupon)',
-                              style: TextStyle(fontSize: 14.0),
+                              style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                             Text(
                               '$couponValue ${AppLocalization.of(context).translate("sar")}',
-                              style: TextStyle(fontSize: 14.0),
+                              style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                           ],
                         )
@@ -640,7 +665,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                       ? Text(
                           '(${AppLocalization.of(context).translate('coupon_hint')})',
                           style: TextStyle(
-                              fontSize: 10.0,
+                              fontSize: widgetSize.textFieldError - 1,
                               color: Colors.red,
                               fontWeight: FontWeight.bold),
                         )
@@ -653,13 +678,13 @@ class _PaymentMethodState extends State<PaymentMethod> {
                     children: <Widget>[
                       Text(
                         AppLocalization.of(context).translate("total"),
-                        style: TextStyle(fontSize: 14.0),
+                        style: TextStyle(fontSize: widgetSize.subTitle),
                       ),
                       Text(
                         checkoutData != null
                             ? '${(checkoutData.summery.total - couponValue - checkoutData.summery.discount + _paymentDiscount + ((checkoutData.summery.total - checkoutData.summery.discount - couponValue - _paymentDiscount) >= checkoutData.address.freeShipping ? 0 : checkoutData.address.cost) + _cashOnDeliveryValueFees).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}'
                             : '',
-                        style: TextStyle(fontSize: 14.0),
+                        style: TextStyle(fontSize: widgetSize.subTitle),
                       ),
                     ],
                   ),
@@ -720,6 +745,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                               AppLocalization.of(context)
                                   .translate("confirm_order"),
                               style: TextStyle(
+                                  fontSize: widgetSize.content,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),

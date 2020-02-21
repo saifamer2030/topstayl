@@ -25,6 +25,7 @@ class UserProvider with ChangeNotifier {
           await http.post('${ApiUtil.BASE_URL}updateUser', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       }, body: {
         'name': name,
         'phone': phone,
@@ -89,6 +90,10 @@ class UserProvider with ChangeNotifier {
 //        ? {'password': password, 'email': method}
 //        : {'password': password, 'phone': method});
     final response = await http.post('${ApiUtil.BASE_URL}setPassword',
+        headers: {
+          "APPKEY": ApiUtil.APPKEY,
+          "Accept": "application/json",
+        },
         body: type == 'email'
             ? {'password': password, 'email': method}
             : {'password': password, 'phone': method});
@@ -109,8 +114,14 @@ class UserProvider with ChangeNotifier {
 
   Future<bool> changeEmailOtp(String email, String password) async {
     bool isDone = false;
-    final response = await http.post('${ApiUtil.BASE_URL}setPassword',
-        body: {'password': password, 'email': email});
+    final response =
+        await http.post('${ApiUtil.BASE_URL}setPassword', headers: {
+      "APPKEY": ApiUtil.APPKEY,
+      "Accept": "application/json",
+    }, body: {
+      'password': password,
+      'email': email
+    });
     if (response.statusCode == 200) {
       if (jsonDecode(response.body).toString().contains('message')) {
         isDone = true;
@@ -126,8 +137,12 @@ class UserProvider with ChangeNotifier {
   Future<Map<String, dynamic>> otpByEmail(String email) async {
     var msg = {'msg': 0, 'otp': ''};
     try {
-      final response = await http
-          .post('${ApiUtil.BASE_URL}otpEmail', body: {'email': email});
+      final response = await http.post('${ApiUtil.BASE_URL}otpEmail', headers: {
+        "APPKEY": ApiUtil.APPKEY,
+        "Accept": "application/json",
+      }, body: {
+        'email': email
+      });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body).toString().contains('errors')) {
           // not sent and phone not found
@@ -154,8 +169,13 @@ class UserProvider with ChangeNotifier {
   Future<Map<String, dynamic>> otpByPhone(String phone, String check) async {
     var msg = {'msg': 0, 'otp': ''};
     try {
-      final response = await http.post('${ApiUtil.BASE_URL}otp',
-          body: {'phone': phone, 'check': check});
+      final response = await http.post('${ApiUtil.BASE_URL}otp', headers: {
+        "APPKEY": ApiUtil.APPKEY,
+        "Accept": "application/json",
+      }, body: {
+        'phone': phone,
+        'check': check
+      });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body).toString().contains('error')) {
           // not sent and phone not found
@@ -188,6 +208,7 @@ class UserProvider with ChangeNotifier {
           await http.post('${ApiUtil.BASE_URL}resetPassword', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       }, body: {
         'oldPassword': oldPassword,
         'password': newPassword
@@ -221,7 +242,10 @@ class UserProvider with ChangeNotifier {
       String guestId = prefs.getString('guestId') == null
           ? 'new'
           : prefs.getString('guestId');
-      final response = await http.post('${ApiUtil.BASE_URL}register', body: {
+      final response = await http.post('${ApiUtil.BASE_URL}register', headers: {
+        "APPKEY": ApiUtil.APPKEY,
+        "Accept": "application/json",
+      }, body: {
         'email': email,
         'name': name,
         'password': password,
@@ -307,8 +331,14 @@ class UserProvider with ChangeNotifier {
       String guestId = prefs.getString('guestId') == null
           ? 'new'
           : prefs.getString('guestId');
-      final response = await http.post('${ApiUtil.BASE_URL}login',
-          body: {'email': email, 'password': password, 'guestId': guestId});
+      final response = await http.post('${ApiUtil.BASE_URL}login', headers: {
+        "APPKEY": ApiUtil.APPKEY,
+        "Accept": "application/json",
+      }, body: {
+        'email': email,
+        'password': password,
+        'guestId': guestId
+      });
       if (response.statusCode == 200) {
         if (json.decode(response.body).toString().contains('token')) {
           //          print(json.decode(response.body)['user']['name']);

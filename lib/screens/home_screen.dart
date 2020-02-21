@@ -95,16 +95,20 @@ class _HomeScreenState extends State<HomeScreen>
             child: Row(
               children: <Widget>[
                 Text(
-                  AppLocalization.of(context).translate("see_more"),
+                  title == AppLocalization.of(context).translate("best_sellers")
+                      ? ''
+                      : AppLocalization.of(context).translate("see_more"),
                   style: TextStyle(fontSize: widgetSize.subTitle),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16.0,
-                  ),
-                ),
+                title == AppLocalization.of(context).translate("best_sellers")
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16.0,
+                        ),
+                      ),
               ],
             ),
           ),
@@ -113,23 +117,26 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildCategoryBanner(String bannerUrl) {
-    return Container(
-      height: 150,
-      margin: const EdgeInsets.only(
-          left: 16.0, right: 16.0, top: 30.0, bottom: 20.0),
-      child: bannerUrl == ''
-          ? Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.grey),
-            )
-          : Image.network(
-              bannerUrl,
-              fit: BoxFit.cover,
-            ),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0), color: Colors.grey),
+  Widget _buildCategoryBanner(String bannerUrl, Function action) {
+    return GestureDetector(
+      onTap: action,
+      child: Container(
+        height: 150,
+        margin: const EdgeInsets.only(
+            left: 16.0, right: 16.0, top: 30.0, bottom: 20.0),
+        child: bannerUrl == ''
+            ? Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Colors.grey),
+              )
+            : Image.network(
+                bannerUrl,
+                fit: BoxFit.fill,
+              ),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0), color: Colors.grey),
+      ),
     );
   }
 
@@ -173,7 +180,6 @@ class _HomeScreenState extends State<HomeScreen>
                   data['userToken'])
               .then((value) {
             _images = value;
-            print(_images.length);
             _images.forEach(
               (slide) {
                 if (slide.adsSection == 'Slide') {
@@ -282,6 +288,8 @@ class _HomeScreenState extends State<HomeScreen>
 //                              Navigator.of(context).push(MaterialPageRoute(
 //                                  builder: (context) =>
 //                                      SeeMoreScreen('adsBanner.adsType')));
+
+                              // Send it to SeeMore with Category name
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => SeeMoreScreen(
@@ -291,7 +299,10 @@ class _HomeScreenState extends State<HomeScreen>
                                 ),
                               );
                             } else if (adsBanner.adsType == 'Brand') {
-                            } else {}
+                              // Send It To Brands with brand name , brand ID
+                            } else if (adsBanner.adsType == 'Product') {
+                              // send it  to product Details with product Id
+                            }
                           },
                           child: Container(
                             height: 200.0,
@@ -327,7 +338,14 @@ class _HomeScreenState extends State<HomeScreen>
                             categoryName:
                                 AppLocalization.of(context).translate('Makeup'),
                             action: () {
-                              print('Mackeup Clicked');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => SeeMoreScreen(
+                                    categoryName: 'Makeup',
+                                    subCategoryName: '',
+                                  ),
+                                ),
+                              );
                             }),
                         CategoryItem(
                             color: CustomColors.kCategoryColor2,
@@ -336,7 +354,14 @@ class _HomeScreenState extends State<HomeScreen>
                             categoryName: AppLocalization.of(context)
                                 .translate('Perfume'),
                             action: () {
-                              print('Perfume Clicked');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => SeeMoreScreen(
+                                    categoryName: 'Perfume',
+                                    subCategoryName: '',
+                                  ),
+                                ),
+                              );
                             }),
                         CategoryItem(
                             color: CustomColors.kCategoryColor3,
@@ -345,7 +370,14 @@ class _HomeScreenState extends State<HomeScreen>
                             categoryName:
                                 AppLocalization.of(context).translate('Care'),
                             action: () {
-                              print('Care Clicked');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => SeeMoreScreen(
+                                    categoryName: 'Care',
+                                    subCategoryName: '',
+                                  ),
+                                ),
+                              );
                             }),
                         CategoryItem(
                             color: CustomColors.kCategoryColor4,
@@ -354,7 +386,14 @@ class _HomeScreenState extends State<HomeScreen>
                             categoryName:
                                 AppLocalization.of(context).translate('Nails'),
                             action: () {
-                              print('Nails Clicked');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => SeeMoreScreen(
+                                    categoryName: 'Nails',
+                                    subCategoryName: '',
+                                  ),
+                                ),
+                              );
                             }),
                         CategoryItem(
                             color: CustomColors.kCategoryColor5,
@@ -363,7 +402,14 @@ class _HomeScreenState extends State<HomeScreen>
                             categoryName: AppLocalization.of(context)
                                 .translate('Devices'),
                             action: () {
-                              print('Devices Clicked');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => SeeMoreScreen(
+                                    categoryName: 'Devices',
+                                    subCategoryName: '',
+                                  ),
+                                ),
+                              );
                             }),
                         CategoryItem(
                             color: CustomColors.kCategoryColor6,
@@ -372,7 +418,14 @@ class _HomeScreenState extends State<HomeScreen>
                             categoryName:
                                 AppLocalization.of(context).translate('Lenses'),
                             action: () {
-                              print('Lansess Clicked');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => SeeMoreScreen(
+                                    categoryName: 'Lenses',
+                                    subCategoryName: '',
+                                  ),
+                                ),
+                              );
                             }),
                       ],
                     ),
@@ -397,23 +450,20 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("best_sellers"),
-                      () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => SeeMoreScreen(
-                          categoryName: 'best_sellers',
-                          subCategoryName: '',
-                        ),
-                      ),
-                    );
-                  }),
+                      () {}),
                   Container(
-                    height: 310.0,
+                    height: widgetSize.productCardSize,
                     child: ProductListView(bestSellerProducts),
                   ),
                   bannerMakeup == null
-                      ? _buildCategoryBanner('')
-                      : _buildCategoryBanner(bannerMakeup.imagePath),
+                      ? _buildCategoryBanner('', null)
+                      : _buildCategoryBanner(bannerMakeup.imagePath, () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SeeMoreScreen(
+                                    categoryName: 'Makeup',
+                                    subCategoryName: '',
+                                  )));
+                        }),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Makeup"), () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -423,10 +473,17 @@ class _HomeScreenState extends State<HomeScreen>
                             )));
                   }),
                   Container(
-                      height: 310.0, child: ProductListView(makeupProducts)),
+                      height: widgetSize.productCardSize,
+                      child: ProductListView(makeupProducts)),
                   bannerPerfume == null
-                      ? _buildCategoryBanner('')
-                      : _buildCategoryBanner(bannerPerfume.imagePath),
+                      ? _buildCategoryBanner('', null)
+                      : _buildCategoryBanner(bannerPerfume.imagePath, () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SeeMoreScreen(
+                                    categoryName: 'Perfume',
+                                    subCategoryName: '',
+                                  )));
+                        }),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Perfume"), () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -436,10 +493,17 @@ class _HomeScreenState extends State<HomeScreen>
                             )));
                   }),
                   Container(
-                      height: 310.0, child: ProductListView(perfumesProducts)),
+                      height: widgetSize.productCardSize,
+                      child: ProductListView(perfumesProducts)),
                   bannerCare == null
-                      ? _buildCategoryBanner('')
-                      : _buildCategoryBanner(bannerCare.imagePath),
+                      ? _buildCategoryBanner('', null)
+                      : _buildCategoryBanner(bannerCare.imagePath, () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SeeMoreScreen(
+                                    categoryName: 'Care',
+                                    subCategoryName: '',
+                                  )));
+                        }),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Care"), () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -449,10 +513,15 @@ class _HomeScreenState extends State<HomeScreen>
                             )));
                   }),
                   Container(
-                      height: 310.0, child: ProductListView(careProducts)),
+                      height: widgetSize.productCardSize,
+                      child: ProductListView(careProducts)),
                   bannerNails == null
-                      ? _buildCategoryBanner('')
-                      : _buildCategoryBanner(bannerNails.imagePath),
+                      ? _buildCategoryBanner('', null)
+                      : _buildCategoryBanner(bannerNails.imagePath, () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SeeMoreScreen(
+                                  categoryName: 'Nails', subCategoryName: '')));
+                        }),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Nails"), () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -460,10 +529,16 @@ class _HomeScreenState extends State<HomeScreen>
                             categoryName: 'Nails', subCategoryName: '')));
                   }),
                   Container(
-                      height: 310.0, child: ProductListView(nailsProducts)),
+                      height: widgetSize.productCardSize,
+                      child: ProductListView(nailsProducts)),
                   bannerLenses == null
-                      ? _buildCategoryBanner('')
-                      : _buildCategoryBanner(bannerLenses.imagePath),
+                      ? _buildCategoryBanner('', null)
+                      : _buildCategoryBanner(bannerLenses.imagePath, () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SeeMoreScreen(
+                                  categoryName: 'Lenses',
+                                  subCategoryName: '')));
+                        }),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Lenses"), () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -471,10 +546,16 @@ class _HomeScreenState extends State<HomeScreen>
                             categoryName: 'Lenses', subCategoryName: '')));
                   }),
                   Container(
-                      height: 310.0, child: ProductListView(lensesProducts)),
+                      height: widgetSize.productCardSize,
+                      child: ProductListView(lensesProducts)),
                   bannerDevice == null
-                      ? _buildCategoryBanner('')
-                      : _buildCategoryBanner(bannerDevice.imagePath),
+                      ? _buildCategoryBanner('', null)
+                      : _buildCategoryBanner(bannerDevice.imagePath, () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SeeMoreScreen(
+                                  categoryName: 'Devices',
+                                  subCategoryName: '')));
+                        }),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Devices"), () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -482,7 +563,8 @@ class _HomeScreenState extends State<HomeScreen>
                             categoryName: 'Devices', subCategoryName: '')));
                   }),
                   Container(
-                      height: 310.0, child: ProductListView(devicesProducts)),
+                      height: widgetSize.productCardSize,
+                      child: ProductListView(devicesProducts)),
                 ],
               ),
             )

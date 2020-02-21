@@ -42,11 +42,10 @@ class OrderItemInOrderDetails extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Container(
-              height: 140,
+              height: 130,
               child: Column(
                 children: <Widget>[
                   Container(
-                    padding: const EdgeInsets.all(10.0),
                     margin: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(color: Colors.white),
                     child: Container(
@@ -55,7 +54,6 @@ class OrderItemInOrderDetails extends StatelessWidget {
                         imageUrl: productImage,
                         width: 90.0,
                         height: 90.0,
-                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -130,20 +128,22 @@ class OrderItemInOrderDetails extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                             )
-                          : Container(
-                              width: 75.0,
-                              height: 30.0,
-                              padding: const EdgeInsets.all(3.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6.0),
-                                color: Color(0xFFe8e8e8),
-                              ),
-                              child: Center(
-                                  child: Text(
-                                '$optionValue ${AppLocalization.of(context).translate("ml")}',
-                                style: TextStyle(fontSize: 12.0),
-                              )),
-                            ),
+                          : optionType == 'size'
+                              ? Container(
+                                  width: 75.0,
+                                  height: 30.0,
+                                  padding: const EdgeInsets.all(3.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6.0),
+                                    color: Color(0xFFe8e8e8),
+                                  ),
+                                  child: Center(
+                                      child: Text(
+                                    '$optionValue ${AppLocalization.of(context).translate("ml")}',
+                                    style: TextStyle(fontSize: 12.0),
+                                  )),
+                                )
+                              : Container(),
                       Text(
                           '$quantity ${AppLocalization.of(context).translate('order_items')}')
                     ],

@@ -20,6 +20,27 @@ class ProductsProvider with ChangeNotifier {
   List<ProductsModel> _favorite = [];
   List<Ads> _ads = [];
 
+  Future<int> sendEmailReminder(String email, String poid) async {
+    int result = 0;
+    try {
+      final response = await http.post('${ApiUtil.BASE_URL}remember',
+          body: {'email': email, 'product_option_id': poid});
+      if (response.statusCode == 201) {
+        print(jsonDecode(response.body));
+        if (!response.body.contains('errors')) {
+          result = 1;
+          print(jsonDecode(response.body));
+        }
+      } else {
+        print(response.statusCode);
+      }
+    } catch (error) {
+      print(error.toString());
+      throw error;
+    }
+    return result;
+  }
+
   Future<int> submitComment(
       String review, int productId, double rate, String token) async {
     int msg = 0;
@@ -28,6 +49,7 @@ class ProductsProvider with ChangeNotifier {
       final response = await http.post('${ApiUtil.BASE_URL}review', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       }, body: {
         'rate': rate.round().toString(),
         'review': review,
@@ -57,12 +79,14 @@ class ProductsProvider with ChangeNotifier {
               '${ApiUtil.BASE_URL}product/details/guest/$productId?lang=$lang',
               headers: {
                   "Accept": "application/json",
+                  "APPKEY": ApiUtil.APPKEY,
                 })
           : await http.get(
               '${ApiUtil.BASE_URL}product/details/$productId?lang=$lang',
               headers: {
                   HttpHeaders.authorizationHeader: 'Bearer $token',
                   "Accept": "application/json",
+                  "APPKEY": ApiUtil.APPKEY,
                 });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body) != null) {
@@ -91,6 +115,7 @@ class ProductsProvider with ChangeNotifier {
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
+          "APPKEY": ApiUtil.APPKEY,
         },
       );
       if (response.statusCode == 200) {
@@ -117,6 +142,7 @@ class ProductsProvider with ChangeNotifier {
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
+          "APPKEY": ApiUtil.APPKEY,
         },
       );
       if (response.statusCode == 200) {
@@ -137,28 +163,31 @@ class ProductsProvider with ChangeNotifier {
       String category, String lang, int pageNumber, String token) async {
     List<ProductsModel> _allProductsFilter = [];
     Map<String, dynamic> responseMap;
+    print('----------------------- $category-------------');
     try {
       final response = token == 'none'
           ? await http.get(
               '${ApiUtil.BASE_URL}filtter/guest?category=$category&lang=$lang&page=$pageNumber',
               headers: {
                   "Accept": "application/json",
+                  "APPKEY": ApiUtil.APPKEY,
                 })
           : await http.get(
               '${ApiUtil.BASE_URL}filtter/?category=$category&lang=$lang&page=$pageNumber',
               headers: {
                   HttpHeaders.authorizationHeader: 'Bearer $token',
                   "Accept": "application/json",
+                  "APPKEY": ApiUtil.APPKEY,
                 });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body)['data'] != null) {
+          print(jsonDecode(response.body)['data']);
           _allProductsFilter = ProductsModel.parseProducts(
               jsonDecode(response.body)['data'] as List);
           responseMap = {
             'data': _allProductsFilter,
             'last_page': jsonDecode(response.body)['meta']['last_page'],
           };
-          print('filterd response : ${_allProductsFilter.length}');
         }
       } else {
         print('request is faild in product provider'
@@ -182,12 +211,14 @@ class ProductsProvider with ChangeNotifier {
               '${ApiUtil.BASE_URL}filtter/guest?category=$category&lang=$lang&order=$order&page=$pageNumber',
               headers: {
                   "Accept": "application/json",
+                  "APPKEY": ApiUtil.APPKEY,
                 })
           : await http.get(
               '${ApiUtil.BASE_URL}filtter/?category=$category&lang=$lang&order=$order&page=$pageNumber',
               headers: {
                   HttpHeaders.authorizationHeader: 'Bearer $token',
                   "Accept": "application/json",
+                  "APPKEY": ApiUtil.APPKEY,
                 });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body)['data'] != null) {
@@ -222,12 +253,14 @@ class ProductsProvider with ChangeNotifier {
               '${ApiUtil.BASE_URL}products/guest/$category?lang=$lang&page=$pageNumber',
               headers: {
                   "Accept": "application/json",
+                  "APPKEY": ApiUtil.APPKEY,
                 })
           : await http.get(
               '${ApiUtil.BASE_URL}products/$category?lang=$lang&page=$pageNumber',
               headers: {
                 HttpHeaders.authorizationHeader: 'Bearer $token',
                 "Accept": "application/json",
+                "APPKEY": ApiUtil.APPKEY,
               },
             );
       if (response.statusCode == 200) {
@@ -246,14 +279,15 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> allDataWithSpecificBrand(
-      String brandId, int pageNumber) async {
+      String brandId, int pageNumber, String lang) async {
     List<ProductsModel> _allProducts = [];
     Map<String, dynamic> responseMap;
     try {
       final response = await http.get(
-          '${ApiUtil.BASE_URL}brandProducts/$brandId&page=$pageNumber',
+          '${ApiUtil.BASE_URL}brandProducts/$brandId?page=$pageNumber&lang=$lang',
           headers: {
             "Accept": "application/json",
+            "APPKEY": ApiUtil.APPKEY,
           });
       if (response.statusCode == 200) {
         _allProducts = ProductsModel.parseProducts(
@@ -279,6 +313,7 @@ class ProductsProvider with ChangeNotifier {
               headers: {
                 HttpHeaders.authorizationHeader: 'Bearer $token',
                 "Accept": "application/json",
+                "APPKEY": ApiUtil.APPKEY,
               },
             );
 

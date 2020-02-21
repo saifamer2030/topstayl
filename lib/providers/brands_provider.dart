@@ -10,7 +10,10 @@ class BrandsProvider with ChangeNotifier {
 
   Future<List<BrandModel>> allBrandsData() async {
     try {
-      final response = await http.get('${ApiUtil.BASE_URL}brands');
+      final response = await http.get('${ApiUtil.BASE_URL}brands', headers: {
+        "APPKEY": ApiUtil.APPKEY,
+        "Accept": "application/json",
+      });
       if (response.statusCode == 200) {
         _allBrands = BrandModel.parsedJson(jsonDecode(response.body)['data']);
       }

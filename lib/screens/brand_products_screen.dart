@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/models/products_model.dart';
 import 'package:topstyle/providers/network_provider.dart';
@@ -29,8 +30,15 @@ class _BrandProductsScreenState extends State<BrandProductsScreen> {
   ScrollController _controller = ScrollController();
 
   getBrandProducts(int pageNumber) async {
+    var prefs = await SharedPreferences.getInstance();
     Provider.of<ProductsProvider>(context)
-        .allDataWithSpecificBrand(widget.brandId, pageNumber)
+        .allDataWithSpecificBrand(
+      widget.brandId,
+      pageNumber,
+      prefs.getString('language_code') == null
+          ? 'ar'
+          : prefs.getString('language_code'),
+    )
         .then((products) {
       var list = products['data'] as List;
       _products.addAll(List<ProductsModel>.from(list));
@@ -65,8 +73,8 @@ class _BrandProductsScreenState extends State<BrandProductsScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override

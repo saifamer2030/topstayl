@@ -14,6 +14,7 @@ class PaymentProvider with ChangeNotifier {
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
+          "APPKEY": ApiUtil.APPKEY,
         },
       );
       if (response.statusCode == 200) {

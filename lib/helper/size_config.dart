@@ -36,6 +36,7 @@ class WidgetSize {
   double textField;
   double textFieldError;
   double favoriteIconSize;
+  double productCardSize;
   WidgetSize(ScreenConfig screenConfig) {
     this.screenConfig = screenConfig;
     _init();
@@ -53,6 +54,7 @@ class WidgetSize {
         this.textField = 40.0;
         this.textFieldError = 10.0;
         this.favoriteIconSize = 25.0;
+        this.productCardSize = 260.0;
         break;
       case ScreenType.MEDIUM:
         this.mainTitle = 18.0;
@@ -64,6 +66,7 @@ class WidgetSize {
         this.textField = 45.0;
         this.textFieldError = 12.0;
         this.favoriteIconSize = 27.0;
+        this.productCardSize = 300.0;
         break;
       case ScreenType.LARGE:
         this.mainTitle = 20.0;
@@ -75,6 +78,7 @@ class WidgetSize {
         this.textField = 45.0;
         this.textFieldError = 12.0;
         this.favoriteIconSize = 30.0;
+        this.productCardSize = 310.0;
         break;
       default:
         this.mainTitle = 18.0;

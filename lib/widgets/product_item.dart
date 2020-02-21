@@ -2,26 +2,47 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/products_model.dart';
 import 'package:topstyle/screens/login_screen.dart';
 
 import '../screens/product_details.dart';
 
 class ProductItem extends StatelessWidget {
+  _buildOptions(List<Option> options, BuildContext context) {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: options.length > 4 ? 4 : options.length,
+      itemBuilder: (context, i) => Padding(
+        padding: const EdgeInsets.all(1.0),
+        child: Container(
+          width: widgetSize.subTitle,
+          height: widgetSize.subTitle,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(int.parse('0xFF${options[i].optionValue}'))),
+        ),
+      ),
+    );
+  }
+
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     final product = Provider.of<ProductsModel>(context, listen: false);
     return LayoutBuilder(
       builder: (context, constraints) => GestureDetector(
         onTap: () {
-          print(constraints.maxHeight * 0.5);
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ProductDetails(product.id)));
-          print(product.id);
         },
         child: Container(
           height: constraints.maxHeight,
@@ -36,15 +57,16 @@ class ProductItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Stack(
+                alignment: Alignment.center,
                 children: <Widget>[
                   Container(
-                      height: constraints.maxHeight * 0.6,
-                      width: constraints.maxHeight * 0.5,
+                      height: constraints.maxHeight * 0.55,
+                      width: constraints.maxHeight * 0.45,
                       padding: EdgeInsets.all(12.0),
                       child: CachedNetworkImage(
                         imageUrl: product.image,
-                        height: constraints.maxHeight * 0.6 - 16.0,
-                        width: constraints.maxHeight * 0.5 - 10.0,
+                        height: constraints.maxHeight * 0.55 - 16.0,
+                        width: constraints.maxHeight * 0.45 - 10.0,
                         fit: BoxFit.contain,
 //                          placeholder: (context, url) =>
 //                              Image.asset('assets/images/logo.jpg'),
@@ -106,11 +128,35 @@ class ProductItem extends StatelessWidget {
                                     : AppLocalization.of(context)
                                         .translate("exclusive_tag"),
                                 style: TextStyle(
-                                    fontSize: 10.0, color: Colors.white),
+                                    fontSize: widgetSize.iconText - 2,
+                                    color: Colors.white),
                               ),
                             ),
                           ),
                   ),
+                  product.itemsCount == 1 && product.quantity < 1
+                      ? Positioned(
+                          bottom: 1.0,
+                          child: Container(
+                            width: constraints.maxWidth / 2,
+//                            margin:
+//                                EdgeInsets.only(left: constraints.maxWidth / 4),
+                            padding: const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.6),
+                            ),
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .translate('product not available'),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: widgetSize.textFieldError,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
               SizedBox(
@@ -123,21 +169,27 @@ class ProductItem extends StatelessWidget {
                   product.brand.length > 22
                       ? '${product.brand.substring(0, 21)}...'
                       : product.brand,
-                  style: TextStyle(color: Color(0xFF5a5a5a), fontSize: 12.0),
+                  style: TextStyle(
+                      color: Color(0xFF5a5a5a), fontSize: widgetSize.iconText),
                 ),
               ),
               SizedBox(height: constraints.maxHeight * 0.02),
               Container(
-                height: constraints.maxHeight * 0.13,
-//                color: Colors.amber,
+                height: constraints.maxHeight * 0.12,
                 child: Text(
                   product.name.length > 45
                       ? '${product.name.substring(0, 45)}...'
                       : product.name,
                   style: TextStyle(
-                    fontSize: 14.0,
+                    fontSize: widgetSize.subTitle,
                   ),
                 ),
+              ),
+              Container(
+                height: constraints.maxHeight * 0.06,
+                child: product.options.length > 1
+                    ? _buildOptions(product.options, context)
+                    : Container(),
               ),
               Container(
                 height: constraints.maxHeight * 0.10,
@@ -151,7 +203,7 @@ class ProductItem extends StatelessWidget {
                         : Text(
                             '${(double.parse(product.price) - (double.parse(product.price) * product.discount / 100)).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
                             style: TextStyle(
-                              fontSize: 12.0,
+                              fontSize: widgetSize.textFieldError,
                               fontWeight: FontWeight.bold,
                               color: CustomColors.kPriceColor,
                             ),
@@ -166,7 +218,9 @@ class ProductItem extends StatelessWidget {
                             ? TextDecoration.lineThrough
                             : null,
                         color: CustomColors.kTabBarIconColor,
-                        fontSize: product.discount != 0 ? 12.0 : 14.0,
+                        fontSize: product.discount != 0
+                            ? widgetSize.textFieldError
+                            : widgetSize.subTitle,
                         fontWeight: product.discount == 0
                             ? FontWeight.bold
                             : FontWeight.normal,

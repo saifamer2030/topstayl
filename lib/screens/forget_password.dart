@@ -402,7 +402,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                     .translate("userEmail"),
                                 style: TextStyle(
                                     color: CustomColors.kTabBarIconColor,
-                                    fontSize: 16.0),
+                                    fontSize: widgetSize.subTitle),
                               ),
                             ),
                             SizedBox(height: 10.0),
@@ -509,7 +509,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                     .translate("phone_in_login"),
                                 style: TextStyle(
                                     color: CustomColors.kTabBarIconColor,
-                                    fontSize: 16.0),
+                                    fontSize: widgetSize.subTitle),
                               ),
                             ),
                             Row(
@@ -568,6 +568,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                         onSaved: (value) {
                                           phone = '$countryCode$value';
                                         },
+                                        style: TextStyle(
+                                            fontSize: widgetSize.content),
                                         keyboardType: TextInputType.phone,
                                         maxLength: 9,
                                         inputFormatters: <TextInputFormatter>[

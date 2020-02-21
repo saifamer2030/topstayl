@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:topstyle/helper/api_util.dart';
 
 class ProductsModel extends ChangeNotifier {
   final int id;
@@ -12,7 +13,10 @@ class ProductsModel extends ChangeNotifier {
   final int isAvailable;
   int isFavorite;
   final int discount;
+  final int quantity;
+  final int itemsCount;
   final String image;
+  final List<Option> options;
 
   ProductsModel(
       {this.id,
@@ -23,7 +27,10 @@ class ProductsModel extends ChangeNotifier {
       this.discount,
       this.image,
       this.price,
-      this.isAvailable});
+      this.quantity,
+      this.itemsCount,
+      this.isAvailable,
+      this.options});
 
   factory ProductsModel.fromJson(Map<String, dynamic> json) {
     return ProductsModel(
@@ -33,14 +40,23 @@ class ProductsModel extends ChangeNotifier {
         status: json["status"] as String,
         isFavorite: json["isFavorite"] as int,
         discount: json["discount"] as int,
+        quantity: json["quantity"] as int,
+        itemsCount: json["itemsCount"] as int,
         image: json["image"] as String,
         price: json["price"] as String,
-        isAvailable: json["stockStatus"] as int);
+        isAvailable: json["stockStatus"] as int,
+        options: parseOptions(json["options"]));
   }
 
   static List<ProductsModel> parseProducts(List<dynamic> responseBody) {
     return responseBody
-        .map<ProductsModel>((json) => ProductsModel.fromJson(json))
+        .map<ProductsModel>((product) => ProductsModel.fromJson(product))
+        .toList();
+  }
+
+  static List<Option> parseOptions(List<dynamic> responseBody) {
+    return responseBody
+        .map<Option>((option) => Option.fromJson(option))
         .toList();
   }
 
@@ -49,9 +65,8 @@ class ProductsModel extends ChangeNotifier {
     isFavorite = isFavorite == 0 ? 1 : 0;
     notifyListeners();
     try {
-      final String baseUrl = 'http://192.168.100.29/api/';
       final response = await http.get(
-        '${baseUrl}favorite/$productId',
+        '${ApiUtil.BASE_URL}favorite/$productId',
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
@@ -69,5 +84,17 @@ class ProductsModel extends ChangeNotifier {
       isFavorite = oldFavorite;
       throw error;
     }
+  }
+}
+
+class Option {
+  final String optionType;
+  final String optionValue;
+  Option({this.optionType, this.optionValue});
+
+  factory Option.fromJson(Map<String, dynamic> jsonObject) {
+    return Option(
+        optionType: jsonObject['type'] as String,
+        optionValue: jsonObject['value'] as String);
   }
 }

@@ -180,9 +180,9 @@
   "BB And CC Cream": "البي بي و السي سي كريم",
   "Mascara": "الماسكارا",
   "Eyeshadow": "ظلال العيون",
-  "Eyeliner": "كحل العيون",
+  "Eyeliner": "محددات العيون",
   "Brimer": "برايمر العيون",
-  "Glitter": "قلتر العيون",
+  "Glitter": "القلتر",
   "Lip Set": "مجموعة الشفاه",
   "Lip Liner": "محدد الشفاه",
   "Lip Gloss": "ملمع الشفاه",
@@ -254,7 +254,7 @@
   "continue_to_payment": "مواصلة الدفع",
   "customer_support_msg": "مرحباً ، كيف يمكننا مساعدتك؟",
   "whats": "واتساب",
-  "email": "بريد إلكتروني",
+  "email": "البريد الإكتروني",
   "contact_us": "أتصل بنا",
   "ok": "حسناً",
   "coupon_not_valid": "الكوبون غير صالح",
@@ -284,5 +284,7 @@
   "get_free_shipping_hint_1": "أضف منتجات بقيمة ",
   "get_free_shipping_hint_2": " للحصول علي شحن مجاني",
   "privacy_policy" : "سياسة الخصوصية",
-  "enter_phone" : "أدخل رقم الجوال"
+  "enter_phone" : "أدخل رقم الجوال",
+  "remind email hint" : "قم بإدخال البريد الإكتروني الذي تود تذكيرك من خلاله عند توفر المنتج",
+  "product not available" : "نفذت الكمية"
 }

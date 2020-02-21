@@ -21,6 +21,7 @@ class OrdersProvider with ChangeNotifier {
           await http.get('${ApiUtil.BASE_URL}order/$orderId/cancel', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body)['message'] != null) {
@@ -44,6 +45,7 @@ class OrdersProvider with ChangeNotifier {
       final response = await http.get('${ApiUtil.BASE_URL}userOrder', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body) != null) {
@@ -61,6 +63,7 @@ class OrdersProvider with ChangeNotifier {
       final response = await http.get('${ApiUtil.BASE_URL}userOrder', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body)['data'] != null) {
@@ -76,16 +79,19 @@ class OrdersProvider with ChangeNotifier {
     return _orders;
   }
 
-  Future<String> requestCheckoutId(String amount) async {
+  Future<String> requestCheckoutId(
+      String amount, int userCheckoutId, String userEmail) async {
     String checkoutId = '';
     try {
       final response = await http.post(ApiUtil.CHECKOUT_URL, headers: {
-        "Authorization": ApiUtil.PAYMENT_TOKEN
+        "Authorization": ApiUtil.PAYMENT_TOKEN,
       }, body: {
         "entityId": ApiUtil.ENTITY_ID,
-        "amount": amount,
+        "amount": '0.01',
         "currency": ApiUtil.CURRENCY,
-        "paymentType": ApiUtil.PAYMENT_TYPE
+        "paymentType": ApiUtil.PAYMENT_TYPE,
+        "merchantTransactionId": userCheckoutId.toString(),
+        "customer.email": userEmail
       });
       if (response.statusCode == 200) {
         checkoutId = jsonDecode(response.body)['id'];
@@ -102,8 +108,10 @@ class OrdersProvider with ChangeNotifier {
     String _paymentStatus = '';
     try {
       final response = await http.get(
-        '${ApiUtil.CHECKOUT_URL}$checkoutId/payment?entityId=${ApiUtil.ENTITY_ID}',
-        headers: {"Authorization": ApiUtil.PAYMENT_TOKEN},
+        '${ApiUtil.CHECKOUT_URL}/$checkoutId/payment?entityId=${ApiUtil.ENTITY_ID}',
+        headers: {
+          "Authorization": ApiUtil.PAYMENT_TOKEN,
+        },
       );
       if (response.statusCode == 200) {
         _paymentStatus = jsonDecode(response.body)['result']['code'];
@@ -128,6 +136,7 @@ class OrdersProvider with ChangeNotifier {
       final response = await http.post('${ApiUtil.BASE_URL}setOrder', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       }, body: {
         'payment_id': paymentId,
         'coupon': coupon,
@@ -162,6 +171,7 @@ class OrdersProvider with ChangeNotifier {
       final response =
           await http.get('${ApiUtil.BASE_URL}getCities/$countryId', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
+        "APPKEY": ApiUtil.APPKEY,
       });
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body)['data'] as List;
@@ -190,6 +200,7 @@ class OrdersProvider with ChangeNotifier {
       final response = await http.post('${ApiUtil.BASE_URL}address', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       }, body: {
         'country': country,
         'city': city,
@@ -224,6 +235,7 @@ class OrdersProvider with ChangeNotifier {
       final response = await http.get('${ApiUtil.BASE_URL}address', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body)['data'] != null) {
@@ -247,6 +259,7 @@ class OrdersProvider with ChangeNotifier {
       final response = await http.get('${ApiUtil.BASE_URL}checkout', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       });
       if (response.statusCode == 200) {
         var prefs = await SharedPreferences.getInstance();
@@ -276,6 +289,7 @@ class OrdersProvider with ChangeNotifier {
           .get('${ApiUtil.BASE_URL}orderDetails/$productId', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       });
       if (response.statusCode == 200) {
 //        print(jsonDecode(response.body));

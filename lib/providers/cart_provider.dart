@@ -20,6 +20,7 @@ class CartItemProvider with ChangeNotifier {
           .get('${ApiUtil.BASE_URL}useCoupon?coupon=$coupon', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',
         "Accept": "application/json",
+        "APPKEY": ApiUtil.APPKEY,
       });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body)['exist'] == 1) {
@@ -61,6 +62,7 @@ class CartItemProvider with ChangeNotifier {
         final response = await http
             .post('${ApiUtil.BASE_URL}cart/add/guest/$guestId', headers: {
           "Accept": "application/json",
+          "APPKEY": ApiUtil.APPKEY,
         }, body: {
           'lang': lang,
           'poid': productId.toString(),
@@ -91,6 +93,7 @@ class CartItemProvider with ChangeNotifier {
             await http.post('${ApiUtil.BASE_URL}cart/add', headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
+          "APPKEY": ApiUtil.APPKEY,
         }, body: {
           'lang': lang,
           'poid': productId.toString(),
@@ -135,8 +138,11 @@ class CartItemProvider with ChangeNotifier {
         String guestId = prefs.getString('guestId') == null
             ? 'g0'
             : prefs.getString('guestId');
-        final response =
-            await http.get('${ApiUtil.BASE_URL}cart/guest/$guestId?lang=$lang');
+        final response = await http
+            .get('${ApiUtil.BASE_URL}cart/guest/$guestId?lang=$lang', headers: {
+          "APPKEY": ApiUtil.APPKEY,
+          "Accept": "application/json",
+        });
         if (response.statusCode == 200) {
           if (json.decode(response.body)['data'] != null) {
             _cartItems =
@@ -150,10 +156,11 @@ class CartItemProvider with ChangeNotifier {
           headers: {
             HttpHeaders.authorizationHeader: 'Bearer $token',
             "Accept": "application/json",
+            "APPKEY": ApiUtil.APPKEY,
           },
         );
         if (response.statusCode == 200) {
-          print(json.decode(response.body)['data']);
+//          print(json.decode(response.body)['data']);
           if (json.decode(response.body)['data'] != null) {
             _cartItems =
                 CartItemModel.parsedJson(json.decode(response.body)['data']);
@@ -181,6 +188,7 @@ class CartItemProvider with ChangeNotifier {
         final response = await http
             .post('${ApiUtil.BASE_URL}cart/add/guest/$guestId', headers: {
           "Accept": "application/json",
+          "APPKEY": ApiUtil.APPKEY,
         }, body: {
           'lang': lang,
           'poid': productId.toString(),
@@ -197,6 +205,7 @@ class CartItemProvider with ChangeNotifier {
             await http.post('${ApiUtil.BASE_URL}cart/add', headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
+          "APPKEY": ApiUtil.APPKEY,
         }, body: {
           'lang': lang,
           'poid': productId.toString(),
@@ -234,6 +243,7 @@ class CartItemProvider with ChangeNotifier {
         final response = await http
             .post('${ApiUtil.BASE_URL}cart/add/guest/$guestId', headers: {
           "Accept": "application/json",
+          "APPKEY": ApiUtil.APPKEY,
         }, body: {
           'lang': lang,
           'poid': productId.toString(),
@@ -250,6 +260,7 @@ class CartItemProvider with ChangeNotifier {
             await http.post('${ApiUtil.BASE_URL}cart/add', headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           "Accept": "application/json",
+          "APPKEY": ApiUtil.APPKEY,
         }, body: {
           'lang': lang,
           'poid': productId.toString(),
