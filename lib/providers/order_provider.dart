@@ -87,7 +87,7 @@ class OrdersProvider with ChangeNotifier {
         "Authorization": ApiUtil.PAYMENT_TOKEN,
       }, body: {
         "entityId": ApiUtil.ENTITY_ID,
-        "amount": '0.01',
+        "amount": amount,
         "currency": ApiUtil.CURRENCY,
         "paymentType": ApiUtil.PAYMENT_TYPE,
         "merchantTransactionId": userCheckoutId.toString(),
@@ -114,7 +114,7 @@ class OrdersProvider with ChangeNotifier {
         },
       );
       if (response.statusCode == 200) {
-        _paymentStatus = jsonDecode(response.body)['result']['code'];
+        _paymentStatus = response.body;
         print(jsonDecode(response.body));
       } else {
         print('not success ${response.statusCode}');
@@ -126,7 +126,7 @@ class OrdersProvider with ChangeNotifier {
   }
 
   Future<SetOrder> addOrder(String token, String paymentId, String coupon,
-      String checkoutId, int userCheckoutId) async {
+      String checkoutId, int userCheckoutId, String paymentResponse) async {
     SetOrder orderData;
     print(
         '------------------------------$checkoutId---------------------------------');
@@ -141,7 +141,8 @@ class OrdersProvider with ChangeNotifier {
         'payment_id': paymentId,
         'coupon': coupon,
         'checkoutId': checkoutId,
-        'userCheckoutId': userCheckoutId.toString()
+        'userCheckoutId': userCheckoutId.toString(),
+        'paymentResponse': paymentResponse
       });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body) != null) {

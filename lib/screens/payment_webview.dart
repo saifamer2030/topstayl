@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:topstyle/helper/api_util.dart';
 import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/set_order.dart';
@@ -29,23 +31,23 @@ class _PaymentWebViewState extends State<PaymentWebView> {
   bool _isOrderSent = true;
   UserProvider userData = UserProvider();
 
-  _doSendOrder() async {
+  _doSendOrder(String response) async {
     SetOrder orderData;
     var token = await userData.isAuthenticated();
     var prefs = await SharedPreferences.getInstance();
-    int userCheckoutId = await prefs.getInt('userCheckoutId');
+    int userCheckoutId = prefs.getInt('userCheckoutId');
     orderData = await Provider.of<OrdersProvider>(context).addOrder(
         token['Authorization'],
         widget.paymentType,
         widget.coupon,
         widget.checkoutId,
-        userCheckoutId);
+        userCheckoutId,
+        response);
     if (orderData != null) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => CheckoutDoneScreen(orderData.orderId)),
           (Route<dynamic> roue) => false);
-//      print(orderData.checkoutId);
     } else {
       flutterWebViewPlugin.hide();
       showDialog(
@@ -69,12 +71,14 @@ class _PaymentWebViewState extends State<PaymentWebView> {
     }
   }
 
-  String _status;
+  String _status, _paymentResponse;
 
   _checkPaymentStatus() async {
-    _status = await Provider.of<OrdersProvider>(context).checkPaymentStatus(
+    _paymentResponse =
+        await Provider.of<OrdersProvider>(context).checkPaymentStatus(
       widget.checkoutId,
     );
+    _status = jsonDecode(_paymentResponse)['result']['code'];
 //    _status = '000.200.000';
     List<String> stringList = _status.split('.');
     List<int> responseList = stringList.map((e) => int.parse(e)).toList();
@@ -93,7 +97,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             responseList[2] == 111 ||
             responseList[2] == 112)) {
       print('Successful');
-      _doSendOrder();
+      _doSendOrder(_paymentResponse);
       print(responseList[2]);
     } else if ((responseList[0] == 0) &&
         (responseList[1] == 200) &&
@@ -117,7 +121,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
                   Navigator.of(context).pop();
                   flutterWebViewPlugin.show();
                   flutterWebViewPlugin.launch(
-                      'http://192.168.100.29/api/payment?checkoutId=${widget.checkoutId}');
+                      '${ApiUtil.BASE_URL}payment?checkoutId=${widget.checkoutId}');
                 },
                 child: Text(AppLocalization.of(context).translate('ok')))
           ],
@@ -184,8 +188,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
           body: ConnectivityWidget(
             networkProvider: value,
             child: WebviewScaffold(
-              url:
-                  'https://topstylesa.com/api/payment?checkoutId=${widget.checkoutId}',
+              url: '${ApiUtil.BASE_URL}payment?checkoutId=${widget.checkoutId}',
               withZoom: true,
               appBar: AppBar(
                 title: Text(
