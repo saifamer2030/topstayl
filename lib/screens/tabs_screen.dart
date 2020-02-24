@@ -4,8 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/helper/size_config.dart';
+import 'package:topstyle/models/cart_item_model.dart';
+import 'package:topstyle/providers/cart_provider.dart';
 import 'package:topstyle/providers/languages_provider.dart';
 import 'package:topstyle/providers/network_provider.dart';
+import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/search_screen.dart';
 import 'package:topstyle/widgets/connectivity_widget.dart';
 
@@ -43,10 +46,13 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
+  int num = 10;
+
   _buildBottomNavigationBarItem(IconData icon, String title) {
     return BottomNavigationBarItem(
         icon: Icon(
           icon,
+          size: 26,
         ),
         title: FittedBox(
           child: Text(
@@ -60,10 +66,31 @@ class _TabsScreenState extends State<TabsScreen> {
   ScreenConfig screenConfig;
   WidgetSize widgetSize;
 
+  List<CartItemModel> _lists = [];
+  UserProvider userProvider = UserProvider();
+  double totalPrice = 0.0;
+  getCartData() async {
+    var token = await userProvider.isAuthenticated();
+    final String lang = appLanguage.appLocal.toString();
+    await Provider.of<CartItemProvider>(context)
+        .fetchAllCartItem(lang, token['Authorization']);
+  }
+
+  @override
+  void didChangeDependencies() {
+    getCartData();
+    super.didChangeDependencies();
+  }
+
+  bool _isInitialized = false;
   @override
   Widget build(BuildContext context) {
-    screenConfig = ScreenConfig(context);
-    widgetSize = WidgetSize(screenConfig);
+    if (!_isInitialized) {
+      screenConfig = ScreenConfig(context);
+      widgetSize = WidgetSize(screenConfig);
+      _isInitialized = true;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -117,17 +144,41 @@ class _TabsScreenState extends State<TabsScreen> {
             _buildBottomNavigationBarItem(Icons.format_list_bulleted,
                 AppLocalization.of(context).translate("category_in_nav_bar")),
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/icons/cart.png',
-                  width: 22.0,
-                  height: 24.0,
-                  fit: BoxFit.fitHeight,
-                  color: _selectedIndex == 2
-                      ? Theme.of(context).accentColor
-                      : CustomColors.kTabBarIconColor,
+                icon: Stack(
+                  overflow: Overflow.visible,
+                  children: [
+                    Image.asset(
+                      'assets/icons/cart.png',
+                      width: 20.0,
+                      height: 25.0,
+                      fit: BoxFit.fill,
+                      color: _selectedIndex == 2
+                          ? Theme.of(context).accentColor
+                          : CustomColors.kTabBarIconColor,
+                    ),
+                    Positioned(
+                      top: 11.0,
+                      bottom: 4.0,
+//                      left: 2.0,
+//                      right: 7.0,
+                      child: Consumer<CartItemProvider>(
+                        builder: (ctx, cart, _) => Container(
+                          margin: cart.allItemQuantity > 9
+                              ? const EdgeInsets.symmetric(
+                                  horizontal: 4.0,
+                                )
+                              : const EdgeInsets.symmetric(horizontal: 6.0),
+                          child: Text(
+                            '${cart.allItemQuantity > 9 ? '9+' : cart.allItemQuantity == 0 ? '' : cart.allItemQuantity}',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 11.0, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                // ),
-                // Badge(child: Image.asset('assets/icons/cart.png'), value: ''),
                 title: Text(
                   AppLocalization.of(context).translate("cart_in_nav_bar"),
                   style: TextStyle(fontSize: 13.0),

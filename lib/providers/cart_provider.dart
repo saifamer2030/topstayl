@@ -131,7 +131,6 @@ class CartItemProvider with ChangeNotifier {
 
   Future<List<CartItemModel>> fetchAllCartItem(
       String lang, String token) async {
-    List<CartItemModel> _lists = [];
     try {
       if (token == 'none') {
         var prefs = await SharedPreferences.getInstance();

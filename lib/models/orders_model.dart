@@ -23,7 +23,7 @@ class OrderModel {
         orderStatus: json['orderStatus'] as int,
         itemsCount: json['orderItems'] as int,
         paymentId: int.parse(json['payment_id']),
-        totalPrice: json['totalprice'] as double);
+        totalPrice: double.parse(json['totalprice']));
   }
 }
 

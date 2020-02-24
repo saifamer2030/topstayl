@@ -16,7 +16,6 @@ import '../widgets/oder_item_in_order_details.dart';
 
 class OrderDetails extends StatefulWidget {
   final int productId;
-
   OrderDetails(this.productId);
 
   static const String routeName = 'order-details';

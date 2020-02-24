@@ -237,7 +237,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               context, CustomOtpScreenInForgetPass.routeName,
               arguments: {'email': email, 'type': 'email', 'otp': msg['otp']});
         } else {
-//          print(msg);
           _scaffoldKey.currentState.showSnackBar(SnackBar(
             backgroundColor: Colors.red,
             content: Text(

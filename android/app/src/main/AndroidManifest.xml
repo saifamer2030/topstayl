@@ -13,7 +13,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Top Style"
+        android:label="TOPSTYLE"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
         <meta-data

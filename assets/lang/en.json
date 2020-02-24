@@ -151,7 +151,7 @@
   "Hair Mist": "Hair Mist",
   "Niche Perfumes": "Niche Perfumes",
   "Men Perfumes": "Men Perfumes",
-  "Lip Care": "Lip Care",
+  "Lips Care": "Lips Care",
   "Hands Care": "Hands Care",
   "Face Care": "Face Care",
   "Eye And Lash Care": "Eye And Lash Care",
@@ -191,8 +191,8 @@
   "Lipstick": "Lipstick",
   "Contour": "Contour",
   "Cheek Blusher": "Cheek Blusher",
-  "brushes_sets": "Brushes Sets",
-  "makeup_sponges": "Makeup Sponges",
+  "Brusher Sets": "Brushes Sets",
+  "Sponges": "Makeup Sponges",
   "Eye Brushes": "Eye Brushes",
   "Face Brushes": "Face Brushes",
   "Eyebrow Brushes": "Eyebrow Brushes",
@@ -286,7 +286,8 @@
   "privacy_policy" : "Privacy Policy",
   "enter_phone" : "Enter phone number",
   "remind email hint" : "Enter the email you want to be reminded of when the product is available",
-  "product not available" : "Sold out"
+  "product not available" : "Sold out",
+  "offer" : "Save"
 
 
 }

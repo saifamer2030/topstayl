@@ -939,6 +939,47 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             .translate("Makeup Remover"),
                                       ),
                                     ),
+                                    Divider(
+                                      height: 1.0,
+                                      color: CustomColors.kPCardColor,
+                                      thickness: 1.0,
+                                    ),
+                                    ListTile(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => SeeMoreScreen(
+                                                categoryName: 'Makeup',
+                                                subCategoryName: 'Sponges'),
+                                          ),
+                                        );
+                                      },
+                                      title: Text(
+                                        AppLocalization.of(context)
+                                            .translate("Sponges"),
+                                      ),
+                                    ),
+                                    Divider(
+                                      height: 1.0,
+                                      color: CustomColors.kPCardColor,
+                                      thickness: 1.0,
+                                    ),
+                                    ListTile(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => SeeMoreScreen(
+                                                categoryName: 'Makeup',
+                                                subCategoryName:
+                                                    'Brusher Sets'),
+                                          ),
+                                        );
+                                      },
+                                      title: Text(
+                                        AppLocalization.of(context)
+                                            .translate("Brusher Sets"),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               )
@@ -1146,13 +1187,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       MaterialPageRoute(
                                         builder: (context) => SeeMoreScreen(
                                             categoryName: 'Care',
-                                            subCategoryName: 'Lip Care'),
+                                            subCategoryName: 'Lips Care'),
                                       ),
                                     );
                                   },
                                   title: Text(
                                     AppLocalization.of(context)
-                                        .translate("Lip Care"),
+                                        .translate("Lips Care"),
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: widgetSize.subTitle),

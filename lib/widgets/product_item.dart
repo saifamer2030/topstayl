@@ -60,12 +60,12 @@ class ProductItem extends StatelessWidget {
                 alignment: Alignment.center,
                 children: <Widget>[
                   Container(
-                      height: constraints.maxHeight * 0.55,
+                      height: constraints.maxHeight * 0.54,
                       width: constraints.maxHeight * 0.45,
-                      padding: EdgeInsets.all(12.0),
+//                      padding: EdgeInsets.all(12.0),
                       child: CachedNetworkImage(
                         imageUrl: product.image,
-                        height: constraints.maxHeight * 0.55 - 16.0,
+                        height: constraints.maxHeight * 0.54 - 5.0,
                         width: constraints.maxHeight * 0.45 - 10.0,
                         fit: BoxFit.contain,
 //                          placeholder: (context, url) =>
@@ -128,7 +128,8 @@ class ProductItem extends StatelessWidget {
                                     : AppLocalization.of(context)
                                         .translate("exclusive_tag"),
                                 style: TextStyle(
-                                    fontSize: widgetSize.iconText - 2,
+                                    fontSize: widgetSize.iconText - 1,
+                                    fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),
                             ),
@@ -175,7 +176,7 @@ class ProductItem extends StatelessWidget {
               ),
               SizedBox(height: constraints.maxHeight * 0.02),
               Container(
-                height: constraints.maxHeight * 0.12,
+                height: constraints.maxHeight * 0.10,
                 child: Text(
                   product.name.length > 45
                       ? '${product.name.substring(0, 45)}...'
@@ -188,29 +189,16 @@ class ProductItem extends StatelessWidget {
               Container(
                 height: constraints.maxHeight * 0.06,
                 child: product.options.length > 1
-                    ? _buildOptions(product.options, context)
+                    ? product.options[0].optionType == 'size'
+                        ? Container()
+                        : _buildOptions(product.options, context)
                     : Container(),
               ),
               Container(
-                height: constraints.maxHeight * 0.10,
+                height: constraints.maxHeight * 0.07,
 //                color: Colors.green,
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
-//
                   children: <Widget>[
-                    product.discount == 0
-                        ? Container()
-                        : Text(
-                            '${(double.parse(product.price) - (double.parse(product.price) * product.discount / 100)).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
-                            style: TextStyle(
-                              fontSize: widgetSize.textFieldError,
-                              fontWeight: FontWeight.bold,
-                              color: CustomColors.kPriceColor,
-                            ),
-                          ),
-                    SizedBox(
-                      width: 4.0,
-                    ),
                     Text(
                       '${double.parse(product.price).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
                       style: TextStyle(
@@ -227,11 +215,40 @@ class ProductItem extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      width: 4.0,
+                      width: 8.0,
                     ),
+                    product.discount == 0
+                        ? Container()
+                        : Text(
+                            '${(double.parse(product.price) - (double.parse(product.price) * product.discount / 100)).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
+                            style: TextStyle(
+                              fontSize: widgetSize.subTitle,
+                              fontWeight: FontWeight.bold,
+                              color: CustomColors.kPriceColor,
+                            ),
+                          ),
                   ],
                 ),
               ),
+              product.discount == 0
+                  ? Container()
+                  : Container(
+                      height: constraints.maxHeight * 0.07,
+                      width: constraints.maxWidth,
+                      margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: const EdgeInsets.all(3.0),
+                      color: Color(0xffdb6772),
+                      child: Center(
+                        child: Text(
+                          '${AppLocalization.of(context).translate('offer')} ${(double.parse(product.price) - (double.parse(product.price) - (double.parse(product.price) * product.discount / 100))).toStringAsFixed(2)} ',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14.0),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
             ],
           ),
         ),

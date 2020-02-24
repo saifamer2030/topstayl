@@ -42,11 +42,12 @@ class SearchProduct extends SearchDelegate<SearchModel> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-//    return Container();
-    return ExerciseList(
-      query: query,
-      lang: _languageProvider.fetchLocale().toString(),
-    );
+    return query == ''
+        ? Container()
+        : ExerciseList(
+            query: query,
+            lang: _languageProvider.fetchLocale().toString(),
+          );
   }
 }
 

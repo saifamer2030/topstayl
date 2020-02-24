@@ -15,12 +15,10 @@ import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/providers/order_provider.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/brand_products_screen.dart';
-import 'package:topstyle/screens/cart_screen.dart';
 import 'package:topstyle/screens/checkoutScreen.dart';
 import 'package:topstyle/screens/login_screen.dart';
 import 'package:topstyle/screens/showProductImages.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
-import 'package:topstyle/widgets/badge.dart';
 import 'package:topstyle/widgets/connectivity_widget.dart';
 import 'package:topstyle/widgets/product_listview.dart';
 import 'package:topstyle/widgets/product_reviews.dart';
@@ -602,62 +600,97 @@ class _ProductDetailsState extends State<ProductDetails>
                         ),
                         actions: <Widget>[
                           Consumer<CartItemProvider>(
-                            builder: (ctx, cart, _) => Badge(
-                              value: cart.allItemQuantity > 99
-                                  ? '99+'
-                                  : cart.allItemQuantity.toString(),
-                              //shoppingCartItem.allItemQuantity,
-                              child: GestureDetector(
-                                child: Container(
-                                  margin: const EdgeInsets.only(
-                                      left: 20.0, right: 20.0),
-                                  child: Image.asset(
-                                    'assets/icons/cart.png',
-                                    width: 22.0,
-                                    height: 22.0,
-                                    fit: BoxFit.fitHeight,
-                                  ),
-                                ),
-                                onTap: () {
-//                        print(cart.allItemQuantity);
-                                  cart.allItemQuantity > 0
-                                      ? showModalBottomSheet(
-//                      isScrollControlled: true,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft:
-                                                      Radius.circular(16.0),
-                                                  topRight:
-                                                      Radius.circular(16.0))),
-                                          context: context,
-                                          backgroundColor:
-                                              Theme.of(context).primaryColor,
-                                          builder: (ctx) => CartScreen())
-                                      : showModalBottomSheet(
-                                          context: context,
-                                          backgroundColor:
-                                              Theme.of(context).primaryColor,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft:
-                                                      Radius.circular(16.0),
-                                                  topRight:
-                                                      Radius.circular(16.0))),
-                                          builder: (context) {
-                                            return Container(
-                                              height: 90.0,
-                                              child: Center(
-                                                child: Text(AppLocalization.of(
-                                                        context)
-                                                    .translate("empty_cart")),
+                              builder: (ctx, cart, _) => Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Stack(
+                                      children: <Widget>[
+                                        Image.asset(
+                                          'assets/icons/cart.png',
+                                          width: 20.0,
+                                          height: 25.0,
+                                          fit: BoxFit.fill,
+                                        ),
+                                        Positioned(
+                                          top: 11.0,
+                                          bottom: 4.0,
+                                          child: Consumer<CartItemProvider>(
+                                            builder: (ctx, cart, _) =>
+                                                Container(
+                                              margin: cart.allItemQuantity > 9
+                                                  ? const EdgeInsets.symmetric(
+                                                      horizontal: 4.0,
+                                                    )
+                                                  : const EdgeInsets.symmetric(
+                                                      horizontal: 6.0),
+                                              child: Text(
+                                                '${cart.allItemQuantity > 9 ? '9+' : cart.allItemQuantity == 0 ? '' : cart.allItemQuantity}',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 11.0,
+                                                ),
                                               ),
-                                            );
-                                          });
-                                },
-                              ),
-                              color: Colors.red,
-                            ),
-                          )
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+//                                Badge(
+//                              value: cart.allItemQuantity > 99
+//                                  ? '99+'
+//                                  : cart.allItemQuantity.toString(),
+//                              //shoppingCartItem.allItemQuantity,
+//                              child: GestureDetector(
+//                                child: Container(
+//                                  margin: const EdgeInsets.only(
+//                                      left: 20.0, right: 20.0),
+//                                  child: Image.asset(
+//                                    'assets/icons/cart.png',
+//                                    width: 22.0,
+//                                    height: 22.0,
+//                                    fit: BoxFit.fitHeight,
+//                                  ),
+//                                ),
+//                                onTap: () {
+////                        print(cart.allItemQuantity);
+//                                  cart.allItemQuantity > 0
+//                                      ? showModalBottomSheet(
+////                      isScrollControlled: true,
+//                                          shape: RoundedRectangleBorder(
+//                                              borderRadius: BorderRadius.only(
+//                                                  topLeft:
+//                                                      Radius.circular(16.0),
+//                                                  topRight:
+//                                                      Radius.circular(16.0))),
+//                                          context: context,
+//                                          backgroundColor:
+//                                              Theme.of(context).primaryColor,
+//                                          builder: (ctx) => CartScreen())
+//                                      : showModalBottomSheet(
+//                                          context: context,
+//                                          backgroundColor:
+//                                              Theme.of(context).primaryColor,
+//                                          shape: RoundedRectangleBorder(
+//                                              borderRadius: BorderRadius.only(
+//                                                  topLeft:
+//                                                      Radius.circular(16.0),
+//                                                  topRight:
+//                                                      Radius.circular(16.0))),
+//                                          builder: (context) {
+//                                            return Container(
+//                                              height: 90.0,
+//                                              child: Center(
+//                                                child: Text(AppLocalization.of(
+//                                                        context)
+//                                                    .translate("empty_cart")),
+//                                              ),
+//                                            );
+//                                          });
+//                                },
+//                              ),
+//                              color: Colors.red,
+//                            ),
+                              )
                         ],
                       ),
                       body: SingleChildScrollView(
@@ -795,7 +828,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                   _productOptionIndex]
                                                               .value !=
                                                           null
-                                                  ? '${AppLocalization.of(context).translate("size")} ${productDetails.options[_productOptionIndex].value}'
+                                                  ? '${AppLocalization.of(context).translate("size")} ${productDetails.options[_productOptionIndex].value} ${AppLocalization.of(context).translate("ml")}'
                                                   : '',
                                               style: TextStyle(
                                                   color: CustomColors

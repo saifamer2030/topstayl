@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -130,8 +131,8 @@ class _HomeScreenState extends State<HomeScreen>
                     borderRadius: BorderRadius.circular(10.0),
                     color: Colors.grey),
               )
-            : Image.network(
-                bannerUrl,
+            : CachedNetworkImage(
+                imageUrl: bannerUrl,
                 fit: BoxFit.fill,
               ),
         decoration: BoxDecoration(
@@ -151,8 +152,8 @@ class _HomeScreenState extends State<HomeScreen>
               )
             : ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: Image.network(
-                  bannerUrl,
+                child: CachedNetworkImage(
+                  imageUrl: bannerUrl,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -199,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen>
                 } else if (slide.adsSection == 'Care') {
                   bannerCare = slide;
                 } else if (slide.adsSection == 'Nails') {
-                  bannerCare = slide;
+                  bannerNails = slide;
                 } else if (slide.adsSection == 'Ads') {
                   adsBanner = slide;
                 }
@@ -290,14 +291,14 @@ class _HomeScreenState extends State<HomeScreen>
 //                                      SeeMoreScreen('adsBanner.adsType')));
 
                               // Send it to SeeMore with Category name
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => SeeMoreScreen(
-                                    categoryName: 'Makeup',
-                                    subCategoryName: '',
-                                  ),
-                                ),
-                              );
+//                              Navigator.of(context).push(
+//                                MaterialPageRoute(
+//                                  builder: (context) => SeeMoreScreen(
+//                                    categoryName: categoryName,
+//                                    subCategoryName: '',
+//                                  ),
+//                                ),
+//                              );
                             } else if (adsBanner.adsType == 'Brand') {
                               // Send It To Brands with brand name , brand ID
                             } else if (adsBanner.adsType == 'Product') {

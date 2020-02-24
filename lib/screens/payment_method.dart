@@ -247,15 +247,17 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Text(
-                                      '${checkoutData.address.country ?? ''}،${checkoutData.address.city ?? ''}،${checkoutData.address.area ?? ''}،${checkoutData.address.street ?? ''}'
-                                                  .length >
-                                              50
-                                          ? '${checkoutData.address.country ?? ''}،${checkoutData.address.city ?? ''}،${checkoutData.address.area ?? ''}،${checkoutData.address.street ?? ''}'
-                                              .substring(0, 49)
-                                          : '${checkoutData.address.country ?? ''}،${checkoutData.address.city ?? ''}،${checkoutData.address.area ?? ''}،${checkoutData.address.street ?? ''}',
-                                      style: TextStyle(
-                                          fontSize: widgetSize.content),
+                                    FittedBox(
+                                      child: Text(
+                                        '${checkoutData.address.country ?? ''}،${checkoutData.address.city ?? ''}،${checkoutData.address.area ?? ''}،${checkoutData.address.street ?? ''}'
+                                                    .length >
+                                                50
+                                            ? '${checkoutData.address.country ?? ''}،${checkoutData.address.city ?? ''}،${checkoutData.address.area ?? ''}،${checkoutData.address.street ?? ''}'
+                                                .substring(0, 49)
+                                            : '${checkoutData.address.country ?? ''}،${checkoutData.address.city ?? ''}،${checkoutData.address.area ?? ''}،${checkoutData.address.street ?? ''}',
+                                        style: TextStyle(
+                                            fontSize: widgetSize.subTitle),
+                                      ),
                                     ),
                                     Icon(
                                       Icons.arrow_forward_ios,
@@ -467,6 +469,9 @@ class _PaymentMethodState extends State<PaymentMethod> {
                             onChanged: (val) {
                               setState(() {
                                 coupon = val;
+                                if(coupon == '' ){
+                                  couponValue = 0.0;
+                                }
                               });
                             },
                             decoration: InputDecoration(
@@ -656,7 +661,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                               style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                             Text(
-                              '$couponValue ${AppLocalization.of(context).translate("sar")}',
+                              '${couponValue.toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
                               style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                           ],

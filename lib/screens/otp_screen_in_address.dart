@@ -156,6 +156,7 @@ class _OtpScreenState extends State<OtpScreen> {
             token['Authorization'])
         .then((responseNumber) {
       if (responseNumber == 1) {
+        print('status code is  is ok $responseNumber');
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => CheckoutScreen(1)));
       }

@@ -1,5 +1,7 @@
 class ApiUtil {
   static const String BASE_URL = "https://topstylesa.com/api/";
+  // Testing base url
+//  static const String BASE_URL = "http://192.168.100.29/api/";
   // Testing
   //  static const String CHECKOUT_URL = "https://test.oppwa.com/v1/checkouts";
   // live

@@ -23,7 +23,6 @@ class _MyWishListScreenState extends State<MyWishListScreen> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     if (!_init) {
       fetchFavoriteData();
@@ -92,26 +91,6 @@ class _MyWishListScreenState extends State<MyWishListScreen> {
                     ),
                   ),
       ),
-
-//
-//      FutureBuilder(
-//        future: getData(context),
-//        builder: (ctx, snapshot) {
-//          if (snapshot.connectionState == ConnectionState.waiting) {
-//            return Center(
-//              child: AdaptiveProgressIndicator(),
-//            );
-//          } else {
-//            if (snapshot.error != null) {
-//              return Center(
-//                child: Text('Please Try Again Later'),
-//              );
-//            } else {
-//              return
-//            }
-//          }
-//        },
-//      ),
     );
   }
 }

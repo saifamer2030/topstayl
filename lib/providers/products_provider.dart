@@ -334,7 +334,6 @@ class ProductsProvider with ChangeNotifier {
             jsonDecode(response.body)['Devices'] as List);
         var _adsList = jsonDecode(response.body)['ads'] as List;
         _ads = _adsList.map((ads) => Ads.fromJson(ads)).toList();
-//        print(_bestSeller[0].isFavorite);
 //        notifyListeners();
       } else {
         print('response status code is ${response.statusCode}');

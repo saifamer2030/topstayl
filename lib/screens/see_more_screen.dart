@@ -153,12 +153,16 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
 //        'page number is $numberOfPage and last index is $lastPageFiltered and product length is ${_products.length}');
     final String lang = appLanguage.appLocal.toString();
     var userData = await userProvider.isAuthenticated();
+    print('category name ${widget.categoryName}');
+    print('category name ${widget.subCategoryName}');
     setState(() {
       _seeMoreLoading = true;
     });
     Provider.of<ProductsProvider>(context)
         .allDataInSeeMoreWithFilter(
-            widget.categoryName,
+            widget.subCategoryName != ''
+                ? widget.subCategoryName
+                : widget.categoryName,
             lang,
             numberOfPage,
             order,
@@ -333,7 +337,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                             _sortByHigh = false;
                             _sortByNew = false;
                             _sortByToRated = true;
-                            order = 'top';
+                            order = 'rate';
                             Navigator.of(context).pop();
                           });
                         },

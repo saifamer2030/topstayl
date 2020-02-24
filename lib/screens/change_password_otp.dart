@@ -39,12 +39,18 @@ class _ChangePasswordOtpScreenState extends State<ChangePasswordOtpScreen> {
         ),
       ));
     } else {
+      setState(() {
+        _isLoading = true;
+      });
       Provider.of<UserProvider>(context)
           .changeFromOtp(
               data['type'] == 'phone' ? data['phone'] : data['email'],
               data['type'].toString(),
               _password)
           .then((isDone) {
+        setState(() {
+          _isLoading = false;
+        });
         if (isDone) {
           Navigator.pushReplacementNamed(context, LoginScreen.routeName);
         } else {
