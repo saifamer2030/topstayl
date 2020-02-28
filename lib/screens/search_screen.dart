@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/helper/appLocalization.dart';
@@ -68,8 +67,8 @@ class ExerciseList extends StatelessWidget {
               itemCount: snapshot.data.length,
               itemBuilder: (context, position) {
                 return ListTile(
-                  leading: CachedNetworkImage(
-                    imageUrl: snapshot.data[position].image,
+                  leading: Image.network(
+                    snapshot.data[position].image,
                     width: 40.0,
                     height: 40.0,
                     fit: BoxFit.fill,

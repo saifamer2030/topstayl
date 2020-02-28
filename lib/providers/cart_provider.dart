@@ -9,6 +9,12 @@ import 'package:topstyle/helper/api_util.dart';
 import '../models/cart_item_model.dart';
 
 class CartItemProvider with ChangeNotifier {
+  List<CartItemModel> _cartItems = [];
+
+  List<CartItemModel> get cartItems {
+    return List.from(_cartItems);
+  }
+
   Future<Map<String, double>> applyCoupon(String token, String coupon) async {
     Map<String, double> couponValue = {
       'couponValue': 0.0,
@@ -123,12 +129,6 @@ class CartItemProvider with ChangeNotifier {
     return msg;
   }
 
-  List<CartItemModel> _cartItems = [];
-
-  List<CartItemModel> get cartItems {
-    return List.from(_cartItems);
-  }
-
   Future<List<CartItemModel>> fetchAllCartItem(
       String lang, String token) async {
     try {
@@ -176,10 +176,8 @@ class CartItemProvider with ChangeNotifier {
   }
 
   Future<int> removeProductById(
-      int productId, String lang, int qty, String token) async {
+      int productId, String lang, String token) async {
     int msg;
-    _cartItems.removeWhere((prod) => prod.id == productId);
-    notifyListeners();
     try {
       if (token == 'none') {
         var prefs = await SharedPreferences.getInstance();
@@ -194,8 +192,10 @@ class CartItemProvider with ChangeNotifier {
           'qty': '0'
         });
         if (response.statusCode == 200) {
+          _cartItems.removeWhere((prod) => prod.id == productId);
+          notifyListeners();
           msg = json.decode(response.body)['error'];
-//          print(jsonDecode(response.body));
+          print(jsonDecode(response.body));
         } else {
           msg = 6;
         }
@@ -211,7 +211,10 @@ class CartItemProvider with ChangeNotifier {
           'qty': '0'
         });
         if (response.statusCode == 200) {
+          _cartItems.removeWhere((prod) => prod.id == productId);
+          notifyListeners();
           msg = json.decode(response.body)['error'];
+          print(json.decode(response.body));
         } else {
           msg = 6;
         }
@@ -227,11 +230,10 @@ class CartItemProvider with ChangeNotifier {
 
   Future<int> increaseDecreaseProductQty(
       int productId, String lang, int qty, String token) async {
-    print(qty);
     int msg;
     _cartItems.forEach((product) {
       if (product.id == productId) {
-        product.quantity = qty;
+        _cartItems[_cartItems.indexOf(product)].quantity = qty;
       }
     });
     notifyListeners();
@@ -249,9 +251,14 @@ class CartItemProvider with ChangeNotifier {
           'qty': qty.toString()
         });
         if (response.statusCode == 200) {
-          msg = json.decode(response.body)['error'];
           print(jsonDecode(response.body));
+          msg = json.decode(response.body)['error'];
+          if (msg == 1 || msg == 0) {
+            msg = json.decode(response.body)['quantity'];
+            print(jsonDecode(response.body));
+          }
         } else {
+          print(jsonDecode(response.body));
           msg = 6;
         }
       } else {
@@ -266,7 +273,12 @@ class CartItemProvider with ChangeNotifier {
           'qty': qty.toString()
         });
         if (response.statusCode == 200) {
+          print(jsonDecode(response.body));
           msg = json.decode(response.body)['error'];
+          if (msg == 1 || msg == 0) {
+            msg = json.decode(response.body)['quantity'];
+            print(jsonDecode(response.body));
+          }
         } else {
           msg = 6;
         }
@@ -282,7 +294,7 @@ class CartItemProvider with ChangeNotifier {
   int productQty(int productId) {
     int qty = 0;
     _cartItems.forEach((p) {
-      if (p.id == productId) {
+      if (productId == p.id) {
         qty = p.quantity;
       }
     });

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:topstyle/screens/brand_products_screen.dart';
 
@@ -40,8 +39,8 @@ class BrandItem extends StatelessWidget {
           ),
           trailing: Container(
 //            margin: const EdgeInsets.only(bottom: 8.0),
-            child: CachedNetworkImage(
-              imageUrl: brandImage,
+            child: Image.network(
+              brandImage,
               width: 75.0,
               height: 50.0,
               fit: BoxFit.contain,

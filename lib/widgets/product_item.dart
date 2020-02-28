@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
@@ -60,12 +59,12 @@ class ProductItem extends StatelessWidget {
                 alignment: Alignment.center,
                 children: <Widget>[
                   Container(
-                      height: constraints.maxHeight * 0.54,
+                      height: constraints.maxHeight * 0.53,
                       width: constraints.maxHeight * 0.45,
 //                      padding: EdgeInsets.all(12.0),
-                      child: CachedNetworkImage(
-                        imageUrl: product.image,
-                        height: constraints.maxHeight * 0.54 - 5.0,
+                      child: Image.network(
+                        product.image,
+                        height: constraints.maxHeight * 0.53 - 5.0,
                         width: constraints.maxHeight * 0.45 - 10.0,
                         fit: BoxFit.contain,
 //                          placeholder: (context, url) =>
@@ -176,13 +175,13 @@ class ProductItem extends StatelessWidget {
               ),
               SizedBox(height: constraints.maxHeight * 0.02),
               Container(
-                height: constraints.maxHeight * 0.10,
+                height: constraints.maxHeight * 0.11,
                 child: Text(
                   product.name.length > 45
                       ? '${product.name.substring(0, 45)}...'
                       : product.name,
                   style: TextStyle(
-                    fontSize: widgetSize.subTitle,
+                    fontSize: widgetSize.subTitle - 1,
                   ),
                 ),
               ),

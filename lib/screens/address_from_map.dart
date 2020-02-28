@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/size_config.dart';
@@ -26,44 +26,43 @@ class _AddressFromMapState extends State<AddressFromMap> {
   GoogleMapController _controller;
   bool _isLoading = true;
 
+  LocationData currentLocation;
+  Location location = Location();
+  double lat;
+  double long;
   @override
   void initState() {
-    getAddressData();
+    initLocation();
     super.initState();
   }
 
-  double lat = 0.0;
-  double long = 0.0;
+  initLocation() async {
+    try {
+      currentLocation = await location.getLocation();
+      setState(() {
+        lat = currentLocation.latitude;
+        long = currentLocation.longitude;
+        _isLoading = false;
+      });
+      readableAddress = await LocationHelper.getPlaceLocation(
+          currentLocation.latitude, currentLocation.longitude);
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+
   String countryId;
   Map<String, String> realAddress = {};
   List<String> _supported = ['SA', 'KW', 'AE'];
 
-  Future<Position> getCurrentLocation() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: geo.LocationAccuracy.high);
-    return position;
-  }
-
-  List<AddressFromGoogleMap> fullAddress = [];
-
-  getAddressData() async {
-    Position position = await getCurrentLocation();
-    setState(() {
-      lat = position.latitude;
-      long = position.longitude;
-      _getAddressFromLatLng(lat, long);
-      _isLoading = false;
-    });
-    fullAddress = await LocationHelper.getPlaceLocation(
-        position.latitude, position.longitude);
-  }
+  List<AddressFromGoogleMap> readableAddress = [];
 
   getAddressDataWhenChange(double lt, double lng) async {
     await LocationHelper.getPlaceLocation(lt, lng).then((newAddress) {
       if (newAddress.length > 0) {
         realAddress.clear();
-        fullAddress.clear();
-        fullAddress = newAddress;
+        readableAddress.clear();
+        readableAddress = newAddress;
       }
     });
   }
@@ -161,15 +160,16 @@ class _AddressFromMapState extends State<AddressFromMap> {
                       size: 30.0,
                     ),
                     onPressed: () async {
-                      var p = await getCurrentLocation();
-                      getAddressDataWhenChange(p.latitude, p.longitude);
+                      getAddressDataWhenChange(
+                          currentLocation.latitude, currentLocation.longitude);
                       _controller.moveCamera(CameraUpdate.newCameraPosition(
                           CameraPosition(
-                              target: LatLng(p.latitude, p.longitude),
+                              target: LatLng(currentLocation.latitude,
+                                  currentLocation.longitude),
                               zoom: 16)));
                       setState(() {
-                        lat = p.latitude;
-                        long = p.longitude;
+                        lat = currentLocation.latitude;
+                        long = currentLocation.longitude;
                       });
                     },
                   ),
@@ -223,11 +223,11 @@ class _AddressFromMapState extends State<AddressFromMap> {
               height: MediaQuery.of(context).size.height / 16,
               child: RaisedButton(
                   padding: const EdgeInsets.all(8.0),
-                  onPressed: fullAddress.length > 0
+                  onPressed: readableAddress.length > 0
                       ? () {
-                          for (int i = 0; i < fullAddress.length; i++) {
-                            realAddress.putIfAbsent(fullAddress[i].type[0],
-                                () => fullAddress[i].shortName);
+                          for (int i = 0; i < readableAddress.length; i++) {
+                            realAddress.putIfAbsent(readableAddress[i].type[0],
+                                () => readableAddress[i].shortName);
                           }
                           countryId =
                               '${_supported.indexOf(realAddress['country']) + 1}';
@@ -288,7 +288,7 @@ class _AddressFromMapState extends State<AddressFromMap> {
   doSearch() {
     Geolocator().placemarkFromAddress(address).then((result) {
       setState(() {
-        fullAddress.clear();
+        readableAddress.clear();
         realAddress.clear();
       });
       _controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(

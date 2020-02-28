@@ -15,6 +15,7 @@ import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/providers/order_provider.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/brand_products_screen.dart';
+import 'package:topstyle/screens/cart_screen.dart';
 import 'package:topstyle/screens/checkoutScreen.dart';
 import 'package:topstyle/screens/login_screen.dart';
 import 'package:topstyle/screens/showProductImages.dart';
@@ -223,7 +224,7 @@ class _ProductDetailsState extends State<ProductDetails>
                               shape: BoxShape.circle,
                               color: Color(int.parse(
                                   '0xFF${productDetails.options[index].value}'))),
-                          child: productOptions[index].quantity > 1
+                          child: productOptions[index].quantity > 0
                               ? Container()
                               : Center(
                                   child: Icon(
@@ -461,6 +462,24 @@ class _ProductDetailsState extends State<ProductDetails>
     // We have to do it
   }
 
+  _showEmptyCartPopup() async {
+    return showModalBottomSheet(
+        context: context,
+        backgroundColor: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16.0),
+                topRight: Radius.circular(16.0))),
+        builder: (context) {
+          return Container(
+            height: 90.0,
+            child: Center(
+              child: Text(AppLocalization.of(context).translate("empty_cart")),
+            ),
+          );
+        });
+  }
+
   _remindMe(int poid) async {
     return showDialog(
       context: context,
@@ -602,37 +621,60 @@ class _ProductDetailsState extends State<ProductDetails>
                           Consumer<CartItemProvider>(
                               builder: (ctx, cart, _) => Padding(
                                     padding: const EdgeInsets.all(15.0),
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Image.asset(
-                                          'assets/icons/cart.png',
-                                          width: 20.0,
-                                          height: 25.0,
-                                          fit: BoxFit.fill,
-                                        ),
-                                        Positioned(
-                                          top: 11.0,
-                                          bottom: 4.0,
-                                          child: Consumer<CartItemProvider>(
-                                            builder: (ctx, cart, _) =>
-                                                Container(
-                                              margin: cart.allItemQuantity > 9
-                                                  ? const EdgeInsets.symmetric(
-                                                      horizontal: 4.0,
-                                                    )
-                                                  : const EdgeInsets.symmetric(
-                                                      horizontal: 6.0),
-                                              child: Text(
-                                                '${cart.allItemQuantity > 9 ? '9+' : cart.allItemQuantity == 0 ? '' : cart.allItemQuantity}',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 11.0,
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        cart.cartItems.length > 0
+                                            ? showModalBottomSheet(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius
+                                                        .only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    16.0),
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    16.0))),
+                                                context: context,
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .primaryColor,
+                                                builder: (ctx) => CartScreen())
+                                            : _showEmptyCartPopup();
+                                      },
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Image.asset(
+                                            'assets/icons/cart.png',
+                                            width: 20.0,
+                                            height: 25.0,
+                                            fit: BoxFit.fill,
+                                          ),
+                                          Positioned(
+                                            top: 11.0,
+                                            bottom: 4.0,
+                                            child: Consumer<CartItemProvider>(
+                                              builder: (ctx, cart, _) =>
+                                                  Container(
+                                                margin: cart.allItemQuantity > 9
+                                                    ? const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 4.0,
+                                                      )
+                                                    : const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 6.0),
+                                                child: Text(
+                                                  '${cart.allItemQuantity > 9 ? '9+' : cart.allItemQuantity == 0 ? '' : cart.allItemQuantity}',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: 11.0,
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        )
-                                      ],
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   )
 //                                Badge(
@@ -1491,13 +1533,17 @@ class _ProductDetailsState extends State<ProductDetails>
                                                         .kPAddedToCartIconColor,
                                                     size: 25,
                                                   )
-                                                : Image.asset(
-                                                    'assets/icons/cart.png',
-                                                    color: Colors.white,
-                                                    height: 22.0,
-                                                    width: 22.0,
-                                                    fit: BoxFit.fitHeight,
-                                                  )
+                                                : !_isProductAddedToCart
+                                                    ? Image.asset(
+                                                        'assets/icons/cart.png',
+                                                        color: Colors.white,
+                                                        height: 22.0,
+                                                        width: 22.0,
+                                                        fit: BoxFit.fitHeight,
+                                                      )
+                                                    : Container(
+                                                        // when loading in adding to cart dont show cart image
+                                                        )
                                             : Container(),
                                         SizedBox(
                                           width: 8.0,

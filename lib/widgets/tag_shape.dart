@@ -19,11 +19,11 @@ class TagShape extends StatelessWidget {
                   topLeft: Radius.circular(1.0),
                   bottomLeft: Radius.circular(1.0),
                   bottomRight: Radius.circular(16.0)))),
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 3.0),
       child: Text(
         '${AppLocalization.of(context).translate('discount_electronic_payment')} $discount %',
         style: TextStyle(
-            color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold),
+            color: Colors.white, fontSize: 14.0, fontWeight: FontWeight.bold),
       ),
     );
   }

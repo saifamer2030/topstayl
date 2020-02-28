@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -131,8 +130,8 @@ class _HomeScreenState extends State<HomeScreen>
                     borderRadius: BorderRadius.circular(10.0),
                     color: Colors.grey),
               )
-            : CachedNetworkImage(
-                imageUrl: bannerUrl,
+            : Image.network(
+                bannerUrl,
                 fit: BoxFit.fill,
               ),
         decoration: BoxDecoration(
@@ -152,8 +151,8 @@ class _HomeScreenState extends State<HomeScreen>
               )
             : ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: CachedNetworkImage(
-                  imageUrl: bannerUrl,
+                child: Image.network(
+                  bannerUrl,
                   fit: BoxFit.fill,
                 ),
               ),

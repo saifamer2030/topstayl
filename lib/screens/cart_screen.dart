@@ -53,13 +53,12 @@ class _CartScreenState extends State<CartScreen>
     setState(() {
       _isLoading = false;
     });
-//    print(_allCartItems.length);
   }
 
   @override
   void initState() {
-    getCartData();
     super.initState();
+    getCartData();
   }
 
   @override
@@ -68,6 +67,7 @@ class _CartScreenState extends State<CartScreen>
     final unavailableList = cartItems
         .where((e) => e.isAvailable == 0 || e.quantity > e.availableQuantity)
         .toList();
+    final cart = Provider.of<CartItemProvider>(context);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
@@ -75,7 +75,7 @@ class _CartScreenState extends State<CartScreen>
           ? Center(
               child: AdaptiveProgressIndicator(),
             )
-          : cartItems.length > 0
+          : cart.cartItems.length > 0
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
@@ -100,25 +100,9 @@ class _CartScreenState extends State<CartScreen>
                             )),
                     Expanded(
                       child: ListView.builder(
-                          itemCount: cartItems.length,
-                          itemBuilder: (ctx, index) => CartItemListView(
-                                productId: cartItems[index].id,
-                                productName: cartItems[index].productName,
-                                brandName: cartItems[index].brandName,
-                                productImageUrl:
-                                    cartItems[index].productImageUrl,
-                                productPrice: cartItems[index].productPrice,
-                                discountPrice: cartItems[index].discount,
-                                isAvailable: cartItems[index].isAvailable,
-                                availableQuantity:
-                                    cartItems[index].availableQuantity,
-                                category: cartItems[index].category,
-                                quantity: cartItems[index].quantity > 0
-                                    ? cartItems[index].quantity
-                                    : 0,
-                                type: cartItems[index].type,
-                                value: cartItems[index].value,
-                              )),
+                          itemCount: cart.cartItems.length,
+                          itemBuilder: (ctx, index) =>
+                              CartItemListView(cartItems[index])),
                     ),
                     Container(
                       decoration: BoxDecoration(
@@ -151,13 +135,11 @@ class _CartScreenState extends State<CartScreen>
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  Consumer<CartItemProvider>(
-                                    builder: (context, cart, _) => Text(
-                                      '${cart.totalPrice.toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  )
+                                  Text(
+                                    '${cart.totalPrice.toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                                 ],
                               ),
                             ),
