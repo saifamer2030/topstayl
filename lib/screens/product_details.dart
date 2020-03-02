@@ -28,7 +28,6 @@ import 'package:topstyle/widgets/tag_shape.dart';
 import '../providers/products_provider.dart';
 
 class ProductDetails extends StatefulWidget {
-  static const String routeName = 'product-details';
   final int productId;
 
   ProductDetails(this.productId);

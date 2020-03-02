@@ -44,6 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
     } else {
       _createAccountKey.currentState.save();
+      print(_registerMap['phone']);
       setState(() {
         _isLoading = true;
       });
@@ -114,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     getUserCountryAndLanguage();
   }
 
-  String country = '00966';
+  String country = '+966';
 
   getUserCountryAndLanguage() async {
     var prefs = await SharedPreferences.getInstance();
@@ -167,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   var phone;
-  String countryCode, image;
+  String countryCode = '+966', image;
 
   _showPopupCountry() async {
     return showDialog(

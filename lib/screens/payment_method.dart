@@ -35,6 +35,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
   bool _isInit = true;
   bool _isLoading = false;
   bool _isBtnLoading = false;
+  bool _isCouponClicked = false;
   String coupon;
   int couponPercentage = 0;
   double couponValue = 0.0;
@@ -150,37 +151,40 @@ class _PaymentMethodState extends State<PaymentMethod> {
 
     SetOrder orderData;
     var token = await userData.isAuthenticated();
-    var prefs = await SharedPreferences.getInstance();
-    int userCheckoutId = prefs.getInt('userCheckoutId');
-    orderData = await Provider.of<OrdersProvider>(context).addOrder(
-        token['Authorization'],
-        _paymentRadioGroup.toString(),
-        coupon == null ? '' : coupon,
-        '',
-        userCheckoutId,
-        '');
-    setState(() {
-      _isBtnLoading = false;
-    });
+    SharedPreferences.getInstance().then((prefs) async{
+      int userCheckoutId = prefs.getInt('userCheckoutId');
+      orderData = await Provider.of<OrdersProvider>(context).addOrder(
+          token['Authorization'],
+          _paymentRadioGroup.toString(),
+          coupon == null ? '' : coupon,
+          '',
+          userCheckoutId,
+          '');
+      setState(() {
+        _isBtnLoading = false;
+      });
 
-    if (orderData.orderId != null) {
-      if (orderData.paymentUrl == "" ||
-          orderData.paymentUrl == null && orderData.checkoutId == "" ||
-          orderData.checkoutId == null) {
-        print('is cash payment');
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-                builder: (context) => CheckoutDoneScreen(orderData.orderId)),
-            (Route<dynamic> roue) => false);
-      } else {
-        print(orderData.paymentUrl);
-        print('is credit payment');
+      if (orderData.orderId != null) {
+        if (orderData.paymentUrl == "" ||
+            orderData.paymentUrl == null && orderData.checkoutId == "" ||
+            orderData.checkoutId == null) {
+          print('is cash payment');
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (context) => CheckoutDoneScreen(orderData.orderId)),
+                  (Route<dynamic> roue) => false);
+        } else {
+          print(orderData.paymentUrl);
+          print('is credit payment');
 //        Navigator.of(context).push(
 //            MaterialPageRoute(builder: (context) => PaymentWebView(orderData)));
+        }
+      } else {
+        print('order data is null');
       }
-    } else {
-      print('order data is null');
-    }
+    });
+
+
   }
 
   static const channel = const MethodChannel('com.topstylesa/applePay');
@@ -469,7 +473,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                             onChanged: (val) {
                               setState(() {
                                 coupon = val;
-                                if(coupon == '' ){
+                                if (coupon == '') {
                                   couponValue = 0.0;
                                 }
                               });
@@ -488,10 +492,16 @@ class _PaymentMethodState extends State<PaymentMethod> {
                           flex: 2,
                           child: GestureDetector(
                             onTap: () async {
+                              setState(() {
+                                _isCouponClicked = true;
+                              });
                               var token = await userData.isAuthenticated();
                               Provider.of<CartItemProvider>(context)
                                   .applyCoupon(token['Authorization'], coupon)
                                   .then((coupon) {
+                                setState(() {
+                                  _isCouponClicked = false;
+                                });
                                 if (coupon['couponValue'] > 0.0) {
                                   setState(() {
                                     couponValue = coupon['couponValue'];
@@ -530,13 +540,15 @@ class _PaymentMethodState extends State<PaymentMethod> {
                               });
                             },
                             child: couponValue == 0.0
-                                ? Text(
-                                    AppLocalization.of(context)
-                                        .translate("check"),
-                                    textAlign: TextAlign.end,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  )
+                                ? _isCouponClicked
+                                    ? AdaptiveProgressIndicator()
+                                    : Text(
+                                        AppLocalization.of(context)
+                                            .translate("check"),
+                                        textAlign: TextAlign.end,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )
                                 : Icon(
                                     Icons.check_circle,
                                     color: CustomColors.kPAddedToCartIconColor,
@@ -588,9 +600,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                       checkoutData != null
                           ? Text(
                               (checkoutData.summery.total -
-                                          checkoutData.summery.discount -
-                                          couponValue -
-                                          _paymentDiscount) >=
+                                          checkoutData.summery.discount) >=
                                       checkoutData.address.freeShipping
                                   ? AppLocalization.of(context)
                                       .translate('free_shipping')
@@ -688,7 +698,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                       ),
                       Text(
                         checkoutData != null
-                            ? '${(checkoutData.summery.total - couponValue - checkoutData.summery.discount + _paymentDiscount + ((checkoutData.summery.total - checkoutData.summery.discount - couponValue - _paymentDiscount) >= checkoutData.address.freeShipping ? 0 : checkoutData.address.cost) + _cashOnDeliveryValueFees).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}'
+                            ? '${(checkoutData.summery.total - couponValue - checkoutData.summery.discount + _paymentDiscount + ((checkoutData.summery.total - checkoutData.summery.discount) >= checkoutData.address.freeShipping ? 0 : checkoutData.address.cost) + _cashOnDeliveryValueFees).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}'
                             : '',
                         style: TextStyle(fontSize: widgetSize.subTitle),
                       ),
@@ -719,7 +729,8 @@ class _PaymentMethodState extends State<PaymentMethod> {
                     ),
                     child: FlatButton(
                       onPressed: checkoutData != null &&
-                              checkoutData.address.country != null
+                              checkoutData.address.country != null &&
+                              !_isBtnLoading
                           ? () {
                               if (_paymentRadioGroup == 1) {
                                 _doCashOnDeliveryPayment();
@@ -732,9 +743,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                         _paymentDiscount +
                                         ((checkoutData.summery.total -
                                                     checkoutData
-                                                        .summery.discount -
-                                                    couponValue -
-                                                    _paymentDiscount) >=
+                                                        .summery.discount) >=
                                                 checkoutData
                                                     .address.freeShipping
                                             ? 0

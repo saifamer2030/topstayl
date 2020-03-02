@@ -9,6 +9,8 @@ import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/ads_model.dart';
+import 'package:topstyle/screens/brand_products_screen.dart';
+import 'package:topstyle/screens/product_details.dart';
 import 'package:topstyle/screens/see_more_screen.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 import 'package:topstyle/widgets/category_item.dart';
@@ -25,7 +27,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin {
-  List<Ads> _images = [];
+//  List<Ads> _images = [];
   List<Ads> slidesBanner = [];
   Ads adsBanner;
   Ads bannerA;
@@ -36,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen>
   Ads bannerLenses;
   Ads bannerDevice;
   Ads bannerNails;
-  List<Ads> category = [];
 
   Widget _buildImagesSlider() {
     return Container(
@@ -66,7 +67,38 @@ class _HomeScreenState extends State<HomeScreen>
               dotIncreasedColor: Color(0xff9d9d9d),
               onImageTap: (int index) {
                 // write code when slide clicked go to advertisement content
-                print(index);
+                if (slidesBanner[index].adsType == 'Category') {
+                  // Send it to SeeMore with Category name
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SeeMoreScreen(
+                        categoryName: slidesBanner[index].isMain == 1
+                            ? slidesBanner[index].adsValue
+                            : '',
+                        subCategoryName: slidesBanner[index].isMain == 1
+                            ? slidesBanner[index].adsValue
+                            : '',
+                      ),
+                    ),
+                  );
+                } else if (slidesBanner[index].adsType == 'Brand') {
+                  // Send It To Brands with brand name , brand ID
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => BrandProductsScreen(
+                          slidesBanner[index].brandName,
+                          slidesBanner[index].adsValue),
+                    ),
+                  );
+                } else if (slidesBanner[index].adsType == 'Product') {
+                  // send it  to product Details with product Id
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ProductDetails(
+                          int.parse(slidesBanner[index].adsValue)),
+                    ),
+                  );
+                }
               },
             )
           : Container(
@@ -117,21 +149,48 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildCategoryBanner(String bannerUrl, Function action) {
+  Widget _buildCategoryBanner(Ads categoryBanner) {
     return GestureDetector(
-      onTap: action,
+      onTap: () {
+        if (categoryBanner.adsType == 'Category') {
+          // Send it to SeeMore with Category name
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SeeMoreScreen(
+                categoryName:
+                    categoryBanner.isMain == 1 ? categoryBanner.adsValue : '',
+                subCategoryName:
+                    categoryBanner.isMain == 1 ? categoryBanner.adsValue : '',
+              ),
+            ),
+          );
+        } else if (categoryBanner.adsType == 'Brand') {
+          // Send It To Brands with brand name , brand ID
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => BrandProductsScreen(
+                  categoryBanner.brandName, categoryBanner.adsValue),
+            ),
+          );
+        } else if (categoryBanner.adsType == 'Product') {
+          // send it  to product Details with product Id
+          print(categoryBanner.imagePath);
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  ProductDetails(int.parse(categoryBanner.adsValue)),
+            ),
+          );
+        }
+      },
       child: Container(
         height: 150,
         margin: const EdgeInsets.only(
             left: 16.0, right: 16.0, top: 30.0, bottom: 20.0),
-        child: bannerUrl == ''
-            ? Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.grey),
-              )
+        child: categoryBanner.imagePath == ''
+            ? Container()
             : Image.network(
-                bannerUrl,
+                categoryBanner.imagePath,
                 fit: BoxFit.fill,
               ),
         decoration: BoxDecoration(
@@ -140,20 +199,51 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildTowBanner(String bannerUrl) {
+  Widget _buildTowBanner(Ads childBanner) {
     return Expanded(
       child: Container(
-        child: bannerUrl == ''
-            ? Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.grey),
-              )
-            : ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: Image.network(
-                  bannerUrl,
-                  fit: BoxFit.fill,
+        child: childBanner.imagePath == ''
+            ? Container()
+            : GestureDetector(
+                onTap: () {
+                  if (childBanner.adsType == 'Category') {
+                    // Send it to SeeMore with Category name
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => SeeMoreScreen(
+                          categoryName: childBanner.isMain == 1
+                              ? childBanner.adsValue
+                              : '',
+                          subCategoryName: childBanner.isMain == 1
+                              ? childBanner.adsValue
+                              : '',
+                        ),
+                      ),
+                    );
+                  } else if (childBanner.adsType == 'Brand') {
+                    // Send It To Brands with brand name , brand ID
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => BrandProductsScreen(
+                            childBanner.brandName, childBanner.adsValue),
+                      ),
+                    );
+                  } else if (childBanner.adsType == 'Product') {
+                    // send it  to product Details with product Id
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetails(int.parse(childBanner.adsValue)),
+                      ),
+                    );
+                  }
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.network(
+                    childBanner.imagePath,
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
         decoration: BoxDecoration(
@@ -179,6 +269,7 @@ class _HomeScreenState extends State<HomeScreen>
                       : prefs.getString('language_code'),
                   data['userToken'])
               .then((value) {
+            List<Ads> _images = [];
             _images = value;
             _images.forEach(
               (slide) {
@@ -210,7 +301,6 @@ class _HomeScreenState extends State<HomeScreen>
             });
           });
         } else {
-//          print('User not Registered');
           Provider.of<ProductsProvider>(context, listen: false)
               .fetchAllProducts(
                   prefs.getString('language_code') == null
@@ -218,6 +308,7 @@ class _HomeScreenState extends State<HomeScreen>
                       : prefs.getString('language_code'),
                   'none')
               .then((value) {
+            List<Ads> _images = [];
             _images = value;
             _images.forEach(
               (slide) {
@@ -283,25 +374,35 @@ class _HomeScreenState extends State<HomeScreen>
                       ? GestureDetector(
                           onTap: () {
                             if (adsBanner.adsType == 'Category') {
-                              String categoryName = adsBanner.adsValue;
-//                              print(categoryName);
-//                              Navigator.of(context).push(MaterialPageRoute(
-//                                  builder: (context) =>
-//                                      SeeMoreScreen('adsBanner.adsType')));
-
                               // Send it to SeeMore with Category name
-//                              Navigator.of(context).push(
-//                                MaterialPageRoute(
-//                                  builder: (context) => SeeMoreScreen(
-//                                    categoryName: categoryName,
-//                                    subCategoryName: '',
-//                                  ),
-//                                ),
-//                              );
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => SeeMoreScreen(
+                                    categoryName: adsBanner.isMain == 1
+                                        ? adsBanner.adsValue
+                                        : '',
+                                    subCategoryName: adsBanner.isMain == 1
+                                        ? adsBanner.adsValue
+                                        : '',
+                                  ),
+                                ),
+                              );
                             } else if (adsBanner.adsType == 'Brand') {
                               // Send It To Brands with brand name , brand ID
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => BrandProductsScreen(
+                                      adsBanner.brandName, adsBanner.adsValue),
+                                ),
+                              );
                             } else if (adsBanner.adsType == 'Product') {
                               // send it  to product Details with product Id
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetails(
+                                      int.parse(adsBanner.adsValue)),
+                                ),
+                              );
                             }
                           },
                           child: Container(
@@ -437,14 +538,14 @@ class _HomeScreenState extends State<HomeScreen>
                     child: Row(
                       children: <Widget>[
                         bannerA == null
-                            ? _buildTowBanner('')
-                            : _buildTowBanner(bannerA.imagePath),
+                            ? Container()
+                            : _buildTowBanner(bannerA),
                         SizedBox(
                           width: 10.0,
                         ),
                         bannerB == null
-                            ? _buildTowBanner('')
-                            : _buildTowBanner(bannerB.imagePath),
+                            ? Container()
+                            : _buildTowBanner(bannerB),
                       ],
                     ),
                   ),
@@ -456,14 +557,8 @@ class _HomeScreenState extends State<HomeScreen>
                     child: ProductListView(bestSellerProducts),
                   ),
                   bannerMakeup == null
-                      ? _buildCategoryBanner('', null)
-                      : _buildCategoryBanner(bannerMakeup.imagePath, () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SeeMoreScreen(
-                                    categoryName: 'Makeup',
-                                    subCategoryName: '',
-                                  )));
-                        }),
+                      ? Container()
+                      : _buildCategoryBanner(bannerMakeup),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Makeup"), () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -476,14 +571,8 @@ class _HomeScreenState extends State<HomeScreen>
                       height: widgetSize.productCardSize,
                       child: ProductListView(makeupProducts)),
                   bannerPerfume == null
-                      ? _buildCategoryBanner('', null)
-                      : _buildCategoryBanner(bannerPerfume.imagePath, () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SeeMoreScreen(
-                                    categoryName: 'Perfume',
-                                    subCategoryName: '',
-                                  )));
-                        }),
+                      ? Container()
+                      : _buildCategoryBanner(bannerPerfume),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Perfume"), () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -496,14 +585,8 @@ class _HomeScreenState extends State<HomeScreen>
                       height: widgetSize.productCardSize,
                       child: ProductListView(perfumesProducts)),
                   bannerCare == null
-                      ? _buildCategoryBanner('', null)
-                      : _buildCategoryBanner(bannerCare.imagePath, () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SeeMoreScreen(
-                                    categoryName: 'Care',
-                                    subCategoryName: '',
-                                  )));
-                        }),
+                      ? Container()
+                      : _buildCategoryBanner(bannerCare),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Care"), () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -516,12 +599,8 @@ class _HomeScreenState extends State<HomeScreen>
                       height: widgetSize.productCardSize,
                       child: ProductListView(careProducts)),
                   bannerNails == null
-                      ? _buildCategoryBanner('', null)
-                      : _buildCategoryBanner(bannerNails.imagePath, () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SeeMoreScreen(
-                                  categoryName: 'Nails', subCategoryName: '')));
-                        }),
+                      ? Container()
+                      : _buildCategoryBanner(bannerNails),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Nails"), () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -532,13 +611,8 @@ class _HomeScreenState extends State<HomeScreen>
                       height: widgetSize.productCardSize,
                       child: ProductListView(nailsProducts)),
                   bannerLenses == null
-                      ? _buildCategoryBanner('', null)
-                      : _buildCategoryBanner(bannerLenses.imagePath, () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SeeMoreScreen(
-                                  categoryName: 'Lenses',
-                                  subCategoryName: '')));
-                        }),
+                      ? Container()
+                      : _buildCategoryBanner(bannerLenses),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Lenses"), () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -549,13 +623,8 @@ class _HomeScreenState extends State<HomeScreen>
                       height: widgetSize.productCardSize,
                       child: ProductListView(lensesProducts)),
                   bannerDevice == null
-                      ? _buildCategoryBanner('', null)
-                      : _buildCategoryBanner(bannerDevice.imagePath, () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SeeMoreScreen(
-                                  categoryName: 'Devices',
-                                  subCategoryName: '')));
-                        }),
+                      ? Container()
+                      : _buildCategoryBanner(bannerDevice),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("Devices"), () {
                     Navigator.of(context).push(MaterialPageRoute(

@@ -59,7 +59,7 @@ class _CartItemListViewState extends State<CartItemListView> {
     });
     final String lang = appLanguage.appLocal.toString();
     var userData = await userProvider.isAuthenticated();
-    await Provider.of<CartItemProvider>(context)
+    Provider.of<CartItemProvider>(context)
         .removeProductById(widget.product.id, lang, userData['Authorization']);
     setState(() {
       _isDeletePressed = false;
@@ -345,7 +345,7 @@ class _CartItemListViewState extends State<CartItemListView> {
                           child: GestureDetector(
                             onTap: _isDeletePressed
                                 ? null
-                                : () async {
+                                : () {
                                     _deleteProduct();
 //                            print(userData['Authorization']);
                                   },

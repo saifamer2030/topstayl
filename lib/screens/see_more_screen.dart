@@ -154,7 +154,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
     final String lang = appLanguage.appLocal.toString();
     var userData = await userProvider.isAuthenticated();
     print('category name ${widget.categoryName}');
-    print('category name ${widget.subCategoryName}');
+    print('sub category name ${widget.subCategoryName}');
     setState(() {
       _seeMoreLoading = true;
     });
@@ -1983,8 +1983,6 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
       pageNumber > 1 ? _seeMoreLoading = true : _isLoading = true;
     });
     var userData = await userProvider.isAuthenticated();
-//    print(userData['Authorization']);
-
     Provider.of<ProductsProvider>(context)
         .allDataInSpecificCategory(
             widget.subCategoryName == ''
@@ -2001,9 +1999,9 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
         _products.addAll(List<ProductsModel>.from(list));
         lastPage = products['last_page'];
       }
-
 //      print('call product num $pageNumber and lenght is ${_products.length}');
       setState(() {
+        loaded = false;
         _isLoading = false;
         _seeMoreLoading = false;
         _isFilteredData = false;
@@ -2028,6 +2026,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
       }
       print(pageNumberOrdered);
     } else {
+//      print('else execute  , last page : $lastPage');
       pageNumber++;
       if (pageNumber <= lastPage) getProductsData(pageNumber);
     }

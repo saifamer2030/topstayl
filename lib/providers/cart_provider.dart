@@ -11,9 +11,7 @@ import '../models/cart_item_model.dart';
 class CartItemProvider with ChangeNotifier {
   List<CartItemModel> _cartItems = [];
 
-  List<CartItemModel> get cartItems {
-    return List.from(_cartItems);
-  }
+  List<CartItemModel> get cartItems => _cartItems;
 
   Future<Map<String, double>> applyCoupon(String token, String coupon) async {
     Map<String, double> couponValue = {

@@ -40,7 +40,7 @@ class _BrandProductsScreenState extends State<BrandProductsScreen> {
           : prefs.getString('language_code'),
     )
         .then((products) {
-      var list = products['data'] as List;
+      var list = products['data'] as List ?? [];
       _products.addAll(List<ProductsModel>.from(list));
       lastPage = products['last_page'];
       print('call product num $pageNumber and lenght is ${_products.length}');
@@ -107,7 +107,7 @@ class _BrandProductsScreenState extends State<BrandProductsScreen> {
                   ? Center(
                       child: AdaptiveProgressIndicator(),
                     )
-                  : _products.length > 1
+                  : _products.length > 0
                       ? GridView.builder(
                           controller: _controller,
                           itemCount: _products.length,

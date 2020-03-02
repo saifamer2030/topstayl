@@ -20,6 +20,26 @@ class ProductsProvider with ChangeNotifier {
   List<ProductsModel> _favorite = [];
   List<Ads> _ads = [];
 
+  List<ProductsModel> get devices => _devices;
+
+  List<ProductsModel> get nails => _nails;
+
+  List<ProductsModel> get lenses => _lenses;
+
+  List<ProductsModel> get care => _care;
+
+  List<ProductsModel> get perfume => _perfume;
+
+  List<ProductsModel> get makeup => _makeup;
+
+  List<ProductsModel> get bestSeller => _bestSeller;
+
+  List<ProductsModel> get favorite => _favorite;
+
+  List<Ads> get ads {
+    return List.from(_ads);
+  }
+
   Future<int> sendEmailReminder(String email, String poid) async {
     int result = 0;
     try {
@@ -163,7 +183,6 @@ class ProductsProvider with ChangeNotifier {
       String category, String lang, int pageNumber, String token) async {
     List<ProductsModel> _allProductsFilter = [];
     Map<String, dynamic> responseMap;
-    print('----------------------- $category-------------');
     try {
       final response = token == 'none'
           ? await http.get(
@@ -205,6 +224,8 @@ class ProductsProvider with ChangeNotifier {
       String lang, int pageNumber, String order, String token) async {
     List<ProductsModel> _allProductsFilter = [];
     Map<String, dynamic> responseMap;
+    print(order);
+    print(pageNumber);
     try {
       final response = token == 'none'
           ? await http.get(
@@ -222,6 +243,7 @@ class ProductsProvider with ChangeNotifier {
                 });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body)['data'] != null) {
+          print(jsonDecode(response.body));
           _allProductsFilter = ProductsModel.parseProducts(
               jsonDecode(response.body)['data'] as List);
           responseMap = {
@@ -266,6 +288,7 @@ class ProductsProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         _allProducts = ProductsModel.parseProducts(
             jsonDecode(response.body)['data'] as List);
+//        print(jsonDecode(response.body)['meta']);
         responseMap = {
           'data': _allProducts,
           'last_page': jsonDecode(response.body)['meta']['last_page'],
@@ -280,6 +303,7 @@ class ProductsProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> allDataWithSpecificBrand(
       String brandId, int pageNumber, String lang) async {
+    print('barand is :$brandId');
     List<ProductsModel> _allProducts = [];
     Map<String, dynamic> responseMap;
     try {
@@ -342,42 +366,6 @@ class ProductsProvider with ChangeNotifier {
       print(e.toString());
     }
     return _ads;
-  }
-
-  List<ProductsModel> get devices {
-    return List.from(_devices);
-  }
-
-  List<ProductsModel> get nails {
-    return List.from(_nails);
-  }
-
-  List<ProductsModel> get lenses {
-    return List.from(_lenses);
-  }
-
-  List<ProductsModel> get care {
-    return List.from(_care);
-  }
-
-  List<ProductsModel> get perfume {
-    return List.from(_perfume);
-  }
-
-  List<ProductsModel> get makeup {
-    return List.from(_makeup);
-  }
-
-  List<ProductsModel> get bestSeller {
-    return List.from(_bestSeller);
-  }
-
-  List<ProductsModel> get favorite {
-    return List.from(_favorite);
-  }
-
-  List<Ads> get ads {
-    return List.from(_ads);
   }
 
 //  ProductDetailsModelWithList get productDetails {

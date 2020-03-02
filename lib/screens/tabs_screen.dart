@@ -76,13 +76,14 @@ class _TabsScreenState extends State<TabsScreen> {
         .fetchAllCartItem(lang, token['Authorization']);
   }
 
+  bool _isInitialized = false;
+
   @override
-  void didChangeDependencies() {
+  void initState() {
     getCartData();
-    super.didChangeDependencies();
+    super.initState();
   }
 
-  bool _isInitialized = false;
   @override
   Widget build(BuildContext context) {
     if (!_isInitialized) {
@@ -90,7 +91,6 @@ class _TabsScreenState extends State<TabsScreen> {
       widgetSize = WidgetSize(screenConfig);
       _isInitialized = true;
     }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(

@@ -110,29 +110,30 @@ class ProductItem extends StatelessWidget {
                   Positioned(
                     top: 1.0,
                     left: 1.0,
-                    child: product.status == ""
-                        ? Container()
-                        : Container(
-                            width: 60.0,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 5.0, vertical: 4.0),
-                            decoration: BoxDecoration(
-                                color: CustomColors.kTabBarIconColor,
-                                borderRadius: BorderRadius.circular(10.0)),
-                            child: Center(
-                              child: Text(
-                                product.status == 'new'
-                                    ? AppLocalization.of(context)
-                                        .translate("new_tag")
-                                    : AppLocalization.of(context)
-                                        .translate("exclusive_tag"),
-                                style: TextStyle(
-                                    fontSize: widgetSize.iconText - 1,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
+                    child:
+                        product.status == "new" || product.status == "exclusive"
+                            ? Container(
+                                width: 60.0,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5.0, vertical: 4.0),
+                                decoration: BoxDecoration(
+                                    color: CustomColors.kTabBarIconColor,
+                                    borderRadius: BorderRadius.circular(10.0)),
+                                child: Center(
+                                  child: Text(
+                                    product.status == 'new'
+                                        ? AppLocalization.of(context)
+                                            .translate("new_tag")
+                                        : AppLocalization.of(context)
+                                            .translate("exclusive_tag"),
+                                    style: TextStyle(
+                                        fontSize: widgetSize.iconText - 1,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              )
+                            : Container(),
                   ),
                   product.itemsCount == 1 && product.quantity < 1
                       ? Positioned(
