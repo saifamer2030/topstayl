@@ -64,8 +64,9 @@ class _ProductDetailsState extends State<ProductDetails>
   getProductDetailsData() async {
     var token = await userProvider.isAuthenticated();
     final String lang = appLanguage.appLocal.toString();
-    productDetailsModelWithList = await Provider.of<ProductsProvider>(context)
-        .productDetailsData(widget.productId, lang, token['Authorization']);
+    productDetailsModelWithList =
+        await Provider.of<ProductsProvider>(context, listen: false)
+            .productDetailsData(widget.productId, lang, token['Authorization']);
     productDetails = productDetailsModelWithList.productDetailsModel;
     if (productDetails.options.length > 0) {
       _isProductChosen = true;
@@ -83,7 +84,7 @@ class _ProductDetailsState extends State<ProductDetails>
   getCartData() async {
     var token = await userProvider.isAuthenticated();
     final String lang = appLanguage.appLocal.toString();
-    _lists = await Provider.of<CartItemProvider>(context)
+    _lists = await Provider.of<CartItemProvider>(context, listen: false)
         .fetchAllCartItem(lang, token['Authorization']);
 
     _lists.forEach((data) {
@@ -273,8 +274,9 @@ class _ProductDetailsState extends State<ProductDetails>
 
   Future<int> _sendYourComment() async {
     var token = await userProvider.isAuthenticated();
-    int response = await Provider.of<ProductsProvider>(context).submitComment(
-        comment, productDetails.id, _initRatting, token['Authorization']);
+    int response = await Provider.of<ProductsProvider>(context, listen: false)
+        .submitComment(
+            comment, productDetails.id, _initRatting, token['Authorization']);
     if (response == 1) {
       _commentController.clear();
       _initRatting = 0.0;
@@ -543,7 +545,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                   _isSent = true;
                                 });
                                 int result =
-                                    await Provider.of<ProductsProvider>(context)
+                                    await Provider.of<ProductsProvider>(context,
+                                            listen: false)
                                         .sendEmailReminder(
                                             remindEmail, poid.toString());
                                 if (result == 1) {
@@ -590,6 +593,7 @@ class _ProductDetailsState extends State<ProductDetails>
 
   @override
   Widget build(BuildContext context) {
+    print(widget.productId);
     screenConfig = ScreenConfig(context);
     widgetSize = WidgetSize(screenConfig);
     return _isLoading
@@ -1463,7 +1467,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                                               });
                                                                             } else {
                                                                               var token = await userProvider.isAuthenticated();
-                                                                              Provider.of<OrdersProvider>(context).getUserAddresses(token['Authorization']).then((address) {
+                                                                              Provider.of<OrdersProvider>(context, listen: false).getUserAddresses(token['Authorization']).then((address) {
                                                                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => CheckoutScreen(0, address)));
                                                                               });
                                                                             }

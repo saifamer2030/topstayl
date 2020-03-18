@@ -36,7 +36,8 @@ class _OrderDetailsState extends State<OrderDetails> {
       _isLoading = true;
     });
     var token = await userProvider.isAuthenticated();
-    orderDetailsModel = await Provider.of<OrdersProvider>(context)
+    orderDetailsModel = await Provider.of<OrdersProvider>(context,
+            listen: false)
         .getOrderDetails(widget.productId.toString(), token['Authorization']);
     setState(() {
       _isLoading = false;
@@ -59,9 +60,9 @@ class _OrderDetailsState extends State<OrderDetails> {
       _isLoading = true;
     });
     var token = await userProvider.isAuthenticated();
-    var result = await Provider.of<OrdersProvider>(context).cancelOrder(
-        token['Authorization'],
-        orderDetailsModel.orderModel.orderId.toString());
+    var result = await Provider.of<OrdersProvider>(context, listen: false)
+        .cancelOrder(token['Authorization'],
+            orderDetailsModel.orderModel.orderId.toString());
     setState(() {
       _isLoading = false;
     });

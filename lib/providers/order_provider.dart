@@ -67,10 +67,13 @@ class OrdersProvider with ChangeNotifier {
       });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body)['data'] != null) {
+          print(jsonDecode(response.body)['data']);
           var _list = jsonDecode(response.body)['data'] as List;
           _orders =
               _list.map((order) => odModel.OrderModel.fromJson(order)).toList();
         }
+      } else {
+        print('status code is : ${response.statusCode}');
       }
     } catch (error) {
       print(error.toString());
@@ -129,11 +132,11 @@ class OrdersProvider with ChangeNotifier {
       String checkoutId, int userCheckoutId, String paymentResponse) async {
     SetOrder orderData;
     print(
-        '------------------------------$checkoutId---------------------------------');
+        '------------------ Checkout ID :----------------$checkoutId---------------------------------');
     print(
-        '------------------------------$paymentId---------------------------------');
+        '------------------ Payment ID :------------$paymentId---------------------------------');
     print(
-        '------------------------------$userCheckoutId---------------------------------');
+        '------------------- UserCheckout ID :---------$userCheckoutId---------------------------------');
     try {
       final response = await http.post('${ApiUtil.BASE_URL}setOrder', headers: {
         HttpHeaders.authorizationHeader: 'Bearer $token',

@@ -91,7 +91,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<UserProvider>(context)
+      Provider.of<UserProvider>(context, listen: false)
           .resetPassword(_resetMap['token'], _resetMap['old'], _resetMap['new'])
           .then((resetMsg) {
         setState(() {

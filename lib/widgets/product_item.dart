@@ -189,9 +189,9 @@ class ProductItem extends StatelessWidget {
               Container(
                 height: constraints.maxHeight * 0.06,
                 child: product.options.length > 1
-                    ? product.options[0].optionType == 'size'
-                        ? Container()
-                        : _buildOptions(product.options, context)
+                    ? product.options[0].optionType == 'color'
+                        ? _buildOptions(product.options, context)
+                        : Container()
                     : Container(),
               ),
               Container(

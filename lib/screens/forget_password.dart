@@ -227,7 +227,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<UserProvider>(context).otpByEmail(email).then((msg) {
+      Provider.of<UserProvider>(context, listen: false)
+          .otpByEmail(email)
+          .then((msg) {
         setState(() {
           _isLoading = false;
         });
@@ -257,7 +259,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<UserProvider>(context).otpByPhone(phone, "1").then((msg) {
+      Provider.of<UserProvider>(context, listen: false)
+          .otpByPhone(phone, "1")
+          .then((msg) {
         setState(() {
           _isLoading = false;
         });

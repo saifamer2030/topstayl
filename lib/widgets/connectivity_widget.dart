@@ -17,7 +17,6 @@ class ConnectivityWidget extends StatefulWidget {
 class _ConnectivityWidgetState extends State<ConnectivityWidget> {
   @override
   void dispose() {
-    // TODO: implement dispose
     widget.networkProvider.disposeStreams();
     super.dispose();
   }

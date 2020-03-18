@@ -42,7 +42,7 @@ class _ChangePasswordOtpScreenState extends State<ChangePasswordOtpScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<UserProvider>(context)
+      Provider.of<UserProvider>(context, listen: false)
           .changeFromOtp(
               data['type'] == 'phone' ? data['phone'] : data['email'],
               data['type'].toString(),
@@ -85,9 +85,6 @@ class _ChangePasswordOtpScreenState extends State<ChangePasswordOtpScreen> {
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments as Map;
-//    print(data['phone']);
-//    print(data['email']);
-//    print(data['type']);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(

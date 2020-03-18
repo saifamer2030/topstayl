@@ -129,7 +129,7 @@ class _OtpScreenState extends State<OtpScreen> {
       _start = 45;
     });
     try {
-      Provider.of<UserProvider>(context)
+      Provider.of<UserProvider>(context, listen: false)
           .otpByPhone(forgetMethod['phone'], "0")
           .then((forgetData) {
         print('new otp ${forgetData['otp']}');

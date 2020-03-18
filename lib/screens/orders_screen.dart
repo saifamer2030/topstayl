@@ -19,7 +19,7 @@ class OrdersScreen extends StatelessWidget {
 
   getUserOrderData(BuildContext context) async {
     var token = await user.isAuthenticated();
-    orderData = await Provider.of<OrdersProvider>(context)
+    orderData = await Provider.of<OrdersProvider>(context, listen: false)
         .getUserOrder(token['Authorization']);
   }
 
@@ -37,8 +37,8 @@ class OrdersScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Provider<NetworkProvider>(
-        builder: (context) => NetworkProvider(),
+      body: Provider<NetworkProvider>.value(
+        value: NetworkProvider(),
         child: Consumer<NetworkProvider>(
           builder: (context, value, _) => Center(
               child: ConnectivityWidget(

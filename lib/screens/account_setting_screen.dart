@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/providers/user_provider.dart';
+import 'package:topstyle/screens/tabs_screen.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 
 import '../constants/colors.dart';
@@ -241,14 +242,13 @@ class _AccountSettingScreenState extends State<AccountSettingScreen> {
       _isBtnLoading = true;
     });
     var token = await user.isAuthenticated();
-    final response = await Provider.of<UserProvider>(context)
+    final response = await Provider.of<UserProvider>(context, listen: false)
         .updateUserData(token['Authorization'], newName, newPhone, newEmail);
     setState(() {
       _isBtnLoading = false;
     });
     if (response != null && response > 0) {
 //      print(response);
-
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         backgroundColor: response == 1 ? Colors.green : Colors.red,
         content: Text(
@@ -261,6 +261,12 @@ class _AccountSettingScreenState extends State<AccountSettingScreen> {
           style: TextStyle(fontSize: 15.0, fontFamily: 'tajawal'),
         ),
       ));
+      if (response == 1) {
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              TabsScreen.routeName, (Route<dynamic> route) => false);
+        });
+      }
     }
   }
 
@@ -383,6 +389,7 @@ class _AccountSettingScreenState extends State<AccountSettingScreen> {
                                   },
                                   maxLengthEnforced: true,
                                   keyboardType: TextInputType.phone,
+                                  style: TextStyle(fontSize: 20.0),
                                   inputFormatters: <TextInputFormatter>[
                                     WhitelistingTextInputFormatter.digitsOnly,
                                     LengthLimitingTextInputFormatter(9),
@@ -396,7 +403,7 @@ class _AccountSettingScreenState extends State<AccountSettingScreen> {
                                       color: CustomColors.kTabBarIconColor,
                                     ),
                                     contentPadding: const EdgeInsets.only(
-                                        top: 15.0, left: 10.0, right: 10.0),
+                                        left: 10.0, right: 10.0, bottom: 5.0),
                                   ),
                                 ),
                               ),

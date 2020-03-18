@@ -41,7 +41,7 @@ class _CartScreenState extends State<CartScreen>
     });
     var token = await userProvider.isAuthenticated();
     final String lang = appLanguage.appLocal.toString();
-    cartItems = await Provider.of<CartItemProvider>(context)
+    cartItems = await Provider.of<CartItemProvider>(context, listen: false)
         .fetchAllCartItem(lang, token['Authorization']);
     cartItems.forEach((cart) {
       if (cart.isAvailable == 0 || cart.quantity > cart.availableQuantity) {
@@ -181,7 +181,8 @@ class _CartScreenState extends State<CartScreen>
                                         });
                                         var token = await userProvider
                                             .isAuthenticated();
-                                        Provider.of<OrdersProvider>(context)
+                                        Provider.of<OrdersProvider>(context,
+                                                listen: false)
                                             .getUserAddresses(
                                                 token['Authorization'])
                                             .then((address) {
@@ -224,6 +225,5 @@ class _CartScreenState extends State<CartScreen>
                       AppLocalization.of(context).translate("bag_is_empty")),
                 ),
     );
-//
   }
 }

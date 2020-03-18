@@ -72,7 +72,7 @@ class _TabsScreenState extends State<TabsScreen> {
   getCartData() async {
     var token = await userProvider.isAuthenticated();
     final String lang = appLanguage.appLocal.toString();
-    await Provider.of<CartItemProvider>(context)
+    await Provider.of<CartItemProvider>(context, listen: false)
         .fetchAllCartItem(lang, token['Authorization']);
   }
 

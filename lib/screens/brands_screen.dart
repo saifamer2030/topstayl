@@ -24,7 +24,8 @@ class _BrandsScreenState extends State<BrandsScreen> {
     setState(() {
       _isLoading = true;
     });
-    _brands = await Provider.of<BrandsProvider>(context).allBrandsData();
+    _brands = await Provider.of<BrandsProvider>(context, listen: false)
+        .allBrandsData();
     _brands.sort((a, b) => a.brandName.compareTo(b.brandName));
     setState(() {
       _isLoading = false;

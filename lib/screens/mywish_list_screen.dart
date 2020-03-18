@@ -33,7 +33,7 @@ class _MyWishListScreenState extends State<MyWishListScreen> {
   fetchFavoriteData() {
     SharedPreferences.getInstance().then((prefs) {
       var token = jsonDecode(prefs.getString('userData')) as Map;
-      Provider.of<ProductsProvider>(context)
+      Provider.of<ProductsProvider>(context, listen: false)
           .allFavoriteProducts(
               prefs.getString("language_code"), token['userToken'])
           .then((list) {
@@ -72,9 +72,9 @@ class _MyWishListScreenState extends State<MyWishListScreen> {
                         childAspectRatio: 2 / 3.3,
                         crossAxisSpacing: 10.0,
                         mainAxisSpacing: 10.0),
-                    itemBuilder: (context, index) => ChangeNotifierProvider(
-                        builder: (context) => _products[index],
-                        child: ProductItem()),
+                    itemBuilder: (context, index) =>
+                        ChangeNotifierProvider.value(
+                            value: _products[index], child: ProductItem()),
                     itemCount: _products.length,
                   )
                 : Center(

@@ -87,13 +87,13 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
     });
     try {
       forgetMethod['type'] == 'phone'
-          ? Provider.of<UserProvider>(context)
+          ? Provider.of<UserProvider>(context, listen: false)
               .otpByPhone(forgetMethod['phone'], "1")
               .then((forgetData) {
               //print('new otp ${forgetData['otp']}');
               forgetMethod['otp'] = forgetData['otp'];
             })
-          : Provider.of<UserProvider>(context)
+          : Provider.of<UserProvider>(context, listen: false)
               .otpByEmail(forgetMethod['email'])
               .then((forgetData) {
               forgetMethod['otp'] = forgetData['otp'];

@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<UserProvider>(context)
+      Provider.of<UserProvider>(context, listen: false)
           .login(_loginMap['email'], _loginMap['password'])
           .then((isAuthenticated) {
         setState(() {

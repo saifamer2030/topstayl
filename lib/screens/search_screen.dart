@@ -59,7 +59,8 @@ class ExerciseList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<SearchModel>>(
-      future: Provider.of<SearchProvider>(context).search(query, lang),
+      future: Provider.of<SearchProvider>(context, listen: false)
+          .search(query, lang),
       builder: (context, AsyncSnapshot<List<SearchModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasData) {

@@ -33,8 +33,9 @@ class _CartItemListViewState extends State<CartItemListView> {
     });
     final String lang = appLanguage.appLocal.toString();
     var userData = await userProvider.isAuthenticated();
-    await Provider.of<CartItemProvider>(context).increaseDecreaseProductQty(
-        widget.product.id, lang, lastQty, userData['Authorization']);
+    await Provider.of<CartItemProvider>(context, listen: false)
+        .increaseDecreaseProductQty(
+            widget.product.id, lang, lastQty, userData['Authorization']);
     setState(() {
       _isAddPressed = false;
     });
@@ -46,8 +47,9 @@ class _CartItemListViewState extends State<CartItemListView> {
     });
     final String lang = appLanguage.appLocal.toString();
     var userData = await userProvider.isAuthenticated();
-    await Provider.of<CartItemProvider>(context).increaseDecreaseProductQty(
-        widget.product.id, lang, lastQty, userData['Authorization']);
+    await Provider.of<CartItemProvider>(context, listen: false)
+        .increaseDecreaseProductQty(
+            widget.product.id, lang, lastQty, userData['Authorization']);
     setState(() {
       _isMinPressed = false;
     });
@@ -59,7 +61,7 @@ class _CartItemListViewState extends State<CartItemListView> {
     });
     final String lang = appLanguage.appLocal.toString();
     var userData = await userProvider.isAuthenticated();
-    Provider.of<CartItemProvider>(context)
+    Provider.of<CartItemProvider>(context, listen: false)
         .removeProductById(widget.product.id, lang, userData['Authorization']);
     setState(() {
       _isDeletePressed = false;

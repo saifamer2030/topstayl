@@ -51,7 +51,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
     setState(() {
       _isLoading = true;
     });
-    checkoutData = await Provider.of<OrdersProvider>(context)
+    checkoutData = await Provider.of<OrdersProvider>(context, listen: false)
         .getCheckoutData(token['Authorization']);
     setState(() {
       if (checkoutData.payments[0].available == 1) {
@@ -124,9 +124,10 @@ class _PaymentMethodState extends State<PaymentMethod> {
     var token = await userData.isAuthenticated();
     var prefs = await SharedPreferences.getInstance();
     var data = jsonDecode(prefs.getString('userData')) as Map;
-    String checkoutId = await Provider.of<OrdersProvider>(context)
-        .requestCheckoutId(
-            total, prefs.getInt('userCheckoutId'), data['email']);
+    String checkoutId =
+        await Provider.of<OrdersProvider>(context, listen: false)
+            .requestCheckoutId(
+                total, prefs.getInt('userCheckoutId'), data['email']);
     if (checkoutId != '') {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PaymentWebView(
@@ -148,23 +149,18 @@ class _PaymentMethodState extends State<PaymentMethod> {
     setState(() {
       _isBtnLoading = true;
     });
-
     SetOrder orderData;
     var token = await userData.isAuthenticated();
-    SharedPreferences.getInstance().then((prefs) async{
+    SharedPreferences.getInstance().then((prefs) async {
       int userCheckoutId = prefs.getInt('userCheckoutId');
-      orderData = await Provider.of<OrdersProvider>(context).addOrder(
-          token['Authorization'],
-          _paymentRadioGroup.toString(),
-          coupon == null ? '' : coupon,
-          '',
-          userCheckoutId,
-          '');
+      orderData = await Provider.of<OrdersProvider>(context, listen: false)
+          .addOrder(token['Authorization'], _paymentRadioGroup.toString(),
+              coupon == null ? '' : coupon, '', userCheckoutId, '');
       setState(() {
         _isBtnLoading = false;
       });
 
-      if (orderData.orderId != null) {
+      if (orderData != null) {
         if (orderData.paymentUrl == "" ||
             orderData.paymentUrl == null && orderData.checkoutId == "" ||
             orderData.checkoutId == null) {
@@ -172,7 +168,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
                   builder: (context) => CheckoutDoneScreen(orderData.orderId)),
-                  (Route<dynamic> roue) => false);
+              (Route<dynamic> roue) => false);
         } else {
           print(orderData.paymentUrl);
           print('is credit payment');
@@ -183,8 +179,6 @@ class _PaymentMethodState extends State<PaymentMethod> {
         print('order data is null');
       }
     });
-
-
   }
 
   static const channel = const MethodChannel('com.topstylesa/applePay');
@@ -496,7 +490,8 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                 _isCouponClicked = true;
                               });
                               var token = await userData.isAuthenticated();
-                              Provider.of<CartItemProvider>(context)
+                              Provider.of<CartItemProvider>(context,
+                                      listen: false)
                                   .applyCoupon(token['Authorization'], coupon)
                                   .then((coupon) {
                                 setState(() {
@@ -581,7 +576,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                       ),
                       Text(
                         checkoutData != null
-                            ? '${checkoutData.summery.total - checkoutData.summery.discount} ${AppLocalization.of(context).translate("sar")}'
+                            ? '${(checkoutData.summery.total - checkoutData.summery.discount).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}'
                             : '',
                         style: TextStyle(fontSize: widgetSize.subTitle),
                       ),
@@ -626,7 +621,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                               style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                             Text(
-                              '$_cashOnDeliveryValueFees ${AppLocalization.of(context).translate("sar")}',
+                              '${(_cashOnDeliveryValueFees).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
                               style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                           ],
@@ -639,7 +634,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                               style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                             Text(
-                              '$_paymentDiscount ${AppLocalization.of(context).translate("sar")}',
+                              '${(_paymentDiscount).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}',
                               style: TextStyle(fontSize: widgetSize.subTitle),
                             ),
                           ],
@@ -699,7 +694,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                       Text(
                         checkoutData != null
                             ? '${(checkoutData.summery.total - couponValue - checkoutData.summery.discount + _paymentDiscount + ((checkoutData.summery.total - checkoutData.summery.discount) >= checkoutData.address.freeShipping ? 0 : checkoutData.address.cost) + _cashOnDeliveryValueFees).toStringAsFixed(2)} ${AppLocalization.of(context).translate("sar")}'
-                            : '',
+                            : '0',
                         style: TextStyle(fontSize: widgetSize.subTitle),
                       ),
                     ],
@@ -750,6 +745,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                             : checkoutData.address.cost) +
                                         _cashOnDeliveryValueFees)
                                     .toStringAsFixed(2);
+
                                 _doCreditCardPayment(total);
                               }
                             }

@@ -87,7 +87,7 @@ class CartItemProvider with ChangeNotifier {
             prefs.setString('guestId', jsonDecode(response.body)['user_id']);
 //            prefs.setInt("allItemQty", qty);
           }
-          print(jsonDecode(response.body));
+//          print(jsonDecode(response.body));
         } else {
 //          msg = 6;
           print(response.statusCode);
@@ -163,7 +163,7 @@ class CartItemProvider with ChangeNotifier {
                 CartItemModel.parsedJson(json.decode(response.body)['data']);
           }
         } else {
-//          print(json.decode(response.body));
+          print('faild status code: ${response.statusCode}');
         }
       }
     } catch (error) {
@@ -193,7 +193,7 @@ class CartItemProvider with ChangeNotifier {
           _cartItems.removeWhere((prod) => prod.id == productId);
           notifyListeners();
           msg = json.decode(response.body)['error'];
-          print(jsonDecode(response.body));
+//          print(jsonDecode(response.body));
         } else {
           msg = 6;
         }
@@ -212,7 +212,6 @@ class CartItemProvider with ChangeNotifier {
           _cartItems.removeWhere((prod) => prod.id == productId);
           notifyListeners();
           msg = json.decode(response.body)['error'];
-          print(json.decode(response.body));
         } else {
           msg = 6;
         }
@@ -249,11 +248,10 @@ class CartItemProvider with ChangeNotifier {
           'qty': qty.toString()
         });
         if (response.statusCode == 200) {
-          print(jsonDecode(response.body));
           msg = json.decode(response.body)['error'];
           if (msg == 1 || msg == 0) {
             msg = json.decode(response.body)['quantity'];
-            print(jsonDecode(response.body));
+//            print(jsonDecode(response.body));
           }
         } else {
           print(jsonDecode(response.body));
@@ -271,11 +269,10 @@ class CartItemProvider with ChangeNotifier {
           'qty': qty.toString()
         });
         if (response.statusCode == 200) {
-          print(jsonDecode(response.body));
           msg = json.decode(response.body)['error'];
           if (msg == 1 || msg == 0) {
             msg = json.decode(response.body)['quantity'];
-            print(jsonDecode(response.body));
+//            print(jsonDecode(response.body));
           }
         } else {
           msg = 6;

@@ -31,7 +31,7 @@ class _BrandProductsScreenState extends State<BrandProductsScreen> {
 
   getBrandProducts(int pageNumber) async {
     var prefs = await SharedPreferences.getInstance();
-    Provider.of<ProductsProvider>(context)
+    Provider.of<ProductsProvider>(context, listen: false)
         .allDataWithSpecificBrand(
       widget.brandId,
       pageNumber,

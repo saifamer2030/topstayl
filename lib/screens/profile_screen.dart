@@ -253,7 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onTap: () {
                     final RenderBox box = context.findRenderObject();
                     Share.share(
-                        'Download The Top Style App and Enjoy Shopping \n Our App On Apple Store \n Our App On Google Play Store \n Our website  https://topstylesa.com',
+                        'Download The Top Style App and Enjoy Shopping \n Our App On Apple Store \n https://apps.apple.com/sa/app/topstyle/id1498637876 \nOur App On Google Play Store \n https://play.google.com/store/apps/details?id=com.topstylesa.topstyle \nOur website  https://topstylesa.com',
                         sharePositionOrigin:
                             box.localToGlobal(Offset.zero) & box.size);
                   },
@@ -370,7 +370,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                         FlatButton(
                                           onPressed: () {
-                                            Provider.of<UserProvider>(context)
+                                            Provider.of<UserProvider>(context,
+                                                    listen: false)
                                                 .logout()
                                                 .then((_) {
                                               setState(() {
@@ -408,7 +409,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                         FlatButton(
                                           onPressed: () {
-                                            Provider.of<UserProvider>(context)
+                                            Provider.of<UserProvider>(context,
+                                                    listen: false)
                                                 .logout()
                                                 .then((_) {
                                               setState(() {

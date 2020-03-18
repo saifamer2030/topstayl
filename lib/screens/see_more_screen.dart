@@ -122,12 +122,9 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
       _seeMoreLoading = true;
     });
     String filterContent = '';
-//    filterBody.forEach((f) => filterContent = '$filterContent,$f');
-//    print(filterBody.toString().substring(1, filterBody.toString().length - 1));
-//    print(filterContent);
     filterContent =
         filterBody.toString().substring(1, filterBody.toString().length - 1);
-    Provider.of<ProductsProvider>(context)
+    Provider.of<ProductsProvider>(context, listen: false)
         .allDataInSeeMoreWithMultiFilter(filterContent, myLang, pageNumber,
             user['Authorization'] == 'none' ? 'none' : user['Authorization'])
         .then((data) {
@@ -158,7 +155,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
     setState(() {
       _seeMoreLoading = true;
     });
-    Provider.of<ProductsProvider>(context)
+    Provider.of<ProductsProvider>(context, listen: false)
         .allDataInSeeMoreWithFilter(
             widget.subCategoryName != ''
                 ? widget.subCategoryName
@@ -1463,24 +1460,24 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                           ),
                                         ],
                                       ),
-                                      Row(
-                                        children: <Widget>[
-                                          Checkbox(
-                                            value: _nichePerfume,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                _nichePerfume = val;
-                                              });
-                                              _populateFilterBody(
-                                                  'Niche Perfumes', val);
-                                            },
-                                          ),
-                                          Text(
-                                            AppLocalization.of(context)
-                                                .translate("Niche Perfumes"),
-                                          ),
-                                        ],
-                                      ),
+//                                      Row(
+//                                        children: <Widget>[
+//                                          Checkbox(
+//                                            value: _nichePerfume,
+//                                            onChanged: (val) {
+//                                              setState(() {
+//                                                _nichePerfume = val;
+//                                              });
+//                                              _populateFilterBody(
+//                                                  'Niche Perfumes', val);
+//                                            },
+//                                          ),
+//                                          Text(
+//                                            AppLocalization.of(context)
+//                                                .translate("Niche Perfumes"),
+//                                          ),
+//                                        ],
+//                                      ),
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
@@ -1704,41 +1701,41 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                     margin: const EdgeInsets.only(
                                         left: 15.0, right: 15.0),
                                     child: Column(children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          Checkbox(
-                                            value: _pureness,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                _pureness = val;
-                                              });
-                                              _populateFilterBody(
-                                                  'Pureness', val);
-                                            },
-                                          ),
-                                          Text(
-                                            AppLocalization.of(context)
-                                                .translate("Pureness"),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: <Widget>[
-                                          Checkbox(
-                                            value: _bella,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                _bella = val;
-                                              });
-                                              _populateFilterBody('Bella', val);
-                                            },
-                                          ),
-                                          Text(
-                                            AppLocalization.of(context)
-                                                .translate("Bella"),
-                                          ),
-                                        ],
-                                      ),
+//                                      Row(
+//                                        children: <Widget>[
+//                                          Checkbox(
+//                                            value: _pureness,
+//                                            onChanged: (val) {
+//                                              setState(() {
+//                                                _pureness = val;
+//                                              });
+//                                              _populateFilterBody(
+//                                                  'Pureness', val);
+//                                            },
+//                                          ),
+//                                          Text(
+//                                            AppLocalization.of(context)
+//                                                .translate("Pureness"),
+//                                          ),
+//                                        ],
+//                                      ),
+//                                      Row(
+//                                        children: <Widget>[
+//                                          Checkbox(
+//                                            value: _bella,
+//                                            onChanged: (val) {
+//                                              setState(() {
+//                                                _bella = val;
+//                                              });
+//                                              _populateFilterBody('Bella', val);
+//                                            },
+//                                          ),
+//                                          Text(
+//                                            AppLocalization.of(context)
+//                                                .translate("Bella"),
+//                                          ),
+//                                        ],
+//                                      ),
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
@@ -1756,24 +1753,24 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                           ),
                                         ],
                                       ),
-                                      Row(
-                                        children: <Widget>[
-                                          Checkbox(
-                                            value: _beauteous,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                _beauteous = val;
-                                              });
-                                              _populateFilterBody(
-                                                  'Beauteous', val);
-                                            },
-                                          ),
-                                          Text(
-                                            AppLocalization.of(context)
-                                                .translate("Beauteous"),
-                                          ),
-                                        ],
-                                      ),
+//                                      Row(
+//                                        children: <Widget>[
+//                                          Checkbox(
+//                                            value: _beauteous,
+//                                            onChanged: (val) {
+//                                              setState(() {
+//                                                _beauteous = val;
+//                                              });
+//                                              _populateFilterBody(
+//                                                  'Beauteous', val);
+//                                            },
+//                                          ),
+//                                          Text(
+//                                            AppLocalization.of(context)
+//                                                .translate("Beauteous"),
+//                                          ),
+//                                        ],
+//                                      ),
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
@@ -1792,25 +1789,25 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                           ),
                                         ],
                                       ),
-                                      Row(
-                                        children: <Widget>[
-                                          Checkbox(
-                                            value: _solutionForLenses,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                _solutionForLenses = val;
-                                              });
-                                              _populateFilterBody(
-                                                  'Solution For Lenses', val);
-                                            },
-                                          ),
-                                          Text(
-                                            AppLocalization.of(context)
-                                                .translate(
-                                                    "Solution For Lenses"),
-                                          ),
-                                        ],
-                                      ),
+//                                      Row(
+//                                        children: <Widget>[
+//                                          Checkbox(
+//                                            value: _solutionForLenses,
+//                                            onChanged: (val) {
+//                                              setState(() {
+//                                                _solutionForLenses = val;
+//                                              });
+//                                              _populateFilterBody(
+//                                                  'Solution For Lenses', val);
+//                                            },
+//                                          ),
+//                                          Text(
+//                                            AppLocalization.of(context)
+//                                                .translate(
+//                                                    "Solution For Lenses"),
+//                                          ),
+//                                        ],
+//                                      ),
                                     ]),
                                   )
                                 : Container(),
@@ -1983,7 +1980,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
       pageNumber > 1 ? _seeMoreLoading = true : _isLoading = true;
     });
     var userData = await userProvider.isAuthenticated();
-    Provider.of<ProductsProvider>(context)
+    Provider.of<ProductsProvider>(context, listen: false)
         .allDataInSpecificCategory(
             widget.subCategoryName == ''
                 ? widget.categoryName

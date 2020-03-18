@@ -48,7 +48,7 @@ class _AddressScreenState extends State<AddressScreen> {
     setState(() {
       _isCitesFetched = false;
     });
-    cites = await Provider.of<OrdersProvider>(context)
+    cites = await Provider.of<OrdersProvider>(context, listen: false)
         .allCites('$countryId', token['Authorization']);
 //    print(cites.length);
     setState(() {
@@ -59,24 +59,27 @@ class _AddressScreenState extends State<AddressScreen> {
   Widget _buildCitesItem() {
     return ListView.builder(
       itemCount: cites.length,
-      itemBuilder: (context, i) => Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(width: 1.0, color: CustomColors.kPCardColor),
-        ),
-        child: ListTile(
-          onTap: () {
-            setState(() {
-              _selectedCity = cites[i].cityNameEn;
-            });
-            _areaCtr.clear();
-            _streetCtr.clear();
-            Navigator.of(context).pop();
-          },
-          title: Text('${cites[i].cityNameAr}-${cites[i].cityNameEn}'),
+      shrinkWrap: true,
+      itemBuilder: (context, i) => Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            border: Border.all(width: 1.0, color: CustomColors.kPCardColor),
+          ),
+          child: ListTile(
+            onTap: () {
+              setState(() {
+                _selectedCity = cites[i].cityNameEn;
+              });
+              _areaCtr.clear();
+              _streetCtr.clear();
+              Navigator.of(context).pop();
+            },
+            title: Text('${cites[i].cityNameAr}-${cites[i].cityNameEn}'),
+          ),
         ),
       ),
-      shrinkWrap: true,
     );
   }
 
@@ -84,7 +87,9 @@ class _AddressScreenState extends State<AddressScreen> {
     setState(() {
       _isLoading = true;
     });
-    Provider.of<UserProvider>(context).otpByPhone(_phone, '0').then((msg) {
+    Provider.of<UserProvider>(context, listen: false)
+        .otpByPhone(_phone, '0')
+        .then((msg) {
       setState(() {
         _isLoading = false;
       });
@@ -329,7 +334,8 @@ class _AddressScreenState extends State<AddressScreen> {
                               fullscreenDialog: true))
                           .then((dataFromMap) {
                         if (dataFromMap != {} &&
-                            dataFromMap['countryId'] != null) {
+                            dataFromMap['countryId'] != null &&
+                            dataFromMap != null) {
                           setState(() {
                             _selectedCountry = AppLocalization.of(context)
                                 .translate(dataFromMap['countryId'] == '1'
@@ -481,9 +487,6 @@ class _AddressScreenState extends State<AddressScreen> {
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: 'xxxxxxxxx',
-
-//                                      AppLocalization.of(context)
-//                                          .translate("phone_in_login"),
                                         hintStyle: TextStyle(
                                           fontSize: widgetSize.content,
                                           color: CustomColors.kTabBarIconColor,
@@ -661,18 +664,12 @@ class _AddressScreenState extends State<AddressScreen> {
                                                 topRight: Radius.circular(8.0),
                                                 topLeft: Radius.circular(8.0))),
                                         context: context,
-                                        builder: (context) =>
-                                            SingleChildScrollView(
-                                              child: Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 16.0,
-                                                        vertical: 8.0),
-                                                child:
-                                                    Column(children: <Widget>[
-                                                  _buildCitesItem(),
-                                                ]),
-                                              ),
+                                        builder: (context) => Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 16.0,
+                                                      vertical: 8.0),
+                                              child: _buildCitesItem(),
                                             ));
                                   }
                                 : null,

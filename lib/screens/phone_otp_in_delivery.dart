@@ -89,7 +89,7 @@ class _PhoneOtpInDeliveryState extends State<PhoneOtpInDelivery> {
       _start = 35;
     });
     try {
-      Provider.of<UserProvider>(context)
+      Provider.of<UserProvider>(context, listen: false)
           .otpByPhone(forgetMethod['phone'], "0")
           .then((forgetData) {
         print('new otp ${forgetData['otp']}');
@@ -110,7 +110,7 @@ class _PhoneOtpInDeliveryState extends State<PhoneOtpInDelivery> {
     });
     _verificationCode = '$_num1$_num2$_num3$_num4';
     if (_verificationCode == forgetMethod['otp'].toString()) {
-      Provider.of<OrdersProvider>(context)
+      Provider.of<OrdersProvider>(context, listen: false)
           .saveLocation(
               forgetMethod['country'].toString(),
               forgetMethod['city'].toString(),

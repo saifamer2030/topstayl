@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen>
               images: slidesBanner
                   .map(
                     (imageUrl) => Container(
-                      padding: EdgeInsets.only(bottom: 40.0),
+                      padding: EdgeInsets.only(bottom: 5.0),
                       child: Image.network(
                         imageUrl.imagePath,
                         fit: BoxFit.contain,
@@ -58,13 +58,13 @@ class _HomeScreenState extends State<HomeScreen>
                   )
                   .toList(),
               autoplay: true,
-              dotIncreaseSize: 1.2,
-              dotSize: 10.0,
-              dotSpacing: 17.0,
+//              dotIncreaseSize: 1.2,
+//              dotSize: 10.0,
+//              dotSpacing: 17.0,
               indicatorBgPadding: 0.0,
               dotBgColor: Colors.white,
-              dotColor: Color(0xff9d9d9d).withOpacity(0.5),
-              dotIncreasedColor: Color(0xff9d9d9d),
+//              dotColor: Color(0xff9d9d9d).withOpacity(0.5),
+//              dotIncreasedColor: Color(0xff9d9d9d),
               onImageTap: (int index) {
                 // write code when slide clicked go to advertisement content
                 if (slidesBanner[index].adsType == 'Category') {
@@ -531,24 +531,26 @@ class _HomeScreenState extends State<HomeScreen>
                       ],
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(
-                        left: 16.0, right: 16.0, top: 30.0, bottom: 10.0),
-                    height: 230.0,
-                    child: Row(
-                      children: <Widget>[
-                        bannerA == null
-                            ? Container()
-                            : _buildTowBanner(bannerA),
-                        SizedBox(
-                          width: 10.0,
+                  bannerA == null && bannerB == null
+                      ? Container()
+                      : Container(
+                          margin: const EdgeInsets.only(
+                              left: 16.0, right: 16.0, top: 10.0, bottom: 5.0),
+                          height: 230.0,
+                          child: Row(
+                            children: <Widget>[
+                              bannerA == null
+                                  ? Container()
+                                  : _buildTowBanner(bannerA),
+                              SizedBox(
+                                width: 10.0,
+                              ),
+                              bannerB == null
+                                  ? Container()
+                                  : _buildTowBanner(bannerB),
+                            ],
+                          ),
                         ),
-                        bannerB == null
-                            ? Container()
-                            : _buildTowBanner(bannerB),
-                      ],
-                    ),
-                  ),
                   _buildCategoryTitleWithSeeMore(
                       AppLocalization.of(context).translate("best_sellers"),
                       () {}),

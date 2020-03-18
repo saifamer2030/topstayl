@@ -1090,32 +1090,32 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                   size: widgetSize.subTitle,
                                   color: CustomColors.kTabBarIconColor),
                             ),
-                            Divider(
-                              height: 1.0,
-                              color: CustomColors.kPCardColor,
-                              thickness: 1.0,
-                            ),
-                            ListTile(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => SeeMoreScreen(
-                                        categoryName: 'Perfume',
-                                        subCategoryName: 'Niche Perfumes'),
-                                  ),
-                                );
-                              },
-                              title: Text(
-                                AppLocalization.of(context)
-                                    .translate("Niche Perfumes"),
-                                style: TextStyle(
-                                    fontSize: widgetSize.subTitle,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              trailing: Icon(Icons.arrow_forward_ios,
-                                  size: widgetSize.subTitle,
-                                  color: CustomColors.kTabBarIconColor),
-                            ),
+//                            Divider(
+//                              height: 1.0,
+//                              color: CustomColors.kPCardColor,
+//                              thickness: 1.0,
+//                            ),
+//                            ListTile(
+//                              onTap: () {
+//                                Navigator.of(context).push(
+//                                  MaterialPageRoute(
+//                                    builder: (context) => SeeMoreScreen(
+//                                        categoryName: 'Perfume',
+//                                        subCategoryName: 'Niche Perfumes'),
+//                                  ),
+//                                );
+//                              },
+//                              title: Text(
+//                                AppLocalization.of(context)
+//                                    .translate("Niche Perfumes"),
+//                                style: TextStyle(
+//                                    fontSize: widgetSize.subTitle,
+//                                    fontWeight: FontWeight.bold),
+//                              ),
+//                              trailing: Icon(Icons.arrow_forward_ios,
+//                                  size: widgetSize.subTitle,
+//                                  color: CustomColors.kTabBarIconColor),
+//                            ),
                             Divider(
                               height: 1.0,
                               color: CustomColors.kPCardColor,
@@ -1633,61 +1633,61 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
-                                        ListTile(
-                                          onTap: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SeeMoreScreen(
-                                                        categoryName: 'Lenses',
-                                                        subCategoryName:
-                                                            'Pureness'),
-                                              ),
-                                            );
-                                          },
-                                          title: Text(
-                                            AppLocalization.of(context)
-                                                .translate("Pureness"),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: widgetSize.subTitle),
-                                          ),
-                                          trailing: Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: widgetSize.subTitle,
-                                              color: CustomColors
-                                                  .kTabBarIconColor),
-                                        ),
-                                        Divider(
-                                          height: 1.0,
-                                          color: CustomColors.kPCardColor,
-                                          thickness: 1.0,
-                                        ),
-                                        ListTile(
-                                          onTap: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SeeMoreScreen(
-                                                        categoryName: 'Lenses',
-                                                        subCategoryName:
-                                                            'Bella'),
-                                              ),
-                                            );
-                                          },
-                                          title: Text(
-                                            AppLocalization.of(context)
-                                                .translate("Bella"),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: widgetSize.subTitle),
-                                          ),
-                                          trailing: Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: widgetSize.subTitle,
-                                              color: CustomColors
-                                                  .kTabBarIconColor),
-                                        ),
+//                                        ListTile(
+//                                          onTap: () {
+//                                            Navigator.of(context).push(
+//                                              MaterialPageRoute(
+//                                                builder: (context) =>
+//                                                    SeeMoreScreen(
+//                                                        categoryName: 'Lenses',
+//                                                        subCategoryName:
+//                                                            'Pureness'),
+//                                              ),
+//                                            );
+//                                          },
+//                                          title: Text(
+//                                            AppLocalization.of(context)
+//                                                .translate("Pureness"),
+//                                            style: TextStyle(
+//                                                fontWeight: FontWeight.bold,
+//                                                fontSize: widgetSize.subTitle),
+//                                          ),
+//                                          trailing: Icon(
+//                                              Icons.arrow_forward_ios,
+//                                              size: widgetSize.subTitle,
+//                                              color: CustomColors
+//                                                  .kTabBarIconColor),
+//                                        ),
+//                                        Divider(
+//                                          height: 1.0,
+//                                          color: CustomColors.kPCardColor,
+//                                          thickness: 1.0,
+//                                        ),
+//                                        ListTile(
+//                                          onTap: () {
+//                                            Navigator.of(context).push(
+//                                              MaterialPageRoute(
+//                                                builder: (context) =>
+//                                                    SeeMoreScreen(
+//                                                        categoryName: 'Lenses',
+//                                                        subCategoryName:
+//                                                            'Bella'),
+//                                              ),
+//                                            );
+//                                          },
+//                                          title: Text(
+//                                            AppLocalization.of(context)
+//                                                .translate("Bella"),
+//                                            style: TextStyle(
+//                                                fontWeight: FontWeight.bold,
+//                                                fontSize: widgetSize.subTitle),
+//                                          ),
+//                                          trailing: Icon(
+//                                              Icons.arrow_forward_ios,
+//                                              size: widgetSize.subTitle,
+//                                              color: CustomColors
+//                                                  .kTabBarIconColor),
+//                                        ),
                                         Divider(
                                           height: 1.0,
                                           color: CustomColors.kPCardColor,
@@ -1718,36 +1718,36 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
-                                        Divider(
-                                          height: 1.0,
-                                          color: CustomColors.kPCardColor,
-                                          thickness: 1.0,
-                                        ),
-                                        ListTile(
-                                          onTap: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SeeMoreScreen(
-                                                        categoryName: 'Lenses',
-                                                        subCategoryName:
-                                                            'Beauteous'),
-                                              ),
-                                            );
-                                          },
-                                          title: Text(
-                                            AppLocalization.of(context)
-                                                .translate("Beauteous"),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: widgetSize.subTitle),
-                                          ),
-                                          trailing: Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: widgetSize.subTitle,
-                                              color: CustomColors
-                                                  .kTabBarIconColor),
-                                        ),
+//                                        Divider(
+//                                          height: 1.0,
+//                                          color: CustomColors.kPCardColor,
+//                                          thickness: 1.0,
+//                                        ),
+//                                        ListTile(
+//                                          onTap: () {
+//                                            Navigator.of(context).push(
+//                                              MaterialPageRoute(
+//                                                builder: (context) =>
+//                                                    SeeMoreScreen(
+//                                                        categoryName: 'Lenses',
+//                                                        subCategoryName:
+//                                                            'Beauteous'),
+//                                              ),
+//                                            );
+//                                          },
+//                                          title: Text(
+//                                            AppLocalization.of(context)
+//                                                .translate("Beauteous"),
+//                                            style: TextStyle(
+//                                                fontWeight: FontWeight.bold,
+//                                                fontSize: widgetSize.subTitle),
+//                                          ),
+//                                          trailing: Icon(
+//                                              Icons.arrow_forward_ios,
+//                                              size: widgetSize.subTitle,
+//                                              color: CustomColors
+//                                                  .kTabBarIconColor),
+//                                        ),
                                         Divider(
                                           height: 1.0,
                                           color: CustomColors.kPCardColor,
@@ -1778,37 +1778,37 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                               color: CustomColors
                                                   .kTabBarIconColor),
                                         ),
-                                        Divider(
-                                          height: 1.0,
-                                          color: CustomColors.kPCardColor,
-                                          thickness: 1.0,
-                                        ),
-                                        ListTile(
-                                          onTap: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SeeMoreScreen(
-                                                        categoryName: 'Lenses',
-                                                        subCategoryName:
-                                                            'Solution For Lenses'),
-                                              ),
-                                            );
-                                          },
-                                          title: Text(
-                                            AppLocalization.of(context)
-                                                .translate(
-                                                    "Solution For Lenses"),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: widgetSize.subTitle),
-                                          ),
-                                          trailing: Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: widgetSize.subTitle,
-                                              color: CustomColors
-                                                  .kTabBarIconColor),
-                                        ),
+//                                        Divider(
+//                                          height: 1.0,
+//                                          color: CustomColors.kPCardColor,
+//                                          thickness: 1.0,
+//                                        ),
+//                                        ListTile(
+//                                          onTap: () {
+//                                            Navigator.of(context).push(
+//                                              MaterialPageRoute(
+//                                                builder: (context) =>
+//                                                    SeeMoreScreen(
+//                                                        categoryName: 'Lenses',
+//                                                        subCategoryName:
+//                                                            'Solution For Lenses'),
+//                                              ),
+//                                            );
+//                                          },
+//                                          title: Text(
+//                                            AppLocalization.of(context)
+//                                                .translate(
+//                                                    "Solution For Lenses"),
+//                                            style: TextStyle(
+//                                                fontWeight: FontWeight.bold,
+//                                                fontSize: widgetSize.subTitle),
+//                                          ),
+//                                          trailing: Icon(
+//                                              Icons.arrow_forward_ios,
+//                                              size: widgetSize.subTitle,
+//                                              color: CustomColors
+//                                                  .kTabBarIconColor),
+//                                        ),
                                         Divider(
                                           height: 1.0,
                                           color: CustomColors.kPCardColor,

@@ -48,7 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<UserProvider>(context)
+      Provider.of<UserProvider>(context, listen: false)
           .register(
               _registerMap['name'],
               _registerMap['email'],

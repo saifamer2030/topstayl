@@ -36,13 +36,9 @@ class _PaymentWebViewState extends State<PaymentWebView> {
     var token = await userData.isAuthenticated();
     var prefs = await SharedPreferences.getInstance();
     int userCheckoutId = prefs.getInt('userCheckoutId');
-    orderData = await Provider.of<OrdersProvider>(context).addOrder(
-        token['Authorization'],
-        widget.paymentType,
-        widget.coupon,
-        widget.checkoutId,
-        userCheckoutId,
-        response);
+    orderData = await Provider.of<OrdersProvider>(context, listen: false)
+        .addOrder(token['Authorization'], widget.paymentType, widget.coupon,
+            widget.checkoutId, userCheckoutId, response);
     if (orderData != null) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
@@ -74,8 +70,8 @@ class _PaymentWebViewState extends State<PaymentWebView> {
   String _status, _paymentResponse;
 
   _checkPaymentStatus() async {
-    _paymentResponse =
-        await Provider.of<OrdersProvider>(context).checkPaymentStatus(
+    _paymentResponse = await Provider.of<OrdersProvider>(context, listen: false)
+        .checkPaymentStatus(
       widget.checkoutId,
     );
     _status = jsonDecode(_paymentResponse)['result']['code'];
