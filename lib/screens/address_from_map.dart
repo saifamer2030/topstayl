@@ -256,7 +256,7 @@ class _AddressFromMapState extends State<AddressFromMap> {
                             locationData['street'] = realAddress['route'];
                             locationData['gps'] = '$lat,$long';
                             print(locationData['city']);
-                            // Navigator.of(context).pop(locationData);
+                            Navigator.of(context).pop(locationData);
                           } else {
                             showDialog(
                                 context: context,
