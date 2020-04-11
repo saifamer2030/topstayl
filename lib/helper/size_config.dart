@@ -61,7 +61,7 @@ class WidgetSize {
         this.subTitle = 14.0;
         this.content = 18.0;
         this.content2 = 15.0;
-        this.iconText = 13.0;
+        this.iconText = 12.0;
         this.categoryCard = 80.0;
         this.textField = 45.0;
         this.textFieldError = 12.0;
@@ -73,7 +73,7 @@ class WidgetSize {
         this.subTitle = 16.0;
         this.content = 18.0;
         this.content2 = 15.0;
-        this.iconText = 13.0;
+        this.iconText = 12.0;
         this.categoryCard = 80.0;
         this.textField = 45.0;
         this.textFieldError = 12.0;

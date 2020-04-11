@@ -5,6 +5,7 @@ import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/brand_model.dart';
 import 'package:topstyle/providers/brands_provider.dart';
+import 'package:topstyle/screens/search_screen.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 import 'package:topstyle/widgets/brand_item.dart';
 
@@ -13,23 +14,24 @@ class BrandsScreen extends StatefulWidget {
   _BrandsScreenState createState() => _BrandsScreenState();
 }
 
-class _BrandsScreenState extends State<BrandsScreen> {
+class _BrandsScreenState extends State<BrandsScreen>
+    with AutomaticKeepAliveClientMixin {
   List<BrandModel> _brands = [];
   List<BrandModel> _filteredBrands = [];
   String searchKey = '';
   bool _isLoading = true;
   bool _isInit = true;
-
+  var _brandsRefreshKey = GlobalKey<RefreshIndicatorState>();
   getBrandData() async {
-    setState(() {
-      _isLoading = true;
-    });
+    print('Brand calling');
     _brands = await Provider.of<BrandsProvider>(context, listen: false)
         .allBrandsData();
     _brands.sort((a, b) => a.brandName.compareTo(b.brandName));
-    setState(() {
-      _isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -37,10 +39,12 @@ class _BrandsScreenState extends State<BrandsScreen> {
     if (_isInit) {
       getBrandData();
     }
-    setState(() {
-      _isInit = false;
-    });
+    _isInit = false;
     super.didChangeDependencies();
+  }
+
+  Future<void> _refresh() async {
+    getBrandData();
   }
 
   onSearchTextChanged(String text) async {
@@ -57,56 +61,78 @@ class _BrandsScreenState extends State<BrandsScreen> {
           _filteredBrands.add(userDetail);
         });
     });
-    print(_filteredBrands.length);
   }
 
   ScreenConfig screenConfig;
   WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     screenConfig = ScreenConfig(context);
     widgetSize = WidgetSize(screenConfig);
-    return _isLoading
-        ? Center(
-            child: AdaptiveProgressIndicator(),
-          )
-        : Container(
-            margin:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-            child: _brands.length > 0 || _filteredBrands.length > 0
-                ? Column(
-                    children: <Widget>[
-                      Container(
-                          height: 45.0,
-                          margin: const EdgeInsets.only(bottom: 24.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1.0, color: CustomColors.kPCardColor),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Center(
-                            child: TextField(
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: const EdgeInsets.only(
-                                    left: 8.0, right: 8.0),
-                                hintText: AppLocalization.of(context)
-                                    .translate("brand_search_hint"),
-                                hintStyle: TextStyle(
-                                    color: CustomColors.kTabBarIconColor),
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          AppLocalization.of(context).translate('brand_in_nav_bar'),
+          style: TextStyle(
+              fontSize: widgetSize.mainTitle, fontWeight: FontWeight.bold),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: SearchProduct());
+            },
+          ),
+        ],
+      ),
+      body: _isLoading
+          ? Center(
+              child: AdaptiveProgressIndicator(),
+            )
+          : RefreshIndicator(
+              key: _brandsRefreshKey,
+              onRefresh: _refresh,
+              child: Container(
+                margin: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 10.0),
+                child: _brands.length > 0 || _filteredBrands.length > 0
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Container(
+                              height: 45.0,
+                              width: double.infinity,
+                              margin: const EdgeInsets.only(bottom: 24.0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1.0,
+                                    color: CustomColors.kPCardColor),
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
-//
-                              onChanged: (val) {
-                                onSearchTextChanged(val);
-                              },
-                            ),
-                          )),
-                      Expanded(
-                        child:
-                            _filteredBrands.length > 0 && searchKey != null ||
+                              child: Center(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding: const EdgeInsets.only(
+                                        left: 8.0, right: 8.0),
+                                    hintText: AppLocalization.of(context)
+                                        .translate("brand_search_hint"),
+                                    hintStyle: TextStyle(
+                                        color: CustomColors.kTabBarIconColor),
+                                  ),
+                                  onChanged: (val) {
+                                    onSearchTextChanged(val);
+                                  },
+                                ),
+                              )),
+                          Expanded(
+                            child: _filteredBrands.length > 0 &&
+                                        searchKey != null ||
                                     searchKey != ''
                                 ? ListView.builder(
-                                    addAutomaticKeepAlives: true,
+                                    shrinkWrap: true,
                                     itemCount: _filteredBrands.length,
                                     itemBuilder: (context, index) => Container(
                                       margin: const EdgeInsets.only(top: 16.0),
@@ -119,6 +145,7 @@ class _BrandsScreenState extends State<BrandsScreen> {
                                   )
                                 : ListView.builder(
                                     itemCount: _brands.length,
+                                    shrinkWrap: true,
                                     itemBuilder: (context, index) => Container(
                                       margin: const EdgeInsets.only(top: 16.0),
                                       child: BrandItem(
@@ -128,15 +155,28 @@ class _BrandsScreenState extends State<BrandsScreen> {
                                           widgetSize.content),
                                     ),
                                   ),
+                          ),
+                        ],
+                      )
+                    : Center(
+                        child: Text(
+                          AppLocalization.of(context).translate('no_brands'),
+                          style: TextStyle(fontSize: 16.0),
+                        ),
                       ),
-                    ],
-                  )
-                : Center(
-                    child: Text(
-                      AppLocalization.of(context).translate('no_brands'),
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                  ),
-          );
+              ),
+            ),
+    );
   }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

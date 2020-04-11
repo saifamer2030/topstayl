@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/orders_model.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
@@ -80,8 +81,12 @@ class _OrderDetailsState extends State<OrderDetails> {
     }
   }
 
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return _isLoading
         ? Scaffold(
             body: Center(
@@ -372,23 +377,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                               itemBuilder: (ctx, index) => Padding(
                                 padding: const EdgeInsets.only(left: 12.0),
                                 child: OrderItemInOrderDetails(
-                                  orderId: orderDetailsModel
-                                      .listOfDetails[index].optionId,
-                                  brandName: orderDetailsModel
-                                      .listOfDetails[index].brand,
-                                  productName: orderDetailsModel
-                                      .listOfDetails[index].productName,
-                                  quantity: orderDetailsModel
-                                      .listOfDetails[index].quantity,
-                                  productPrice: orderDetailsModel
-                                      .listOfDetails[index].productPrice,
-                                  productImage: orderDetailsModel
-                                      .listOfDetails[index].image,
-                                  optionType: orderDetailsModel
-                                      .listOfDetails[index].type,
-                                  optionValue: orderDetailsModel
-                                      .listOfDetails[index].value,
-                                ),
+                                    orderDetailsModel.listOfDetails[index]),
                               ),
                             ),
                           ),
@@ -396,33 +385,98 @@ class _OrderDetailsState extends State<OrderDetails> {
                       ),
                     ),
                   ),
-            bottomNavigationBar:
-                orderDetailsModel.orderModel.orderStatus == 1 ||
-                        orderDetailsModel.orderModel.orderStatus == 2 &&
-                            orderDetailsModel != null
-                    ? Container(
-                        margin: const EdgeInsets.only(
-                            left: 16.0, right: 16.0, bottom: 20.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.red,
-                        ),
-                        child: FlatButton(
-                          onPressed: () {
-                            _doCancelOrder();
-                          },
-                          child: _isLoading
-                              ? AdaptiveProgressIndicator()
-                              : Text(
-                                  AppLocalization.of(context)
-                                      .translate("cancel_order"),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                        ),
-                      )
-                    : null,
+            bottomNavigationBar: orderDetailsModel.orderModel.orderStatus ==
+                        1 ||
+                    orderDetailsModel.orderModel.orderStatus == 2 &&
+                        orderDetailsModel != null
+                ? Container(
+                    margin: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, bottom: 20.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.red,
+                    ),
+                    child: FlatButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => Platform.isIOS
+                                ? CupertinoAlertDialog(
+                                    content: Text(AppLocalization.of(context)
+                                        .translate('order_canceled_hint')),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          AppLocalization.of(context)
+                                              .translate('no'),
+                                          style: TextStyle(
+                                              fontSize: widgetSize.subTitle,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          _doCancelOrder();
+                                        },
+                                        child: Text(
+                                          AppLocalization.of(context)
+                                              .translate('yes'),
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: widgetSize.subTitle,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : AlertDialog(
+                                    content: Text(AppLocalization.of(context)
+                                        .translate('order_canceled_hint')),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          AppLocalization.of(context)
+                                              .translate('no'),
+                                          style: TextStyle(
+                                              fontSize: widgetSize.content,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      FlatButton(
+                                        onPressed: () {
+                                          _doCancelOrder();
+                                        },
+                                        child: Text(
+                                          AppLocalization.of(context)
+                                              .translate('yes'),
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: widgetSize.subTitle,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                  ));
+                      },
+                      child: _isLoading
+                          ? AdaptiveProgressIndicator()
+                          : Text(
+                              AppLocalization.of(context)
+                                  .translate("cancel_order"),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                    ),
+                  )
+                : null,
           );
   }
 }

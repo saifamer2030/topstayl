@@ -1,11 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/models/products_model.dart';
+import 'package:topstyle/providers/languages_provider.dart';
 import 'package:topstyle/providers/products_provider.dart';
+import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 import 'package:topstyle/widgets/product_item.dart';
 
@@ -30,21 +29,21 @@ class _MyWishListScreenState extends State<MyWishListScreen> {
     _init = true;
   }
 
-  fetchFavoriteData() {
-    SharedPreferences.getInstance().then((prefs) {
-      var token = jsonDecode(prefs.getString('userData')) as Map;
-      Provider.of<ProductsProvider>(context, listen: false)
-          .allFavoriteProducts(
-              prefs.getString("language_code"), token['userToken'])
-          .then((list) {
-        if (list.length <= 0) {
-          _products = [];
-        } else {
-          _products = list;
-        }
-        setState(() {
-          _isLoading = false;
-        });
+  final AppLanguageProvider languageProvider = AppLanguageProvider();
+  final UserProvider userProvider = UserProvider();
+  fetchFavoriteData() async {
+    var lang = languageProvider.appLocal.toString();
+    var token = await userProvider.isAuthenticated();
+    Provider.of<ProductsProvider>(context, listen: false)
+        .allFavoriteProducts(lang, token['Authorization'])
+        .then((list) {
+      if (list.length <= 0) {
+        _products = [];
+      } else {
+        _products = list;
+      }
+      setState(() {
+        _isLoading = false;
       });
     });
   }

@@ -20,25 +20,22 @@ class AppLanguageProvider extends ChangeNotifier {
         _appLocale = Locale(prefs.getString('language_code'));
       }
     });
-    return _appLocale;
+    return _appLocale ?? Locale('ar');
   }
 
   Future<void> changeLanguage(Locale type) async {
     var prefs = await SharedPreferences.getInstance();
-    if (_appLocale != type) {
-//      print(prefs.getString('language_code'));
-      if (type == Locale("ar")) {
-        _appLocale = Locale("ar");
-        await prefs.setString('language_code', 'ar');
-//      await prefs.setString('countryCode', '');
-        notifyListeners();
-      } else {
-        _appLocale = Locale("en");
-        await prefs.setString('language_code', 'en');
-//      await prefs.setString('countryCode', 'US');
-        notifyListeners();
-      }
-//      print(prefs.getString('language_code'));
+    print('before change ${prefs.getString('language_code')}');
+    if (type == Locale("ar")) {
+      _appLocale = Locale("ar");
+      prefs.setString('language_code', 'ar');
+      prefs.setString('countryCode', '');
+    } else {
+      _appLocale = Locale("en");
+      prefs.setString('language_code', 'en');
+      prefs.setString('countryCode', 'US');
     }
+    notifyListeners();
+    print('after change ${prefs.getString('language_code')}');
   }
 }

@@ -561,8 +561,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                         textDirection: TextDirection.ltr,
                                         validator: (value) {
                                           return (value.isEmpty ||
-                                                  value.length < 9 ||
-                                                  value.length > 15)
+                                                  value.length < 8)
                                               ? AppLocalization.of(context)
                                                   .translate(
                                                       "phone_validation_length_msg")

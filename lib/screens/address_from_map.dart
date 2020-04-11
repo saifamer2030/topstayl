@@ -39,13 +39,23 @@ class _AddressFromMapState extends State<AddressFromMap> {
   initLocation() async {
     try {
       currentLocation = await location.getLocation();
-      setState(() {
-        lat = currentLocation.latitude;
-        long = currentLocation.longitude;
-        _isLoading = false;
+      if (mounted) {
+        setState(() {
+          lat = currentLocation.latitude;
+          long = currentLocation.longitude;
+          _isLoading = false;
+        });
+      }
+
+      LocationHelper.getPlaceLocation(
+              currentLocation.latitude, currentLocation.longitude)
+          .then((address) {
+        if (mounted) {
+          setState(() {
+            readableAddress = address;
+          });
+        }
       });
-      readableAddress = await LocationHelper.getPlaceLocation(
-          currentLocation.latitude, currentLocation.longitude);
     } catch (error) {
       print(error.toString());
     }
@@ -245,7 +255,8 @@ class _AddressFromMapState extends State<AddressFromMap> {
                             locationData['area'] = realAddress['political'];
                             locationData['street'] = realAddress['route'];
                             locationData['gps'] = '$lat,$long';
-                            Navigator.of(context).pop(locationData);
+                            print(locationData['city']);
+                            // Navigator.of(context).pop(locationData);
                           } else {
                             showDialog(
                                 context: context,

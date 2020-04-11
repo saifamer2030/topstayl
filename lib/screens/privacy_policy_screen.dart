@@ -5,12 +5,20 @@ import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/providers/languages_provider.dart';
 
-class PrivacyPolicyScreen extends StatelessWidget {
+class PrivacyPolicyScreen extends StatefulWidget {
   static const String routeName = 'privacy-policy';
 
+  @override
+  _PrivacyPolicyScreenState createState() => _PrivacyPolicyScreenState();
+}
+
+class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   final AppLanguageProvider appLanguage = AppLanguageProvider();
+
   ScreenConfig screenConfig;
+
   WidgetSize widgetSize;
+
   @override
   Widget build(BuildContext context) {
     screenConfig = ScreenConfig(context);

@@ -49,14 +49,16 @@ class _OtpScreenState extends State<OtpScreen> {
   List<String> currentPin = ["", "", "", ""];
   Timer _timer;
   int _start = 45;
-  bool _timerFinished = false;
-  bool _isRequestResend = false;
-  bool _isPinCorrect = true;
-  bool _isLoading = false;
-  TextEditingController pinOneController = TextEditingController();
-  TextEditingController pinTwoController = TextEditingController();
-  TextEditingController pinThreeController = TextEditingController();
-  TextEditingController pinFourController = TextEditingController();
+  Map<String, bool> _flags = {
+    'timerFinished': false,
+    "isRequestResend": false,
+    "isPinCorrect": true,
+    "isLoading": false
+  };
+  final TextEditingController pinOneController = TextEditingController();
+  final TextEditingController pinTwoController = TextEditingController();
+  final TextEditingController pinThreeController = TextEditingController();
+  final TextEditingController pinFourController = TextEditingController();
   var outLineBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(10.0),
     borderSide: BorderSide(color: Colors.red),
@@ -71,7 +73,7 @@ class _OtpScreenState extends State<OtpScreen> {
         if (_start < 1) {
           timer.cancel();
           setState(() {
-            _timerFinished = true;
+            _flags['timerFinished'] = true;
           });
         } else {
           _start = _start - 1;
@@ -99,8 +101,8 @@ class _OtpScreenState extends State<OtpScreen> {
       height: size + 1,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
-        border:
-            Border.all(color: _isPinCorrect ? Colors.transparent : Colors.red),
+        border: Border.all(
+            color: _flags['isPinCorrect'] ? Colors.transparent : Colors.red),
       ),
       child: TextField(
         enabled: false,
@@ -121,11 +123,11 @@ class _OtpScreenState extends State<OtpScreen> {
 
   _resendConfirmationCode() {
     setState(() {
-      _isRequestResend = true;
+      _flags['isRequestResend'] = true;
     });
     startTimer();
     setState(() {
-      _timerFinished = false;
+      _flags['timerFinished'] = false;
       _start = 45;
     });
     try {
@@ -136,7 +138,7 @@ class _OtpScreenState extends State<OtpScreen> {
         forgetMethod['otp'] = forgetData['otp'];
       });
       setState(() {
-        _isRequestResend = false;
+        _flags['isRequestResend'] = false;
       });
     } catch (error) {
       throw error;
@@ -146,7 +148,7 @@ class _OtpScreenState extends State<OtpScreen> {
   UserProvider _userProvider = UserProvider();
   _submitForm() {
     setState(() {
-      _isLoading = true;
+      _flags['isLoading'] = true;
     });
 
     Navigator.of(context).pushReplacementNamed(
@@ -158,33 +160,35 @@ class _OtpScreenState extends State<OtpScreen> {
     print(
         'phone is ${forgetMethod['phone']} and email is ${forgetMethod['email']}');
     setState(() {
-      _isLoading = false;
+      _flags['isLoading'] = false;
     });
   }
 
   var forgetMethod;
-
+  ScreenConfig screenConfig;
+  WidgetSize widgetSize;
   @override
   Widget build(BuildContext context) {
     forgetMethod = ModalRoute.of(context).settings.arguments as Map;
-    var deviceScreen = MediaQuery.of(context);
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
     return Provider<NetworkProvider>.value(
       value: NetworkProvider(),
       child: Consumer<NetworkProvider>(
         builder: (context, value, _) => Center(
           child: ConnectivityWidget(
               networkProvider: value,
-              child: _isLoading
+              child: _flags['isLoading']
                   ? AdaptiveProgressIndicator()
                   : Column(
                       children: <Widget>[
                         Container(
-                          height: deviceScreen.size.height * 0.35,
+                          height: screenConfig.screenHeight * 0.35,
                           child: LayoutBuilder(builder: (context, constrains) {
                             return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                deviceScreen.size.height > 736.0
+                                screenConfig.screenHeight > 736.0
                                     ? Container(
                                         alignment: Alignment.topCenter,
                                         width: constrains.maxHeight * 0.25,
@@ -203,7 +207,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                     AppLocalization.of(context)
                                         .translate("enter_verification_code"),
                                     style: TextStyle(
-                                      fontSize: deviceScreen.size.height > 736
+                                      fontSize: screenConfig.screenHeight > 736
                                           ? 16.0
                                           : 13.0,
                                     ),
@@ -211,7 +215,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 ),
                                 SizedBox(height: constrains.maxHeight * 0.07),
                                 Container(
-                                  height: deviceScreen.size.height > 736
+                                  height: screenConfig.screenHeight > 736
                                       ? constrains.maxHeight * 0.25
                                       : 60,
                                   child: buildPinRow(),
@@ -228,7 +232,7 @@ class _OtpScreenState extends State<OtpScreen> {
                           }),
                         ),
                         Container(
-                            height: deviceScreen.size.height * 0.5,
+                            height: screenConfig.screenHeight * 0.5,
                             child: buildNumberPad()),
                       ],
                     )),
@@ -280,8 +284,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   buildResendNumber() {
-    var deviceSize = MediaQuery.of(context);
-    return _timerFinished
+    return _flags['timerFinished']
         ? Container(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -289,7 +292,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 Text(
                   AppLocalization.of(context).translate("dont_receive_code"),
                   style: TextStyle(
-                    fontSize: deviceSize.size.height > 736 ? 16.0 : 13.0,
+                    fontSize: widgetSize.subTitle,
                   ),
                 ),
                 GestureDetector(
@@ -300,7 +303,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     AppLocalization.of(context).translate("resend"),
                     style: TextStyle(
                       color: Theme.of(context).accentColor,
-                      fontSize: deviceSize.size.height > 736 ? 16.0 : 13.0,
+                      fontSize: widgetSize.subTitle,
                     ),
                   ),
                 ),
@@ -314,11 +317,37 @@ class _OtpScreenState extends State<OtpScreen> {
             child: Text(
               '00:$_start',
               style: TextStyle(
-                  fontSize: deviceSize.size.height > 736 ? 23.0 : 16.0,
+                  fontSize: widgetSize.mainTitle,
                   fontWeight: FontWeight.bold,
                   color: Colors.red),
             ),
           );
+  }
+
+  buildRowOfNumbers(num1, String num2, String num3, constraint) {
+    return Container(
+      height: constraint.maxHeight * 0.2,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          KeyBoardNumber(
+              n: int.parse(num1),
+              onPressed: () {
+                pinIndexSetup(num1);
+              }),
+          KeyBoardNumber(
+              n: int.parse(num2),
+              onPressed: () {
+                pinIndexSetup(num2);
+              }),
+          KeyBoardNumber(
+              n: int.parse(num3),
+              onPressed: () {
+                pinIndexSetup(num3);
+              }),
+        ],
+      ),
+    );
   }
 
   buildNumberPad() {
@@ -333,75 +362,9 @@ class _OtpScreenState extends State<OtpScreen> {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Container(
-                    height: constraint.maxHeight * 0.2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        KeyBoardNumber(
-                            n: 1,
-                            onPressed: () {
-                              pinIndexSetup("1");
-                            }),
-                        KeyBoardNumber(
-                            n: 2,
-                            onPressed: () {
-                              pinIndexSetup("2");
-                            }),
-                        KeyBoardNumber(
-                            n: 3,
-                            onPressed: () {
-                              pinIndexSetup("3");
-                            }),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: constraint.maxHeight * 0.2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        KeyBoardNumber(
-                            n: 4,
-                            onPressed: () {
-                              pinIndexSetup("4");
-                            }),
-                        KeyBoardNumber(
-                            n: 5,
-                            onPressed: () {
-                              pinIndexSetup("5");
-                            }),
-                        KeyBoardNumber(
-                            n: 6,
-                            onPressed: () {
-                              pinIndexSetup("6");
-                            }),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: constraint.maxHeight * 0.2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        KeyBoardNumber(
-                            n: 7,
-                            onPressed: () {
-                              pinIndexSetup("7");
-                            }),
-                        KeyBoardNumber(
-                            n: 8,
-                            onPressed: () {
-                              pinIndexSetup("8");
-                            }),
-                        KeyBoardNumber(
-                            n: 9,
-                            onPressed: () {
-                              pinIndexSetup("9");
-                            }),
-                      ],
-                    ),
-                  ),
+                  buildRowOfNumbers("1", "2", "3", constraint),
+                  buildRowOfNumbers("4", "5", "6", constraint),
+                  buildRowOfNumbers("7", "8", "9", constraint),
                   Container(
                     height: constraint.maxHeight * 0.2,
                     child: Row(
@@ -462,12 +425,12 @@ class _OtpScreenState extends State<OtpScreen> {
     if (pinIndex == 4) {
       if (strPin == forgetMethod['otp'].toString()) {
         setState(() {
-          _isPinCorrect = true;
+          _flags['isPinCorrect'] = true;
         });
         _submitForm();
       } else {
         setState(() {
-          _isPinCorrect = false;
+          _flags['isPinCorrect'] = false;
         });
       }
     }
@@ -499,7 +462,7 @@ class _OtpScreenState extends State<OtpScreen> {
     currentPin[pinIndex - 1] = "";
     pinIndex--;
     setState(() {
-      _isPinCorrect = true;
+      _flags['isPinCorrect'] = true;
     });
   }
 }

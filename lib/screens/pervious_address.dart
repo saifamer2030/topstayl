@@ -5,12 +5,19 @@ import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/checkout_summery_model.dart';
 import 'package:topstyle/screens/checkoutScreen.dart';
 
-class PreviousAddress extends StatelessWidget {
+class PreviousAddress extends StatefulWidget {
   final AddressModel addressModel;
-
   PreviousAddress(this.addressModel);
+
+  @override
+  _PreviousAddressState createState() => _PreviousAddressState();
+}
+
+class _PreviousAddressState extends State<PreviousAddress> {
   ScreenConfig screenConfig;
+
   WidgetSize widgetSize;
+
   @override
   Widget build(BuildContext context) {
     screenConfig = ScreenConfig(context);
@@ -38,14 +45,14 @@ class PreviousAddress extends StatelessWidget {
                     onChanged: (val) {},
                     activeColor: Theme.of(context).accentColor,
                     title: Text(
-                      addressModel.userName,
+                      widget.addressModel.userName,
                       style: TextStyle(
                           fontSize: widgetSize.subTitle,
                           fontWeight: FontWeight.bold,
                           color: Colors.black),
                     ),
                     subtitle: Text(
-                      '${addressModel.phone}\n ${addressModel.country}،${addressModel.city}،${addressModel.area}',
+                      '${widget.addressModel.phone}\n ${widget.addressModel.country}،${widget.addressModel.city}،${widget.addressModel.area}',
                       style: TextStyle(
                           fontSize: widgetSize.subTitle, color: Colors.black),
                     ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:topstyle/helper/api_util.dart';
 import 'package:topstyle/models/ads_model.dart';
+import 'package:topstyle/models/home_page_model.dart';
 import 'package:topstyle/models/product_details_model.dart';
 
 import '../models/products_model.dart';
@@ -168,8 +169,6 @@ class ProductsProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         _favorite = ProductsModel.parseProducts(
             jsonDecode(response.body)['data'] as List);
-//        print(jsonDecode(response.body));
-
       } else {}
     } catch (error) {
       print(error.toString());
@@ -328,7 +327,8 @@ class ProductsProvider with ChangeNotifier {
     return responseMap;
   }
 
-  Future<List<Ads>> fetchAllProducts(String lang, String token) async {
+  Future<HomePageModel> fetchAllProducts(String lang, String token) async {
+    HomePageModel home;
     try {
       final response = token == 'none'
           ? await http.get('${ApiUtil.BASE_URL}homePageGuest?lang=$lang')
@@ -342,30 +342,16 @@ class ProductsProvider with ChangeNotifier {
             );
 
       if (response.statusCode == 200) {
-        _bestSeller = ProductsModel.parseProducts(
-            jsonDecode(response.body)['Best_Seller'] as List);
-        _makeup = ProductsModel.parseProducts(
-            jsonDecode(response.body)['Makeup'] as List);
-        _perfume = ProductsModel.parseProducts(
-            jsonDecode(response.body)['Perfume'] as List);
-        _care = ProductsModel.parseProducts(
-            jsonDecode(response.body)['Care'] as List);
-        _lenses = ProductsModel.parseProducts(
-            jsonDecode(response.body)['Lenses'] as List);
-        _nails = ProductsModel.parseProducts(
-            jsonDecode(response.body)['Nails'] as List);
-        _devices = ProductsModel.parseProducts(
-            jsonDecode(response.body)['Devices'] as List);
-        var _adsList = jsonDecode(response.body)['ads'] as List;
-        _ads = _adsList.map((ads) => Ads.fromJson(ads)).toList();
-//        notifyListeners();
+        if (jsonDecode(response.body) != null) {
+          home = HomePageModel.fromJson(jsonDecode(response.body));
+        }
       } else {
         print('response status code is ${response.statusCode}');
       }
     } catch (e) {
       print(e.toString());
     }
-    return _ads;
+    return home;
   }
 
 //  ProductDetailsModelWithList get productDetails {

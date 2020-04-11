@@ -31,7 +31,7 @@ class DetailsModel {
   final int optionId;
   final String productName;
   final int quantity;
-  final double productPrice;
+  final double price;
   final String brand;
   final String image;
   final String type;
@@ -40,7 +40,7 @@ class DetailsModel {
   DetailsModel(
       {this.optionId,
       this.quantity,
-      this.productPrice,
+      this.price,
       this.productName,
       this.value,
       this.type,
@@ -51,7 +51,7 @@ class DetailsModel {
     return DetailsModel(
         optionId: json['option_id'] as int,
         quantity: json['quantity'] as int,
-        productPrice: json['product_price'] as double,
+        price: double.parse(json['price']),
         productName: json['name'] as String,
         brand: json['brand'] as String,
         image: json['image'] as String,

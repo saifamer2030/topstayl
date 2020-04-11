@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './constants/colors.dart';
 import './helper/appLocalization.dart';
@@ -37,7 +38,14 @@ import './screens/tabs_screen.dart';
 import 'models/product_details_model.dart';
 
 void main() async {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  var prefs = await SharedPreferences.getInstance();
+  Widget homePage = TabsScreen();
+  if (prefs.getString('language_code') == null) {
+    print(prefs.getString('language_code'));
+    homePage = LanguagesScreen();
+  }
+  runApp(MyApp(homePage));
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,
     DeviceOrientation.portraitUp,
@@ -45,6 +53,9 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final Widget homePage;
+  MyApp(this.homePage);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -97,7 +108,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
             debugShowCheckedModeBanner: false,
-            initialRoute: SplashScreen.routeName,
+            home: homePage,
             routes: {
               SplashScreen.routeName: (ctx) => SplashScreen(),
               TabsScreen.routeName: (ctx) => TabsScreen(),

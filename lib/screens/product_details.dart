@@ -86,7 +86,6 @@ class _ProductDetailsState extends State<ProductDetails>
     final String lang = appLanguage.appLocal.toString();
     _lists = await Provider.of<CartItemProvider>(context, listen: false)
         .fetchAllCartItem(lang, token['Authorization']);
-
     _lists.forEach((data) {
       totalPrice += (data.productPrice -
               (data.quantity * data.productPrice * data.discount / 100)) *
@@ -272,7 +271,7 @@ class _ProductDetailsState extends State<ProductDetails>
         : Container();
   }
 
-  Future<int> _sendYourComment() async {
+  Future<int> _sendYourComment(BuildContext context) async {
     var token = await userProvider.isAuthenticated();
     int response = await Provider.of<ProductsProvider>(context, listen: false)
         .submitComment(
@@ -284,7 +283,7 @@ class _ProductDetailsState extends State<ProductDetails>
     return response;
   }
 
-  _showCommentDialog() async {
+  _showCommentDialog(BuildContext context) async {
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -418,7 +417,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   setSetter(() {
                                     _isSent = true;
                                   });
-                                  _sendYourComment().then((response) {
+                                  _sendYourComment(context).then((response) {
                                     if (response == 1) {
                                       setSetter(() {
                                         _isSent = false;
@@ -463,7 +462,7 @@ class _ProductDetailsState extends State<ProductDetails>
     // We have to do it
   }
 
-  _showEmptyCartPopup() async {
+  _showEmptyCartPopup(BuildContext context) async {
     return showModalBottomSheet(
         context: context,
         backgroundColor: Theme.of(context).primaryColor,
@@ -481,7 +480,7 @@ class _ProductDetailsState extends State<ProductDetails>
         });
   }
 
-  _remindMe(int poid) async {
+  _remindMe(int productOptionId, BuildContext context) async {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -547,8 +546,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                 int result =
                                     await Provider.of<ProductsProvider>(context,
                                             listen: false)
-                                        .sendEmailReminder(
-                                            remindEmail, poid.toString());
+                                        .sendEmailReminder(remindEmail,
+                                            productOptionId.toString());
                                 if (result == 1) {
                                   setSetter(() {
                                     remindEmail = '';
@@ -622,120 +621,56 @@ class _ProductDetailsState extends State<ProductDetails>
                         ),
                         actions: <Widget>[
                           Consumer<CartItemProvider>(
-                              builder: (ctx, cart, _) => Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        cart.cartItems.length > 0
-                                            ? showModalBottomSheet(
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius
-                                                        .only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    16.0),
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    16.0))),
-                                                context: context,
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .primaryColor,
-                                                builder: (ctx) => CartScreen())
-                                            : _showEmptyCartPopup();
-                                      },
-                                      child: Stack(
-                                        children: <Widget>[
-                                          Image.asset(
-                                            'assets/icons/cart.png',
-                                            width: 20.0,
-                                            height: 25.0,
-                                            fit: BoxFit.fill,
-                                          ),
-                                          Positioned(
-                                            top: 11.0,
-                                            bottom: 4.0,
-                                            child: Consumer<CartItemProvider>(
-                                              builder: (ctx, cart, _) =>
-                                                  Container(
-                                                margin: cart.allItemQuantity > 9
-                                                    ? const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 4.0,
-                                                      )
-                                                    : const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 6.0),
-                                                child: Text(
-                                                  '${cart.allItemQuantity > 9 ? '9+' : cart.allItemQuantity == 0 ? '' : cart.allItemQuantity}',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 11.0,
-                                                  ),
-                                                ),
+                              builder: (ctx, cart, _) => IconButton(
+                                    onPressed: () {
+                                      cart.cartItems.length > 0
+                                          ? showModalBottomSheet(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  16.0),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  16.0))),
+                                              context: context,
+                                              backgroundColor: Theme.of(context)
+                                                  .primaryColor,
+                                              builder: (context) =>
+                                                  CartScreen())
+                                          : _showEmptyCartPopup(context);
+                                    },
+                                    icon: Stack(
+                                      children: <Widget>[
+                                        Image.asset(
+                                          'assets/icons/cart.png',
+                                          width: 20.0,
+                                          height: 25.0,
+                                          fit: BoxFit.fill,
+                                        ),
+                                        Positioned(
+                                          top: 11.0,
+                                          bottom: 4.0,
+                                          child: Container(
+                                            margin: cart.allItemQuantity > 9
+                                                ? const EdgeInsets.symmetric(
+                                                    horizontal: 4.0,
+                                                  )
+                                                : const EdgeInsets.symmetric(
+                                                    horizontal: 6.0),
+                                            child: Text(
+                                              '${cart.allItemQuantity > 9 ? '9+' : cart.allItemQuantity == 0 ? '' : cart.allItemQuantity}',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 11.0,
                                               ),
                                             ),
-                                          )
-                                        ],
-                                      ),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  )
-//                                Badge(
-//                              value: cart.allItemQuantity > 99
-//                                  ? '99+'
-//                                  : cart.allItemQuantity.toString(),
-//                              //shoppingCartItem.allItemQuantity,
-//                              child: GestureDetector(
-//                                child: Container(
-//                                  margin: const EdgeInsets.only(
-//                                      left: 20.0, right: 20.0),
-//                                  child: Image.asset(
-//                                    'assets/icons/cart.png',
-//                                    width: 22.0,
-//                                    height: 22.0,
-//                                    fit: BoxFit.fitHeight,
-//                                  ),
-//                                ),
-//                                onTap: () {
-////                        print(cart.allItemQuantity);
-//                                  cart.allItemQuantity > 0
-//                                      ? showModalBottomSheet(
-////                      isScrollControlled: true,
-//                                          shape: RoundedRectangleBorder(
-//                                              borderRadius: BorderRadius.only(
-//                                                  topLeft:
-//                                                      Radius.circular(16.0),
-//                                                  topRight:
-//                                                      Radius.circular(16.0))),
-//                                          context: context,
-//                                          backgroundColor:
-//                                              Theme.of(context).primaryColor,
-//                                          builder: (ctx) => CartScreen())
-//                                      : showModalBottomSheet(
-//                                          context: context,
-//                                          backgroundColor:
-//                                              Theme.of(context).primaryColor,
-//                                          shape: RoundedRectangleBorder(
-//                                              borderRadius: BorderRadius.only(
-//                                                  topLeft:
-//                                                      Radius.circular(16.0),
-//                                                  topRight:
-//                                                      Radius.circular(16.0))),
-//                                          builder: (context) {
-//                                            return Container(
-//                                              height: 90.0,
-//                                              child: Center(
-//                                                child: Text(AppLocalization.of(
-//                                                        context)
-//                                                    .translate("empty_cart")),
-//                                              ),
-//                                            );
-//                                          });
-//                                },
-//                              ),
-//                              color: Colors.red,
-//                            ),
-                              )
+                                  ))
                         ],
                       ),
                       body: SingleChildScrollView(
@@ -944,7 +879,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 .isAuthenticated();
                                             if (token['Authorization'] !=
                                                 'none') {
-                                              _showCommentDialog();
+                                              _showCommentDialog(context);
 //
                                             } else {
                                               Navigator.of(context).pushNamed(
@@ -1179,7 +1114,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                   var token =
                                       await userProvider.isAuthenticated();
                                   if (token['Authorization'] != 'none') {
-                                    _showCommentDialog();
+                                    _showCommentDialog(context);
 //
                                   } else {
                                     Navigator.of(context).pushNamed(
@@ -1503,10 +1438,12 @@ class _ProductDetailsState extends State<ProductDetails>
                                                 }
                                               }
                                             : () {
-                                                _remindMe(productDetails
-                                                    .options[
-                                                        _productOptionIndex]
-                                                    .id);
+                                                _remindMe(
+                                                    productDetails
+                                                        .options[
+                                                            _productOptionIndex]
+                                                        .id,
+                                                    context);
                                               }
                                     // : null,
                                     ,

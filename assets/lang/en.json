@@ -177,7 +177,7 @@
   "Concealer": "Concealer",
   "Highlighter": "Highlighter",
   "Powder": "Powder",
-  "Face Brimer": "Face Brimer",
+  "Face Brimer": "Face Primer",
   "Makeup Fixing Spray": "Makeup Fixing Spray",
   "BB And CC Cream": "BB And CC Cream",
   "Mascara": "Mascara",
@@ -287,7 +287,16 @@
   "enter_phone" : "Enter phone number",
   "remind email hint" : "Enter the email you want to be reminded of when the product is available",
   "product not available" : "Sold out",
-  "offer" : "Save"
+  "offer" : "Save",
+  "delivery_days" : "Your order will be delivered in 2 - 6 days",
+  "home_page_hint": "Products will be added soon",
+  "enter_correct_address": "Make sure to enter a valid address",
+  "order_canceled_hint" : "Do you want to cancel the order ?",
+  "yes" : "Yesٌ",
+  "some_products_not_exist" : "Sorry, some products in your cart have been out of stock, please check",
+  "change_name" : "Change name",
+  "change_email" : "Change email",
+  "change_phone" : "Change phone"
 
 
 }

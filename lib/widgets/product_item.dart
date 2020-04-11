@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +13,12 @@ import 'package:topstyle/screens/login_screen.dart';
 
 import '../screens/product_details.dart';
 
-class ProductItem extends StatelessWidget {
+class ProductItem extends StatefulWidget {
+  @override
+  _ProductItemState createState() => _ProductItemState();
+}
+
+class _ProductItemState extends State<ProductItem> {
   _buildOptions(List<Option> options, BuildContext context) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
@@ -32,6 +38,7 @@ class ProductItem extends StatelessWidget {
 
   ScreenConfig screenConfig;
   WidgetSize widgetSize;
+
   @override
   Widget build(BuildContext context) {
     screenConfig = ScreenConfig(context);
@@ -50,7 +57,7 @@ class ProductItem extends StatelessWidget {
               color: Colors.white,
               border: Border.all(width: 1.0, color: Color(0xFFeaeaea))),
           padding: const EdgeInsets.only(
-              left: 8.0, right: 8.0, top: 8.0, bottom: 8.0),
+              left: 8.0, right: 8.0, top: 5.0, bottom: 3.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,25 +66,18 @@ class ProductItem extends StatelessWidget {
                 alignment: Alignment.center,
                 children: <Widget>[
                   Container(
-                      height: constraints.maxHeight * 0.53,
+                      height: constraints.maxHeight * 0.50,
                       width: constraints.maxHeight * 0.45,
 //                      padding: EdgeInsets.all(12.0),
-                      child: Image.network(
-                        product.image,
+                      child: Image(
+                        image: NetworkImage(product.image),
                         height: constraints.maxHeight * 0.53 - 5.0,
                         width: constraints.maxHeight * 0.45 - 10.0,
                         fit: BoxFit.contain,
 //                          placeholder: (context, url) =>
 //                              Image.asset('assets/images/logo.jpg'),
 //                          color: Colors.grey.withOpacity(0.3),
-                      )
-//                    child: Image.network(
-//                      product.image,
-//                      height: constraints.maxHeight * 0.6 - 16.0,
-//                      width: constraints.maxHeight * 0.5 - 10.0,
-//                      fit: BoxFit.contain,
-//                    ),
-                      ),
+                      )),
                   Positioned(
                     top: 1.0,
                     right: 1.0,
@@ -101,10 +101,12 @@ class ProductItem extends StatelessWidget {
                           },
                           child: product.isFavorite == 1
                               ? Icon(
-                                  Icons.favorite,
+                                  CupertinoIcons.heart_solid,
                                   color: Colors.red,
                                 )
-                              : Icon(Icons.favorite_border)),
+                              : Icon(
+                                  CupertinoIcons.heart,
+                                )),
                     ),
                   ),
                   Positioned(

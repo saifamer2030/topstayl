@@ -24,35 +24,39 @@ class AddressScreen extends StatefulWidget {
 }
 
 class _AddressScreenState extends State<AddressScreen> {
-  String _selectedCountry;
-  String _selectedCity;
+  Map<String, String> _stringVar = {
+    'selectedCountry': null,
+    'selectedCity': null,
+    'countryId': null,
+    'image': 'assets/icons/ksa_flag.png',
+    'gps': '',
+    'phone': '',
+    'countryCode': '+966',
+    'name': '',
+    'note': ''
+  };
   bool _isCitesFetched = false;
   bool _isLoading = false;
-  String _gps;
   List<CityModel> cites = [];
-  String _countryId;
-  var _areaCtr = TextEditingController();
-  var _streetCtr = TextEditingController();
-  var _nameCtr = TextEditingController();
-  var _noteCtr = TextEditingController();
-  String _phone, countryCode = '+966';
-
+  var addressArea = TextEditingController();
+  var addressStreet = TextEditingController();
   var secondCode = FocusNode();
   var thirdCode = FocusNode();
   var fourCode = FocusNode();
 
   UserProvider _userProvider = UserProvider();
 
-  _getAllCites(int countryId) async {
+  _getAllCites(String countryId) async {
     var token = await _userProvider.isAuthenticated();
     setState(() {
       _isCitesFetched = false;
+      _isLoading = true;
     });
     cites = await Provider.of<OrdersProvider>(context, listen: false)
-        .allCites('$countryId', token['Authorization']);
-//    print(cites.length);
+        .allCites(countryId, token['Authorization']);
     setState(() {
       _isCitesFetched = true;
+      _isLoading = false;
     });
   }
 
@@ -70,10 +74,10 @@ class _AddressScreenState extends State<AddressScreen> {
           child: ListTile(
             onTap: () {
               setState(() {
-                _selectedCity = cites[i].cityNameEn;
+                _stringVar['selectedCity'] = cites[i].cityNameEn;
               });
-              _areaCtr.clear();
-              _streetCtr.clear();
+              addressArea.text = '';
+              addressStreet.text = '';
               Navigator.of(context).pop();
             },
             title: Text('${cites[i].cityNameAr}-${cites[i].cityNameEn}'),
@@ -88,7 +92,7 @@ class _AddressScreenState extends State<AddressScreen> {
       _isLoading = true;
     });
     Provider.of<UserProvider>(context, listen: false)
-        .otpByPhone(_phone, '0')
+        .otpByPhone(_stringVar['phone'], '0')
         .then((msg) {
       setState(() {
         _isLoading = false;
@@ -96,14 +100,14 @@ class _AddressScreenState extends State<AddressScreen> {
       if (msg['msg'] == 2) {
         print(msg['otp']);
         Navigator.of(context).pushNamed(CustomOtpScreen.routeName, arguments: {
-          'country': _countryId,
-          'city': _selectedCity,
-          'name': _nameCtr.text,
-          'phone': _phone,
-          'area': _areaCtr.text,
-          'street': _streetCtr.text,
-          'note': _noteCtr.text,
-          'gps': _gps,
+          'country': _stringVar['countryId'],
+          'city': _stringVar['selectedCity'],
+          'name': _stringVar['name'],
+          'phone': _stringVar['phone'],
+          'area': addressArea.text,
+          'street': addressStreet.text,
+          'note': _stringVar['note'],
+          'gps': _stringVar['gps'],
           'otp': msg['otp']
         });
       } else {
@@ -120,8 +124,6 @@ class _AddressScreenState extends State<AddressScreen> {
       }
     });
   }
-
-  String image;
 
   _showPopupCountry() async {
     return showDialog(
@@ -154,8 +156,9 @@ class _AddressScreenState extends State<AddressScreen> {
                             child: ListTile(
                               onTap: () {
                                 setState(() {
-                                  image = 'assets/icons/ksa_flag.png';
-                                  countryCode = '+966';
+                                  _stringVar['image'] =
+                                      'assets/icons/ksa_flag.png';
+                                  _stringVar['countryCode'] = '+966';
                                 });
                                 Navigator.of(context).pop();
                               },
@@ -164,7 +167,12 @@ class _AddressScreenState extends State<AddressScreen> {
                                 style: TextStyle(
                                     fontSize: widgetSize.textFieldError),
                               ),
-                              leading: Image.asset('assets/icons/ksa_flag.png'),
+                              leading: Image.asset(
+                                'assets/icons/ksa_flag.png',
+                                width: 35.0,
+                                height: 25.0,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -184,12 +192,18 @@ class _AddressScreenState extends State<AddressScreen> {
                             child: ListTile(
                               onTap: () {
                                 setState(() {
-                                  image = 'assets/icons/uae_flag.png';
-                                  countryCode = '+971';
+                                  _stringVar['image'] =
+                                      'assets/icons/uae_flag.png';
+                                  _stringVar['countryCode'] = '+971';
                                 });
                                 Navigator.of(context).pop();
                               },
-                              leading: Image.asset('assets/icons/uae_flag.png'),
+                              leading: Image.asset(
+                                'assets/icons/uae_flag.png',
+                                width: 35.0,
+                                height: 25.0,
+                                fit: BoxFit.cover,
+                              ),
                               title: Text(
                                 AppLocalization.of(context).translate("uae"),
                                 style: TextStyle(
@@ -214,12 +228,18 @@ class _AddressScreenState extends State<AddressScreen> {
                             child: ListTile(
                               onTap: () {
                                 setState(() {
-                                  image = 'assets/icons/kw_flag.png';
-                                  countryCode = '+965';
+                                  _stringVar['image'] =
+                                      'assets/icons/kw_flag.png';
+                                  _stringVar['countryCode'] = '+965';
                                 });
                                 Navigator.of(context).pop();
                               },
-                              leading: Image.asset('assets/icons/kw_flag.png'),
+                              leading: Image.asset(
+                                'assets/icons/kw_flag.png',
+                                width: 35.0,
+                                height: 25.0,
+                                fit: BoxFit.cover,
+                              ),
                               title: Text(
                                 AppLocalization.of(context).translate("kw"),
                                 style: TextStyle(
@@ -247,8 +267,8 @@ class _AddressScreenState extends State<AddressScreen> {
                       child: ListTile(
                         onTap: () {
                           setState(() {
-                            image = 'assets/icons/ksa_flag.png';
-                            countryCode = '+966';
+                            _stringVar['image'] = 'assets/icons/ksa_flag.png';
+                            _stringVar['countryCode'] = '+966';
                           });
                           Navigator.of(context).pop();
                         },
@@ -256,7 +276,12 @@ class _AddressScreenState extends State<AddressScreen> {
                           AppLocalization.of(context).translate("ksa"),
                           style: TextStyle(fontSize: widgetSize.textFieldError),
                         ),
-                        leading: Image.asset('assets/icons/ksa_flag.png'),
+                        leading: Image.asset(
+                          'assets/icons/ksa_flag.png',
+                          width: 35.0,
+                          height: 25.0,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -269,12 +294,17 @@ class _AddressScreenState extends State<AddressScreen> {
                       child: ListTile(
                         onTap: () {
                           setState(() {
-                            image = 'assets/icons/uae_flag.png';
-                            countryCode = '+971';
+                            _stringVar['image'] = 'assets/icons/uae_flag.png';
+                            _stringVar['countryCode'] = '+971';
                           });
                           Navigator.of(context).pop();
                         },
-                        leading: Image.asset('assets/icons/uae_flag.png'),
+                        leading: Image.asset(
+                          'assets/icons/uae_flag.png',
+                          width: 35.0,
+                          height: 25.0,
+                          fit: BoxFit.cover,
+                        ),
                         title: Text(
                           AppLocalization.of(context).translate("uae"),
                           style: TextStyle(fontSize: widgetSize.textFieldError),
@@ -291,12 +321,17 @@ class _AddressScreenState extends State<AddressScreen> {
                       child: ListTile(
                         onTap: () {
                           setState(() {
-                            image = 'assets/icons/kw_flag.png';
-                            countryCode = '+965';
+                            _stringVar['image'] = 'assets/icons/kw_flag.png';
+                            _stringVar['countryCode'] = '+965';
                           });
                           Navigator.of(context).pop();
                         },
-                        leading: Image.asset('assets/icons/kw_flag.png'),
+                        leading: Image.asset(
+                          'assets/icons/kw_flag.png',
+                          width: 35.0,
+                          height: 25.0,
+                          fit: BoxFit.cover,
+                        ),
                         title: Text(
                           AppLocalization.of(context).translate("kw"),
                           style: TextStyle(fontSize: widgetSize.textFieldError),
@@ -310,8 +345,41 @@ class _AddressScreenState extends State<AddressScreen> {
     );
   }
 
+  _drawCountryItem(String countryName, String countryId) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.0),
+        border: Border.all(width: 1.0, color: CustomColors.kPCardColor),
+      ),
+      child: ListTile(
+        onTap: () {
+          setState(() {
+            _stringVar['selectedCountry'] = countryName;
+            _stringVar['selectedCity'] = null;
+            cites = [];
+            _isCitesFetched = false;
+            _stringVar['countryId'] = countryId;
+            addressArea.text = '';
+            addressStreet.text = '';
+            _stringVar['note'] = '';
+          });
+          _getAllCites(countryId);
+          Navigator.of(context).pop();
+        },
+        title: Text(countryName),
+      ),
+    );
+  }
+
   ScreenConfig screenConfig;
   WidgetSize widgetSize;
+  @override
+  void dispose() {
+    addressArea.dispose();
+    addressStreet.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     screenConfig = ScreenConfig(context);
@@ -333,31 +401,31 @@ class _AddressScreenState extends State<AddressScreen> {
                               builder: (context) => AddressFromMap(),
                               fullscreenDialog: true))
                           .then((dataFromMap) {
-                        if (dataFromMap != {} &&
-                            dataFromMap['countryId'] != null &&
-                            dataFromMap != null) {
+                        if (dataFromMap != {} && dataFromMap != null) {
                           setState(() {
-                            _selectedCountry = AppLocalization.of(context)
-                                .translate(dataFromMap['countryId'] == '1'
-                                    ? "ksa"
-                                    : dataFromMap['countryId'] == '2'
-                                        ? 'kw'
-                                        : dataFromMap['countryId'] == '3'
-                                            ? 'uae'
-                                            : _selectedCountry = '');
-                            _countryId = dataFromMap['countryId'];
-                            _getAllCites(int.parse(_countryId));
-                            _selectedCity = dataFromMap['city'];
-                            _areaCtr.text = dataFromMap['area'];
-                            _streetCtr.text = dataFromMap['street'];
-                            _gps = dataFromMap['gps'];
+                            _stringVar['selectedCountry'] =
+                                AppLocalization.of(context).translate(
+                                    dataFromMap['countryId'] == '1'
+                                        ? "ksa"
+                                        : dataFromMap['countryId'] == '2'
+                                            ? 'kw'
+                                            : dataFromMap['countryId'] == '3'
+                                                ? 'uae'
+                                                : "ksa");
+                            _stringVar['countryId'] = dataFromMap['countryId'];
+                            _getAllCites(_stringVar['countryId']);
+                            _stringVar['selectedCity'] = dataFromMap['city'];
+                            addressArea.text = dataFromMap['area'];
+                            addressStreet.text = dataFromMap['street'];
+                            _stringVar['gps'] = dataFromMap['gps'];
                           });
                         }
                       });
                     },
                     leading: Icon(
-                      CupertinoIcons.location,
+                      CupertinoIcons.location_solid,
                       size: widgetSize.favoriteIconSize,
+                      color: CustomColors.kTabBarIconColor,
                     ),
                     title: Text(
                       AppLocalization.of(context)
@@ -370,6 +438,7 @@ class _AddressScreenState extends State<AddressScreen> {
                     ),
                   ),
                   Divider(
+                    thickness: 0.7,
                     height: 2.0,
                     color: CustomColors.kPCardColor,
                   ),
@@ -380,7 +449,7 @@ class _AddressScreenState extends State<AddressScreen> {
                       children: <Widget>[
                         Container(
                           margin: const EdgeInsets.only(
-                              left: 16.0, right: 16.0, top: 32.0, bottom: 8.0),
+                              left: 16.0, right: 16.0, top: 20.0, bottom: 8.0),
                           child: Text(
                             AppLocalization.of(context)
                                 .translate('address_details_hint'),
@@ -391,9 +460,8 @@ class _AddressScreenState extends State<AddressScreen> {
                         ),
                         Container(
                           height: 50.0,
-                          margin: const EdgeInsets.all(
-                            16.0,
-                          ),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 5.0),
                           decoration: BoxDecoration(
                             border: Border.all(
                                 width: 1.0, color: CustomColors.kPCardColor),
@@ -401,7 +469,11 @@ class _AddressScreenState extends State<AddressScreen> {
                           ),
                           child: Center(
                             child: TextFormField(
-                              controller: _nameCtr,
+                              onChanged: (value) {
+                                setState(() {
+                                  _stringVar['name'] = value;
+                                });
+                              },
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   contentPadding: const EdgeInsets.only(
@@ -433,21 +505,25 @@ class _AddressScreenState extends State<AddressScreen> {
                                     textDirection: TextDirection.ltr,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      Image.asset(
-                                        image == null
-                                            ? 'assets/icons/ksa_flag.png'
-                                            : image,
-                                        width: 25.0,
-                                        height: 15.0,
-                                        fit: BoxFit.cover,
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5.0),
+                                        child: Image.asset(
+                                          _stringVar['image'] == null
+                                              ? 'assets/icons/ksa_flag.png'
+                                              : _stringVar['image'],
+                                          width: 25.0,
+                                          height: 15.0,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                       SizedBox(
                                         width: 5.0,
                                       ),
                                       Text(
-                                        countryCode == null
+                                        _stringVar['countryCode'] == null
                                             ? '+966'
-                                            : countryCode,
+                                            : _stringVar['countryCode'],
                                         style: TextStyle(
                                             fontSize: widgetSize.content),
                                         textDirection: TextDirection.ltr,
@@ -468,16 +544,15 @@ class _AddressScreenState extends State<AddressScreen> {
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   child: Directionality(
-                                    textDirection: TextDirection.ltr,
+                                    textDirection: TextDirection.rtl,
                                     child: TextFormField(
                                       textDirection: TextDirection.ltr,
                                       onChanged: (value) {
                                         setState(() {
-                                          _phone = '$countryCode$value';
+                                          _stringVar['phone'] =
+                                              '${_stringVar['countryCode']}$value';
                                         });
                                       },
-                                      style: TextStyle(
-                                          fontSize: widgetSize.content),
                                       keyboardType: TextInputType.phone,
                                       inputFormatters: <TextInputFormatter>[
                                         WhitelistingTextInputFormatter
@@ -486,9 +561,9 @@ class _AddressScreenState extends State<AddressScreen> {
                                       ],
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
-                                        hintText: 'xxxxxxxxx',
+                                        hintText: AppLocalization.of(context)
+                                            .translate('enter_phone'),
                                         hintStyle: TextStyle(
-                                          fontSize: widgetSize.content,
                                           color: CustomColors.kTabBarIconColor,
                                         ),
                                         contentPadding: const EdgeInsets.only(
@@ -513,136 +588,57 @@ class _AddressScreenState extends State<AddressScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: ListTile(
-                            onTap: () async {
-                              showModalBottomSheet(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(8.0),
-                                          topLeft: Radius.circular(8.0))),
-                                  context: context,
-                                  builder: (context) => SingleChildScrollView(
-                                        child: Container(
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 16.0, vertical: 16.0),
-                                          child: Column(
-                                            children: <Widget>[
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  border: Border.all(
-                                                      width: 1.0,
-                                                      color: CustomColors
-                                                          .kPCardColor),
-                                                ),
-                                                child: ListTile(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      _selectedCountry =
-                                                          AppLocalization.of(
-                                                                  context)
-                                                              .translate("ksa");
-                                                      _selectedCity = null;
-                                                      cites = [];
-                                                      _isCitesFetched = false;
-                                                      _countryId = '1';
-                                                      _areaCtr.clear();
-                                                      _streetCtr.clear();
-                                                      _noteCtr.clear();
-                                                    });
-                                                    _getAllCites(1);
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  title: Text(
-                                                      AppLocalization.of(
-                                                              context)
-                                                          .translate("ksa")),
+                            onTap: _isLoading
+                                ? null
+                                : () {
+                                    showModalBottomSheet(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(8.0),
+                                                topLeft: Radius.circular(8.0))),
+                                        context: context,
+                                        builder: (context) =>
+                                            SingleChildScrollView(
+                                              child: Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 16.0,
+                                                        vertical: 16.0),
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    _drawCountryItem(
+                                                        AppLocalization.of(
+                                                                context)
+                                                            .translate("ksa"),
+                                                        '1'),
+                                                    SizedBox(
+                                                      height: 16.0,
+                                                    ),
+                                                    _drawCountryItem(
+                                                        AppLocalization.of(
+                                                                context)
+                                                            .translate("kw"),
+                                                        '2'),
+                                                    SizedBox(
+                                                      height: 16.0,
+                                                    ),
+                                                    _drawCountryItem(
+                                                        AppLocalization.of(
+                                                                context)
+                                                            .translate("uae"),
+                                                        '3')
+                                                  ],
                                                 ),
                                               ),
-                                              SizedBox(
-                                                height: 16.0,
-                                              ),
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  border: Border.all(
-                                                      width: 1.0,
-                                                      color: CustomColors
-                                                          .kPCardColor),
-                                                ),
-                                                child: ListTile(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      _selectedCountry =
-                                                          AppLocalization.of(
-                                                                  context)
-                                                              .translate("kw");
-                                                      _selectedCity = null;
-                                                      cites = [];
-                                                      _isCitesFetched = false;
-                                                      _countryId = '2';
-                                                      _areaCtr.clear();
-                                                      _streetCtr.clear();
-                                                      _noteCtr.clear();
-                                                    });
-                                                    _getAllCites(2);
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  title: Text(
-                                                      AppLocalization.of(
-                                                              context)
-                                                          .translate("kw")),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 16.0,
-                                              ),
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  border: Border.all(
-                                                      width: 1.0,
-                                                      color: CustomColors
-                                                          .kPCardColor),
-                                                ),
-                                                child: ListTile(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      _selectedCountry =
-                                                          AppLocalization.of(
-                                                                  context)
-                                                              .translate("uae");
-                                                      _selectedCity = null;
-                                                      cites = [];
-                                                      _isCitesFetched = false;
-                                                      _countryId = '3';
-                                                      _areaCtr.clear();
-                                                      _streetCtr.clear();
-                                                      _noteCtr.clear();
-                                                    });
-                                                    _getAllCites(3);
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  title: Text(
-                                                      AppLocalization.of(
-                                                              context)
-                                                          .translate("uae")),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ));
-                            },
-                            title: Text(_selectedCountry != null
-                                ? _selectedCountry
-                                : AppLocalization.of(context)
-                                    .translate('country_hint')),
+                                            ));
+                                  },
+                            title: Text(
+                              _stringVar['selectedCountry'] != null
+                                  ? _stringVar['selectedCountry']
+                                  : AppLocalization.of(context)
+                                      .translate('country_hint'),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                             trailing: Icon(Icons.keyboard_arrow_down),
                           ),
                         ),
@@ -657,7 +653,7 @@ class _AddressScreenState extends State<AddressScreen> {
                           ),
                           child: ListTile(
                             onTap: _isCitesFetched
-                                ? () async {
+                                ? () {
                                     showModalBottomSheet(
                                         shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.only(
@@ -673,10 +669,13 @@ class _AddressScreenState extends State<AddressScreen> {
                                             ));
                                   }
                                 : null,
-                            title: Text(_selectedCity != null
-                                ? _selectedCity
-                                : AppLocalization.of(context)
-                                    .translate('city_hint')),
+                            title: Text(
+                              _stringVar['selectedCity'] != null
+                                  ? _stringVar['selectedCity']
+                                  : AppLocalization.of(context)
+                                      .translate('city_hint'),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                             trailing: Icon(Icons.keyboard_arrow_down),
                           ),
                         ),
@@ -691,7 +690,12 @@ class _AddressScreenState extends State<AddressScreen> {
                           ),
                           child: Center(
                             child: TextFormField(
-                              controller: _areaCtr,
+                              controller: addressArea,
+                              onChanged: (value) {
+                                setState(() {
+                                  addressArea.text = value;
+                                });
+                              },
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   contentPadding: const EdgeInsets.only(
@@ -715,7 +719,12 @@ class _AddressScreenState extends State<AddressScreen> {
                           ),
                           child: Center(
                             child: TextFormField(
-                              controller: _streetCtr,
+                              controller: addressStreet,
+                              onChanged: (value) {
+                                setState(() {
+                                  addressStreet.text = value;
+                                });
+                              },
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   contentPadding: const EdgeInsets.only(
@@ -740,7 +749,11 @@ class _AddressScreenState extends State<AddressScreen> {
                             ),
                           ),
                           child: TextFormField(
-                            controller: _noteCtr,
+                            onChanged: (value) {
+                              setState(() {
+                                _stringVar['note'] = value;
+                              });
+                            },
                             keyboardType: TextInputType.multiline,
                             maxLines: 3,
                             decoration: InputDecoration(
@@ -758,20 +771,22 @@ class _AddressScreenState extends State<AddressScreen> {
                               left: 16.0, right: 16.0, bottom: 20.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0),
-                            color: _selectedCountry != null &&
-                                    _selectedCity != null &&
-                                    _areaCtr.text.length > 1 &&
-                                    _phone != null &&
-                                    _phone.length > 12
+                            color: _stringVar['selectedCountry'] != null &&
+                                    _stringVar['selectedCity'] != null &&
+                                    addressArea != null &&
+                                    addressArea.text != '' &&
+                                    _stringVar['phone'] != null &&
+                                    _stringVar['phone'].length > 11
                                 ? Theme.of(context).accentColor
                                 : Colors.grey,
                           ),
                           child: FlatButton(
-                            onPressed: _selectedCountry != null &&
-                                    _selectedCity != null &&
-                                    _phone != null &&
-                                    _phone.length > 12 &&
-                                    _areaCtr.text.length > 1
+                            onPressed: _stringVar['selectedCountry'] != null &&
+                                    _stringVar['selectedCity'] != null &&
+                                    _stringVar['phone'] != null &&
+                                    _stringVar['phone'].length > 11 &&
+                                    addressArea != null &&
+                                    addressArea.text != ''
                                 ? () {
                                     _confirmPhoneNumber();
                                   }

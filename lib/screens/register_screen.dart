@@ -1,4 +1,3 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,13 +6,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/helper/size_config.dart';
+import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/checkoutScreen.dart';
 import 'package:topstyle/screens/login_screen.dart';
 import 'package:topstyle/screens/product_details.dart';
 import 'package:topstyle/screens/tabs_screen.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
-import 'package:topstyle/widgets/network_connection.dart';
+import 'package:topstyle/widgets/connectivity_widget.dart';
 
 class RegisterScreen extends StatefulWidget {
   static String routeName = 'register';
@@ -36,6 +36,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   };
   bool _isLoading = false;
   bool _autoValidation = false;
+  var phone;
+  String countryCode = '+966', image;
 
   _doRegistration(var from) {
     if (!_createAccountKey.currentState.validate()) {
@@ -44,7 +46,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
     } else {
       _createAccountKey.currentState.save();
-      print(_registerMap['phone']);
+//      print(_registerMap['phone']);
+//      print(_registerMap['password']);
+//      print(_registerMap['name']);
+//      print(_registerMap['email']);
+//      print(_registerMap['phone']);
       setState(() {
         _isLoading = true;
       });
@@ -59,7 +65,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .then((responseMap) {
         setState(() {
           _isLoading = false;
-//          print('is Authenticated ${responseMap['isRegisterd']}');
         });
 
         if (responseMap['isRegisterd']) {
@@ -115,8 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     getUserCountryAndLanguage();
   }
 
-  String country = '+966';
-
+// Initialize country and lang if null the default arabic
   getUserCountryAndLanguage() async {
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getString('language_code') != null) {
@@ -129,46 +133,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
           _registerMap['langugae'] = "en";
           break;
       }
-    } else {
-//      print(prefs.getString('language_code'));
     }
-
     if (prefs.getString('countryName') != null) {
       switch (prefs.getString('countryName')) {
         case 'KSA':
-          country = '+966';
-          _registerMap['country'] = "1";
+          setState(() {
+            countryCode = '+966';
+            _registerMap['country'] = "1";
+            image = 'assets/icons/ksa_flag.png';
+          });
           break;
         case 'UAE':
-          country = '+971';
-          _registerMap['country'] = "3";
+          setState(() {
+            countryCode = '+971';
+            _registerMap['country'] = "3";
+            image = 'assets/icons/uae_flag.png';
+          });
           break;
         case 'KW':
-          country = '+965';
-          _registerMap['country'] = "2";
+          setState(() {
+            countryCode = '+965';
+            _registerMap['country'] = "2";
+            image = 'assets/icons/kw_flag.png';
+          });
           break;
       }
-//      print(prefs.getString('countryName'));
-    } else {
-//      print('shared prefs is null');
     }
   }
-
-  _checkInternetConnection(var fromScreen) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a wifi network.
-      _doRegistration(fromScreen);
-    } else {
-      ConnectionPopup.showAlert(
-          AppLocalization.of(context).translate("show_connection_error"),
-          context);
-    }
-  }
-
-  var phone;
-  String countryCode = '+966', image;
 
   _showPopupCountry() async {
     return showDialog(
@@ -367,7 +358,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     screenConfig = ScreenConfig(context);
     widgetSize = WidgetSize(screenConfig);
     String fromScreen = ModalRoute.of(context).settings.arguments as String;
-    print(fromScreen);
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -378,305 +368,340 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           centerTitle: true,
         ),
-        body: SingleChildScrollView(
-          child: Form(
-            key: _createAccountKey,
-            autovalidate: _autoValidation,
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Container(
-                      width: MediaQuery.of(context).size.width / 3 - 15,
-                      height: MediaQuery.of(context).size.width / 6 - 15,
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 50.0),
-                      child: Image.asset(
-                        'assets/images/logo.jpg',
-                        fit: BoxFit.fitHeight,
-                      ),
-                    ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                  width: 2.0,
-                                  color: Theme.of(context).accentColor),
-                            ),
-                          ),
-                          child: FlatButton(
-                            splashColor: Colors.white,
-                            onPressed: () {},
-                            child: Text(
-                              AppLocalization.of(context)
-                                  .translate("registration_from_title"),
-                              style: TextStyle(
-                                  color: Theme.of(context).accentColor,
-                                  fontSize: widgetSize.subTitle),
-                            ),
-                          ),
-                        ),
-                        FlatButton(
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushReplacementNamed(LoginScreen.routeName);
-                          },
-                          child: Text(
-                            AppLocalization.of(context).translate("login_btn"),
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: widgetSize.subTitle),
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Container(
-                      height: widgetSize.textField,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 1.0, color: CustomColors.kPCardColor),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty ||
-                              value.length < 5 ||
-                              value.length > 30) {
-                            return AppLocalization.of(context)
-                                .translate("user_name_validation_length_msg");
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _registerMap['name'] = value;
-                        },
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          errorStyle:
-                              TextStyle(fontSize: widgetSize.textFieldError),
-                          hintText:
-                              AppLocalization.of(context).translate("userName"),
-                          hintStyle: TextStyle(
-                            fontSize: widgetSize.subTitle,
-                            color: Colors.grey,
-                          ),
-                          contentPadding: const EdgeInsets.only(
-                              left: 10.0, right: 10.0, bottom: 6.0),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Row(
-                      textDirection: TextDirection.ltr,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            _showPopupCountry();
-                          },
-                          child: Container(
-                            width: 100.0,
-                            child: Row(
-                              textDirection: TextDirection.ltr,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Image.asset(
-                                  image == null
-                                      ? 'assets/icons/ksa_flag.png'
-                                      : image,
-                                  width: 25.0,
-                                  height: 15.0,
-                                  fit: BoxFit.cover,
+        body: Provider<NetworkProvider>.value(
+            value: NetworkProvider(),
+            child: Consumer<NetworkProvider>(
+              builder: (context, value, _) => Center(
+                child: ConnectivityWidget(
+                  networkProvider: value,
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _createAccountKey,
+                      autovalidate: _autoValidation,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 10.0),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Container(
+                                width:
+                                    MediaQuery.of(context).size.width / 3 - 15,
+                                height:
+                                    MediaQuery.of(context).size.width / 6 - 15,
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 20.0, vertical: 50.0),
+                                child: Image.asset(
+                                  'assets/images/logo.jpg',
+                                  fit: BoxFit.fitHeight,
                                 ),
-                                SizedBox(
-                                  width: 5.0,
-                                ),
-                                Text(
-                                  countryCode == null ? '+966' : countryCode,
-                                  style: TextStyle(fontSize: 14.0),
-                                  textDirection: TextDirection.ltr,
-                                ),
-                                Icon(Icons.arrow_drop_down),
-                              ],
-                            ),
-//                  ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            height: widgetSize.textField,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 1.0, color: CustomColors.kPCardColor),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Directionality(
-                              textDirection: TextDirection.ltr,
-                              child: TextFormField(
-                                textDirection: TextDirection.ltr,
-                                validator: (value) {
-                                  return (value.isEmpty ||
-                                          value.length < 9 ||
-                                          value.length > 15)
-                                      ? AppLocalization.of(context).translate(
-                                          "phone_validation_length_msg")
-                                      : null;
-                                },
-                                onSaved: (value) {
-                                  _registerMap['phone'] = '$countryCode$value';
-                                },
-                                style: TextStyle(fontSize: widgetSize.content),
-                                keyboardType: TextInputType.phone,
-                                inputFormatters: <TextInputFormatter>[
-                                  WhitelistingTextInputFormatter.digitsOnly,
-                                  LengthLimitingTextInputFormatter(9),
+                              ),
+                              ButtonBar(
+                                alignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                            width: 2.0,
+                                            color:
+                                                Theme.of(context).accentColor),
+                                      ),
+                                    ),
+                                    child: FlatButton(
+                                      splashColor: Colors.white,
+                                      onPressed: () {},
+                                      child: Text(
+                                        AppLocalization.of(context).translate(
+                                            "registration_from_title"),
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).accentColor,
+                                            fontSize: widgetSize.subTitle),
+                                      ),
+                                    ),
+                                  ),
+                                  FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pushReplacementNamed(
+                                              LoginScreen.routeName);
+                                    },
+                                    child: Text(
+                                      AppLocalization.of(context)
+                                          .translate("login_btn"),
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: widgetSize.subTitle),
+                                    ),
+                                  )
                                 ],
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  errorStyle: TextStyle(
-                                      fontSize: widgetSize.textFieldError),
-                                  hintText: 'xxxxxxxxx',
-//                                  AppLocalization.of(context)
-//                                      .translate("phone_in_login"),
-                                  hintStyle: TextStyle(
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Container(
+                                height: widgetSize.textField,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 1.0,
+                                      color: CustomColors.kPCardColor),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value.isEmpty ||
+                                        value.length < 5 ||
+                                        value.length > 30) {
+                                      return AppLocalization.of(context)
+                                          .translate(
+                                              "user_name_validation_length_msg");
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    _registerMap['name'] = value;
+                                  },
+                                  style:
+                                      TextStyle(fontSize: widgetSize.subTitle),
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    errorStyle: TextStyle(
+                                        fontSize: widgetSize.textFieldError),
+                                    hintText: AppLocalization.of(context)
+                                        .translate("userName"),
+                                    hintStyle: TextStyle(
                                       fontSize: widgetSize.subTitle,
                                       color: Colors.grey,
-                                      fontWeight: FontWeight.bold),
-                                  contentPadding: const EdgeInsets.only(
-                                    left: 10.0,
-                                    right: 10.0,
-                                    bottom: 6.0,
+                                    ),
+                                    contentPadding: const EdgeInsets.only(
+                                        left: 10.0, right: 10.0, bottom: 6.0),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Container(
-                      height: widgetSize.textField,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 1.0, color: CustomColors.kPCardColor),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: TextFormField(
-                        validator: (value) {
-                          Pattern pattern =
-                              r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                          RegExp regex = new RegExp(pattern);
-                          if (!regex.hasMatch(value))
-                            return AppLocalization.of(context)
-                                .translate("email_validation_msg");
-                          else
-                            return null;
-                        },
-                        onSaved: (value) {
-                          _registerMap['email'] = value;
-                        },
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                            errorStyle:
-                                TextStyle(fontSize: widgetSize.textFieldError),
-                            border: InputBorder.none,
-                            hintText: AppLocalization.of(context)
-                                .translate("userEmail"),
-                            hintStyle: TextStyle(
-                              fontSize: widgetSize.subTitle,
-                              color: Colors.grey,
-                            ),
-                            contentPadding: const EdgeInsets.only(
-                                left: 10.0, right: 10.0, bottom: 6.0)),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Container(
-                      height: widgetSize.textField,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 1.0, color: CustomColors.kPCardColor),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty || value.length < 6) {
-                            return AppLocalization.of(context)
-                                .translate("password_validation_msg");
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _registerMap['password'] = value;
-                        },
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          errorStyle:
-                              TextStyle(fontSize: widgetSize.textFieldError),
-                          hintText:
-                              AppLocalization.of(context).translate("password"),
-                          hintStyle: TextStyle(
-                            fontSize: widgetSize.subTitle,
-                            color: Colors.grey,
-                          ),
-                          contentPadding: const EdgeInsets.only(
-                              left: 10.0, right: 10.0, bottom: 6.0),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    Container(
-                      height: widgetSize.textField,
-                      margin: const EdgeInsets.only(top: 20.0, bottom: 10.0),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).accentColor,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: RaisedButton(
-                        color: Theme.of(context).accentColor,
-                        onPressed: _isLoading
-                            ? null
-                            : () {
-                                _checkInternetConnection(fromScreen);
-                              },
-                        child: _isLoading
-                            ? AdaptiveProgressIndicator()
-                            : Text(
-                                AppLocalization.of(context)
-                                    .translate("registration_from_title"),
-                                style: TextStyle(
-                                    fontSize: widgetSize.mainTitle,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                              SizedBox(
+                                height: 10.0,
                               ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
+                              Row(
+                                textDirection: TextDirection.ltr,
+                                children: <Widget>[
+                                  GestureDetector(
+                                    onTap: () {
+                                      _showPopupCountry();
+                                    },
+                                    child: Container(
+                                      width: 100.0,
+                                      child: Row(
+                                        textDirection: TextDirection.ltr,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Image.asset(
+                                            image == null
+                                                ? 'assets/icons/ksa_flag.png'
+                                                : image,
+                                            width: 25.0,
+                                            height: 15.0,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          SizedBox(
+                                            width: 5.0,
+                                          ),
+                                          Text(
+                                            countryCode == null
+                                                ? '+966'
+                                                : countryCode,
+                                            style: TextStyle(fontSize: 14.0),
+                                            textDirection: TextDirection.ltr,
+                                          ),
+                                          Icon(Icons.arrow_drop_down),
+                                        ],
+                                      ),
+//                  ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      height: widgetSize.textField,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1.0,
+                                            color: CustomColors.kPCardColor),
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ),
+                                      child: Directionality(
+                                        textDirection: TextDirection.ltr,
+                                        child: TextFormField(
+                                          textDirection: TextDirection.ltr,
+                                          validator: (value) {
+                                            return (value.isEmpty ||
+                                                    value.length < 8)
+                                                ? AppLocalization.of(context)
+                                                    .translate(
+                                                        "phone_validation_length_msg")
+                                                : null;
+                                          },
+                                          style: TextStyle(
+                                              fontSize: widgetSize.subTitle),
+                                          onSaved: (value) {
+                                            _registerMap['phone'] =
+                                                '$countryCode$value';
+                                          },
+                                          keyboardType: TextInputType.phone,
+                                          inputFormatters: <TextInputFormatter>[
+                                            WhitelistingTextInputFormatter
+                                                .digitsOnly,
+                                            LengthLimitingTextInputFormatter(9),
+                                          ],
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            errorStyle: TextStyle(
+                                                fontSize:
+                                                    widgetSize.textFieldError),
+                                            hintText: '5xxxxxxxx',
+                                            hintStyle: TextStyle(
+                                                fontSize: widgetSize.subTitle,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.bold),
+                                            contentPadding:
+                                                const EdgeInsets.only(
+                                              left: 10.0,
+                                              right: 10.0,
+                                              bottom: 6.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Container(
+                                height: widgetSize.textField,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 1.0,
+                                      color: CustomColors.kPCardColor),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: TextFormField(
+                                  validator: (value) {
+                                    Pattern pattern =
+                                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                                    RegExp regex = new RegExp(pattern);
+                                    if (!regex.hasMatch(value))
+                                      return AppLocalization.of(context)
+                                          .translate("email_validation_msg");
+                                    else
+                                      return null;
+                                  },
+                                  style:
+                                      TextStyle(fontSize: widgetSize.subTitle),
+                                  onSaved: (value) {
+                                    _registerMap['email'] = value;
+                                  },
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                      errorStyle: TextStyle(
+                                          fontSize: widgetSize.textFieldError),
+                                      border: InputBorder.none,
+                                      hintText: AppLocalization.of(context)
+                                          .translate("userEmail"),
+                                      hintStyle: TextStyle(
+                                        fontSize: widgetSize.subTitle,
+                                        color: Colors.grey,
+                                      ),
+                                      contentPadding: const EdgeInsets.only(
+                                          left: 10.0,
+                                          right: 10.0,
+                                          bottom: 6.0)),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Container(
+                                height: widgetSize.textField,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 1.0,
+                                      color: CustomColors.kPCardColor),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value.isEmpty || value.length < 6) {
+                                      return AppLocalization.of(context)
+                                          .translate("password_validation_msg");
+                                    }
+                                    return null;
+                                  },
+                                  style:
+                                      TextStyle(fontSize: widgetSize.subTitle),
+                                  onSaved: (value) {
+                                    _registerMap['password'] = value;
+                                  },
+                                  obscureText: true,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    errorStyle: TextStyle(
+                                        fontSize: widgetSize.textFieldError),
+                                    hintText: AppLocalization.of(context)
+                                        .translate("password"),
+                                    hintStyle: TextStyle(
+                                      fontSize: widgetSize.subTitle,
+                                      color: Colors.grey,
+                                    ),
+                                    contentPadding: const EdgeInsets.only(
+                                        left: 10.0, right: 10.0, bottom: 6.0),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15.0,
+                              ),
+                              Container(
+                                height: widgetSize.textField,
+                                margin: const EdgeInsets.only(
+                                    top: 20.0, bottom: 10.0),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).accentColor,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: RaisedButton(
+                                  color: Theme.of(context).accentColor,
+                                  onPressed: _isLoading
+                                      ? null
+                                      : () {
+                                          _doRegistration(fromScreen);
+                                        },
+                                  child: _isLoading
+                                      ? AdaptiveProgressIndicator()
+                                      : Text(
+                                          AppLocalization.of(context).translate(
+                                              "registration_from_title"),
+                                          style: TextStyle(
+                                              fontSize: widgetSize.mainTitle,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                            ]),
                       ),
                     ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                  ]),
-            ),
-          ),
-        ));
+                  ),
+                ),
+              ),
+            )));
   }
 }

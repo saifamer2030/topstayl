@@ -18,7 +18,6 @@ class CartItemProvider with ChangeNotifier {
       'couponValue': 0.0,
       'couponPercentage': 0.0
     };
-    print('sfdvdfvfd');
     try {
       final response = await http
           .get('${ApiUtil.BASE_URL}useCoupon?coupon=$coupon', headers: {
@@ -228,12 +227,6 @@ class CartItemProvider with ChangeNotifier {
   Future<int> increaseDecreaseProductQty(
       int productId, String lang, int qty, String token) async {
     int msg;
-    _cartItems.forEach((product) {
-      if (product.id == productId) {
-        _cartItems[_cartItems.indexOf(product)].quantity = qty;
-      }
-    });
-    notifyListeners();
     try {
       if (token == 'none') {
         var prefs = await SharedPreferences.getInstance();
@@ -250,6 +243,12 @@ class CartItemProvider with ChangeNotifier {
         if (response.statusCode == 200) {
           msg = json.decode(response.body)['error'];
           if (msg == 1 || msg == 0) {
+            _cartItems.forEach((product) {
+              if (product.id == productId) {
+                _cartItems[_cartItems.indexOf(product)].quantity = qty;
+              }
+            });
+            notifyListeners();
             msg = json.decode(response.body)['quantity'];
 //            print(jsonDecode(response.body));
           }
@@ -271,6 +270,12 @@ class CartItemProvider with ChangeNotifier {
         if (response.statusCode == 200) {
           msg = json.decode(response.body)['error'];
           if (msg == 1 || msg == 0) {
+            _cartItems.forEach((product) {
+              if (product.id == productId) {
+                _cartItems[_cartItems.indexOf(product)].quantity = qty;
+              }
+            });
+            notifyListeners();
             msg = json.decode(response.body)['quantity'];
 //            print(jsonDecode(response.body));
           }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
+import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/screens/tabs_screen.dart';
 
 class CheckoutDoneScreen extends StatelessWidget {
@@ -10,6 +11,8 @@ class CheckoutDoneScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ScreenConfig screenConfig = ScreenConfig(context);
+    final WidgetSize widgetSize = WidgetSize(screenConfig);
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
@@ -30,7 +33,9 @@ class CheckoutDoneScreen extends StatelessWidget {
                   ),
                   Text(
                     AppLocalization.of(context).translate('order_placed'),
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: widgetSize.mainTitle),
                   ),
                   SizedBox(
                     height: 8.0,
@@ -39,10 +44,11 @@ class CheckoutDoneScreen extends StatelessWidget {
                     AppLocalization.of(context)
                         .translate('successful_purchase'),
                     style: TextStyle(
-                        fontSize: 14.0, color: CustomColors.kPSomeTextColor),
+                        fontSize: widgetSize.subTitle,
+                        color: CustomColors.kPSomeTextColor),
                   ),
                   SizedBox(
-                    height: 32,
+                    height: 10,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +56,7 @@ class CheckoutDoneScreen extends StatelessWidget {
                       Text(
                         AppLocalization.of(context).translate('order_id'),
                         style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: widgetSize.subTitle,
                             color: CustomColors.kPSomeTextColor),
                       ),
                       SizedBox(
@@ -59,11 +65,20 @@ class CheckoutDoneScreen extends StatelessWidget {
                       Text(
                         '$orderId',
                         style: TextStyle(
-                            fontSize: 16.0,
+                            fontSize: widgetSize.subTitle + 2,
                             fontWeight: FontWeight.bold,
                             color: CustomColors.kPSomeTextColor),
                       ),
                     ],
+                  ),
+                  SizedBox(
+                    height: 32.0,
+                  ),
+                  Text(
+                    AppLocalization.of(context).translate('delivery_days'),
+                    style: TextStyle(
+                        fontSize: widgetSize.content2,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -84,7 +99,9 @@ class CheckoutDoneScreen extends StatelessWidget {
                 child: Text(
                   AppLocalization.of(context).translate("return_to_home"),
                   style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: widgetSize.mainTitle),
                 ),
               ),
             ),

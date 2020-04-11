@@ -5,10 +5,12 @@ import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/helper/size_config.dart';
 import 'package:topstyle/models/products_model.dart';
+import 'package:topstyle/providers/cart_provider.dart';
 import 'package:topstyle/providers/languages_provider.dart';
 import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/providers/products_provider.dart';
 import 'package:topstyle/providers/user_provider.dart';
+import 'package:topstyle/screens/cart_screen.dart';
 import 'package:topstyle/screens/search_screen.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 import 'package:topstyle/widgets/connectivity_widget.dart';
@@ -26,83 +28,93 @@ class SeeMoreScreen extends StatefulWidget {
 
 class _SeeMoreScreenState extends State<SeeMoreScreen> {
   List<ProductsModel> _products = [];
-  bool _isInti = true;
-  bool _isLoading = false;
-  bool _seeMoreLoading = false;
-  bool _isFilteredData = false,
-      _makeup = false,
-      _perfume = false,
-      _care = false,
-      _nails = false,
-      _lenses = false,
-      _devices = false;
-
-  bool _face = false,
-      _lips = false,
-      _eyes = false,
-      _eyeBrow = false,
-      _cheek = false,
-      _highlighter = false,
-      _brushes = false,
-      _makeupBrushesTools = false;
-  bool _foundation = false,
-      _concealer = false,
-      _powder = false,
-      _faceBrimer = false,
-      _makeupFixingSpray = false,
-      _bbCcCream = false;
-  bool _eyeMascara = false,
-      _eyeShadow = false,
-      _eyeLiner = false,
-      _eyeBrimer = false,
-      _eyeGlitter = false;
-  bool _lipSet = false, _lipGloss = false, _lipStick = false, _lipLiner = false;
-  bool _eyeBrowMascara = false, _eyeBrowGel = false, _eyeBrowPencil = false;
-  bool _cheekContour = false, _cheekBlusher = false;
-  bool _eyeBrushes = false,
-      _faceBrushes = false,
-      _eyeBrowBrushes = false,
-      _brushesCleaners = false,
-      _makeupRemover = false;
-  bool _womenPerfume = false,
-      _unisexPerfume = false,
-      _menPerfume = false,
-      _hairMist = false,
-      _nichePerfume = false;
-  bool _careTool = false,
-      _careLip = false,
-      _careHand = false,
-      _careFace = false,
-      _careHair = false,
-      _careBody = false;
-  bool _nailPolish = false,
-      _nailPolishRemover = false,
-      _nailTool = false,
-      _nailCare = false;
-  bool _pureness = false,
-      _bella = false,
-      _diva = false,
-      _beauteous = false,
-      _lensme = false,
-      _solutionForLenses = false;
-  bool _hairDevice = false, _bodyDevice = false, _faceDevice = false;
-
-  AppLanguageProvider appLanguage = AppLanguageProvider();
-  UserProvider userProvider = UserProvider();
-  int pageNumber = 1;
-  int pageNumberOrdered = 1;
-  int lastPage = 0;
-  int lastPageFiltered = 0;
-  bool loaded = false;
-  bool _sortByLow = false,
-      _sortByHigh = false,
-      _sortByNew = false,
-      _sortByToRated = false;
   ScrollController _controller = ScrollController();
-
   List<String> filterBody = [];
   String _isFrom = '';
   String order = 'asc';
+  AppLanguageProvider appLanguage = AppLanguageProvider();
+  UserProvider userProvider = UserProvider();
+  Map<String, int> _flags = {
+    'pageNumber': 1,
+    'pageNumberOrdered': 1,
+    'lastPage': 0,
+    'lastPageFiltered': 0
+  };
+
+  Map<String, bool> _categories = {
+    'isInti': true,
+    'isLoading': false,
+    'seeMoreLoading': false,
+    'isFilteredData': false,
+    'makeup': false,
+    'perfume': false,
+    'care': false,
+    'nails': false,
+    'lenses': false,
+    'devices': false,
+    'face': false,
+    'lips': false,
+    'eyes': false,
+    'eyeBrow': false,
+    'cheek': false,
+    'highlighter': false,
+    'brushes': false,
+    'makeupBrushesTools': false,
+    'foundation': false,
+    'concealer': false,
+    'powder': false,
+    'faceBrimer': false,
+    'makeupFixingSpray': false,
+    'bbCcCream': false,
+    'eyeMascara': false,
+    'eyeShadow': false,
+    'eyeLiner': false,
+    'eyeBrimer': false,
+    'eyeGlitter': false,
+    'lipSet': false,
+    'lipGloss': false,
+    'lipStick': false,
+    'lipLiner': false,
+    'eyeBrowMascara': false,
+    'eyeBrowGel': false,
+    'eyeBrowPencil': false,
+    'cheekContour': false,
+    'cheekBlusher': false,
+    'eyeBrushes': false,
+    'faceBrushes': false,
+    'eyeBrowBrushes': false,
+    'brushesCleaners': false,
+    'makeupRemover': false,
+    'womenPerfume': false,
+    'unisexPerfume': false,
+    'menPerfume': false,
+    'hairMist': false,
+    'nichePerfume': false,
+    'careTool': false,
+    'careLip': false,
+    'careHand': false,
+    'careFace': false,
+    'careHair': false,
+    'careBody': false,
+    'nailPolish': false,
+    'nailPolishRemover': false,
+    'nailTool': false,
+    'nailCare': false,
+    'pureness': false,
+    'bella': false,
+    'diva': false,
+    'beauteous': false,
+    'lensme': false,
+    'solutionForLenses': false,
+    'hairDevice': false,
+    'bodyDevice': false,
+    'faceDevice': false,
+    'loaded': false,
+    'sortByLow': false,
+    'sortByHigh': false,
+    'sortByNew': false,
+    'sortByToRated': false
+  };
 
   void _populateFilterBody(String s, bool val) {
     if (val) {
@@ -119,26 +131,28 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
     final String myLang = appLanguage.appLocal.toString();
     var user = await userProvider.isAuthenticated();
     setState(() {
-      _seeMoreLoading = true;
+      _categories['seeMoreLoading'] = true;
     });
     String filterContent = '';
     filterContent =
         filterBody.toString().substring(1, filterBody.toString().length - 1);
     Provider.of<ProductsProvider>(context, listen: false)
-        .allDataInSeeMoreWithMultiFilter(filterContent, myLang, pageNumber,
-            user['Authorization'] == 'none' ? 'none' : user['Authorization'])
+        .allDataInSeeMoreWithMultiFilter(
+            filterContent, myLang, pageNumber, user['Authorization'])
         .then((data) {
       setState(() {
-        loaded = false;
-        _seeMoreLoading = false;
-        _isLoading = false;
-        if (_isFilteredData && pageNumberOrdered == 1) {
-          _products.clear();
-        }
-        var list = data['data'] as List ?? [];
-        _isFrom = 'filter';
-        lastPageFiltered = data['last_page'] as int;
-        if (list != null) {
+        if (data['data'] != null) {
+          _categories['loaded'] = false;
+          _categories['isLoading'] = false;
+          _categories['seeMoreLoading'] = false;
+          if (_categories['isFilteredData'] &&
+              _flags['pageNumberOrdered'] == 1) {
+            _products.clear();
+          }
+          var list = data['data'] as List ?? [];
+          _isFrom = 'filter';
+          print(list.length);
+          _flags['lastPageFiltered'] = data['last_page'] as int;
           _products.addAll(List<ProductsModel>.from(list));
         }
       });
@@ -146,14 +160,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
   }
 
   _doSort(int numberOfPage) async {
-//    print(
-//        'page number is $numberOfPage and last index is $lastPageFiltered and product length is ${_products.length}');
     final String lang = appLanguage.appLocal.toString();
     var userData = await userProvider.isAuthenticated();
     print('category name ${widget.categoryName}');
     print('sub category name ${widget.subCategoryName}');
     setState(() {
-      _seeMoreLoading = true;
+      _categories['seeMoreLoading'] = true;
     });
     Provider.of<ProductsProvider>(context, listen: false)
         .allDataInSeeMoreWithFilter(
@@ -163,23 +175,22 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
             lang,
             numberOfPage,
             order,
-            userData['Authorization'] == 'none'
-                ? 'none'
-                : userData['Authorization'])
+            userData['Authorization'])
         .then((products) {
-      setState(() {
-        loaded = false;
-        _seeMoreLoading = false;
-        if (_isFilteredData && pageNumberOrdered == 1) {
-          _products.clear();
-        }
-        var list = products['data'] as List;
-        _isFrom = 'sort';
-        if (list.length > 0) {
-          lastPageFiltered = products['last_page'];
+      if (products['data'] != null) {
+        setState(() {
+          _categories['loaded'] = false;
+          _categories['seeMoreLoading'] = false;
+          if (_categories['isFilteredData'] &&
+              _flags['pageNumberOrdered'] == 1) {
+            _products.clear();
+          }
+          var list = products['data'] as List;
+          _isFrom = 'sort';
+          _flags['lastPageFiltered'] = products['last_page'];
           _products.addAll(List<ProductsModel>.from(list));
-        }
-      });
+        });
+      }
     });
   }
 
@@ -233,19 +244,17 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            _sortByLow = true;
-                            _sortByHigh = false;
-                            _sortByNew = false;
-                            _sortByToRated = false;
-                            pageNumberOrdered = 1;
-                            //_products.clear();
-                            _isFilteredData = true;
+                            _categories['sortByLow'] = true;
+                            _categories['sortByHigh'] = false;
+                            _categories['sortByNew'] = false;
+                            _categories['sortByToRated'] = false;
+                            _flags['pageNumberOrdered'] = 1;
+                            _categories['isFilteredData'] = true;
                             order = 'desc';
                           });
 
-                          print('index :$pageNumberOrdered');
-                          print('is filterd :$_isFilteredData');
-                          _doSort(pageNumberOrdered);
+//                          print('is filterd :$_isFilteredData');
+                          _doSort(_flags['pageNumberOrdered']);
                           Navigator.of(context).pop();
                         },
                         child: Column(
@@ -253,7 +262,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                             Icon(
                               Icons.arrow_downward,
                               size: 30.0,
-                              color: _sortByLow
+                              color: _categories['sortByLow']
                                   ? Theme.of(context).accentColor
                                   : CustomColors.kTabBarIconColor,
                             ),
@@ -261,7 +270,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                               AppLocalization.of(context).translate("price"),
                               style: TextStyle(
                                 fontSize: 12.0,
-                                color: _sortByLow
+                                color: _categories['sortByLow']
                                     ? Theme.of(context).accentColor
                                     : CustomColors.kTabBarIconColor,
                               ),
@@ -270,7 +279,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                               "(${AppLocalization.of(context).translate("highest_to_lowest")})",
                               style: TextStyle(
                                 fontSize: 10.0,
-                                color: _sortByLow
+                                color: _categories['sortByLow']
                                     ? Theme.of(context).accentColor
                                     : CustomColors.kTabBarIconColor,
                               ),
@@ -281,19 +290,17 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            _sortByLow = false;
-                            _sortByHigh = true;
-                            _sortByNew = false;
-                            _sortByToRated = false;
-                            pageNumberOrdered = 1;
+                            _categories['sortByLow'] = false;
+                            _categories['sortByHigh'] = true;
+                            _categories['sortByNew'] = false;
+                            _categories['sortByToRated'] = false;
+                            _flags['pageNumberOrdered'] = 1;
                             //_products.clear();
-                            _isFilteredData = true;
+                            _categories['isFilteredData'] = true;
                             order = 'asc';
                           });
-
-                          print('index :$pageNumberOrdered');
-                          print('is filterd :$_isFilteredData');
-                          _doSort(pageNumberOrdered);
+//                          print('is filterd :$_isFilteredData');
+                          _doSort(_flags['pageNumberOrdered']);
                           Navigator.of(context).pop();
 //                             _checkInternetConnection();
                         },
@@ -302,7 +309,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                             Icon(
                               Icons.arrow_upward,
                               size: 30.0,
-                              color: _sortByHigh
+                              color: _categories['sortByHigh']
                                   ? Theme.of(context).accentColor
                                   : CustomColors.kTabBarIconColor,
                             ),
@@ -310,7 +317,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                               AppLocalization.of(context).translate("price"),
                               style: TextStyle(
                                 fontSize: 12.0,
-                                color: _sortByHigh
+                                color: _categories['sortByHigh']
                                     ? Theme.of(context).accentColor
                                     : CustomColors.kTabBarIconColor,
                               ),
@@ -319,7 +326,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                               "(${AppLocalization.of(context).translate("lowest_to_highest")})",
                               style: TextStyle(
                                 fontSize: 10.0,
-                                color: _sortByHigh
+                                color: _categories['sortByHigh']
                                     ? Theme.of(context).accentColor
                                     : CustomColors.kTabBarIconColor,
                               ),
@@ -330,10 +337,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            _sortByLow = false;
-                            _sortByHigh = false;
-                            _sortByNew = false;
-                            _sortByToRated = true;
+                            _categories['sortByLow'] = false;
+                            _categories['sortByHigh'] = false;
+                            _categories['sortByNew'] = false;
+                            _categories['sortByToRated'] = true;
                             order = 'rate';
                             Navigator.of(context).pop();
                           });
@@ -345,7 +352,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                               width: 30.0,
                               height: 30.0,
                               fit: BoxFit.cover,
-                              color: _sortByToRated
+                              color: _categories['sortByToRated']
                                   ? Theme.of(context).accentColor
                                   : CustomColors.kTabBarIconColor,
                             ),
@@ -357,7 +364,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                   .translate("popularity"),
                               style: TextStyle(
                                 fontSize: 12.0,
-                                color: _sortByToRated
+                                color: _categories['sortByToRated']
                                     ? Theme.of(context).accentColor
                                     : CustomColors.kTabBarIconColor,
                               ),
@@ -368,10 +375,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            _sortByLow = false;
-                            _sortByHigh = false;
-                            _sortByNew = true;
-                            _sortByToRated = false;
+                            _categories['sortByLow'] = false;
+                            _categories['sortByHigh'] = false;
+                            _categories['sortByNew'] = true;
+                            _categories['sortByToRated'] = false;
                             order = 'new';
                             Navigator.of(context).pop();
                           });
@@ -383,7 +390,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                               width: 35.0,
                               height: 35.0,
                               fit: BoxFit.cover,
-                              color: _sortByNew
+                              color: _categories['sortByNew']
                                   ? Theme.of(context).accentColor
                                   : CustomColors.kTabBarIconColor,
                             ),
@@ -395,7 +402,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                   .translate("most_recent"),
                               style: TextStyle(
                                 fontSize: 12.0,
-                                color: _sortByNew
+                                color: _categories['sortByNew']
                                     ? Theme.of(context).accentColor
                                     : CustomColors.kTabBarIconColor,
                               ),
@@ -411,6 +418,83 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                 ],
               );
             }));
+  }
+
+  _drawSubSubItem(String categoryName) {
+    return Row(
+      children: <Widget>[
+        Checkbox(
+          value: _categories[categoryName.toLowerCase()],
+          onChanged: (val) {
+            setState(() {
+              _categories[categoryName.toLowerCase()] = val;
+            });
+            _populateFilterBody(categoryName, val);
+          },
+        ),
+        Text(
+          AppLocalization.of(context).translate("$categoryName"),
+        ),
+      ],
+    );
+  }
+
+  _drawSubCategoryItem(String subName) {
+    return Container(
+        margin: const EdgeInsets.only(left: 15.0, right: 15.0),
+        child: ListTile(
+          onTap: () {
+            setState(() {
+              _categories[subName] = !_categories[subName];
+            });
+          },
+          title: Text(
+            AppLocalization.of(context).translate(subName),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: _categories[subName]
+                    ? Theme.of(context).accentColor
+                    : CustomColors.kTabBarIconColor),
+          ),
+          trailing: Icon(
+              _categories[subName]
+                  ? Icons.arrow_drop_up
+                  : Icons.arrow_drop_down,
+              size: 30.0,
+              color: _categories[subName]
+                  ? Theme.of(context).accentColor
+                  : CustomColors.kTabBarIconColor),
+          selected: _categories[subName],
+        ));
+  }
+
+  _drawMainCategoryItem(String categoryName) {
+    return ListTile(
+      selected: _categories[categoryName.toLowerCase()],
+      onTap: () {
+        setState(() {
+          _categories[categoryName.toLowerCase()] =
+              !_categories[categoryName.toLowerCase()];
+        });
+      },
+      title: Text(
+        AppLocalization.of(context).translate(categoryName),
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: _categories[categoryName.toLowerCase()]
+                ? Theme.of(context).accentColor
+                : CustomColors.kTabBarIconColor),
+      ),
+      trailing: Icon(
+        _categories[categoryName.toLowerCase()]
+            ? Icons.arrow_drop_up
+            : Icons.arrow_drop_down,
+        color: _categories[categoryName.toLowerCase()]
+            ? Theme.of(context).accentColor
+            : CustomColors.kTabBarIconColor,
+        size: 30.0,
+      ),
+    );
   }
 
   _showFilterDialog() async {
@@ -465,10 +549,11 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                           children: <Widget>[
                             widget.categoryName == 'Makeup'
                                 ? ListTile(
-                                    selected: _makeup,
+                                    selected: _categories['makeup'],
                                     onTap: () {
                                       setState(() {
-                                        _makeup = !_makeup;
+                                        _categories['makeup'] =
+                                            !_categories['makeup'];
                                       });
                                     },
                                     title: Text(
@@ -476,15 +561,15 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                           .translate("Makeup"),
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: _makeup
+                                          color: _categories['makeup']
                                               ? Theme.of(context).accentColor
                                               : CustomColors.kTabBarIconColor),
                                     ),
                                     trailing: Icon(
-                                      _makeup
+                                      _categories['makeup']
                                           ? Icons.arrow_drop_up
                                           : Icons.arrow_drop_down,
-                                      color: _makeup
+                                      color: _categories['makeup']
                                           ? Theme.of(context).accentColor
                                           : CustomColors.kTabBarIconColor,
                                       size: 30.0,
@@ -492,10 +577,11 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                   )
                                 : widget.categoryName == 'Perfume'
                                     ? ListTile(
-                                        selected: _perfume,
+                                        selected: _categories['perfume'],
                                         onTap: () {
                                           setState(() {
-                                            _perfume = !_perfume;
+                                            _categories['perfume'] =
+                                                !_categories['perfume'];
                                           });
                                         },
                                         title: Text(
@@ -503,17 +589,17 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                               .translate("Perfume"),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              color: _perfume
+                                              color: _categories['perfume']
                                                   ? Theme.of(context)
                                                       .accentColor
                                                   : CustomColors
                                                       .kTabBarIconColor),
                                         ),
                                         trailing: Icon(
-                                          _perfume
+                                          _categories['perfume']
                                               ? Icons.arrow_drop_up
                                               : Icons.arrow_drop_down,
-                                          color: _perfume
+                                          color: _categories['perfume']
                                               ? Theme.of(context).accentColor
                                               : CustomColors.kTabBarIconColor,
                                           size: 30.0,
@@ -521,10 +607,11 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       )
                                     : widget.categoryName == 'Care'
                                         ? ListTile(
-                                            selected: _care,
+                                            selected: _categories['care'],
                                             onTap: () {
                                               setState(() {
-                                                _care = !_care;
+                                                _categories['care'] =
+                                                    !_categories['care'];
                                               });
                                             },
                                             title: Text(
@@ -532,17 +619,17 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   .translate("Care"),
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  color: _care
+                                                  color: _categories['care']
                                                       ? Theme.of(context)
                                                           .accentColor
                                                       : CustomColors
                                                           .kTabBarIconColor),
                                             ),
                                             trailing: Icon(
-                                              _care
+                                              _categories['care']
                                                   ? Icons.arrow_drop_up
                                                   : Icons.arrow_drop_down,
-                                              color: _care
+                                              color: _categories['care']
                                                   ? Theme.of(context)
                                                       .accentColor
                                                   : CustomColors
@@ -552,10 +639,11 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                           )
                                         : widget.categoryName == 'Nails'
                                             ? ListTile(
-                                                selected: _nails,
+                                                selected: _categories['nails'],
                                                 onTap: () {
                                                   setState(() {
-                                                    _nails = !_nails;
+                                                    _categories['nails'] =
+                                                        !_categories['nails'];
                                                   });
                                                 },
                                                 title: Text(
@@ -564,17 +652,18 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: _nails
+                                                      color: _categories[
+                                                              'nails']
                                                           ? Theme.of(context)
                                                               .accentColor
                                                           : CustomColors
                                                               .kTabBarIconColor),
                                                 ),
                                                 trailing: Icon(
-                                                  _nails
+                                                  _categories['nails']
                                                       ? Icons.arrow_drop_up
                                                       : Icons.arrow_drop_down,
-                                                  color: _nails
+                                                  color: _categories['nails']
                                                       ? Theme.of(context)
                                                           .accentColor
                                                       : CustomColors
@@ -583,10 +672,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                 ))
                                             : widget.categoryName == 'Lenses'
                                                 ? ListTile(
-                                                    selected: _lenses,
+                                                    selected:
+                                                        _categories['lenses'],
                                                     onTap: () {
                                                       setState(() {
-                                                        _lenses = !_lenses;
+                                                        _categories['lenses'] =
+                                                            !_categories[
+                                                                'lenses'];
                                                       });
                                                     },
                                                     title: Text(
@@ -596,7 +688,8 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          color: _lenses
+                                                          color: _categories[
+                                                                  'lenses']
                                                               ? Theme.of(
                                                                       context)
                                                                   .accentColor
@@ -604,11 +697,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                                   .kTabBarIconColor),
                                                     ),
                                                     trailing: Icon(
-                                                      _lenses
+                                                      _categories['lenses']
                                                           ? Icons.arrow_drop_up
                                                           : Icons
                                                               .arrow_drop_down,
-                                                      color: _lenses
+                                                      color: _categories[
+                                                              'lenses']
                                                           ? Theme.of(context)
                                                               .accentColor
                                                           : CustomColors
@@ -617,10 +711,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                     ),
                                                   )
                                                 : ListTile(
-                                                    selected: _devices,
+                                                    selected:
+                                                        _categories['devices'],
                                                     onTap: () {
                                                       setState(() {
-                                                        _devices = !_devices;
+                                                        _categories['devices'] =
+                                                            !_categories[
+                                                                'devices'];
                                                       });
                                                     },
                                                     title: Text(
@@ -630,7 +727,8 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          color: _devices
+                                                          color: _categories[
+                                                                  'devices']
                                                               ? Theme.of(
                                                                       context)
                                                                   .accentColor
@@ -638,18 +736,19 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                                   .kTabBarIconColor),
                                                     ),
                                                     trailing: Icon(
-                                                      _devices
+                                                      _categories['devices']
                                                           ? Icons.arrow_drop_up
                                                           : Icons
                                                               .arrow_drop_down,
-                                                      color: _lenses
+                                                      color: _categories[
+                                                              'devices']
                                                           ? Theme.of(context)
                                                               .accentColor
                                                           : CustomColors
                                                               .kTabBarIconColor,
                                                       size: 30.0,
                                                     )),
-                            _makeup
+                            _categories['makeup']
                                 ? Container(
                                     margin: const EdgeInsets.only(
                                         left: 15.0, right: 15.0),
@@ -657,7 +756,8 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       ListTile(
                                         onTap: () {
                                           setState(() {
-                                            _face = !_face;
+                                            _categories['face'] =
+                                                !_categories['face'];
                                           });
                                         },
                                         title: Text(
@@ -665,24 +765,24 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                               .translate("face"),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              color: _face
+                                              color: _categories['face']
                                                   ? Theme.of(context)
                                                       .accentColor
                                                   : CustomColors
                                                       .kTabBarIconColor),
                                         ),
                                         trailing: Icon(
-                                            _face
+                                            _categories['face']
                                                 ? Icons.arrow_drop_up
                                                 : Icons.arrow_drop_down,
                                             size: 30.0,
-                                            color: _face
+                                            color: _categories['face']
                                                 ? Theme.of(context).accentColor
                                                 : CustomColors
                                                     .kTabBarIconColor),
-                                        selected: _face,
+                                        selected: _categories['face'],
                                       ),
-                                      _face
+                                      _categories['face']
                                           ? Container(
                                               margin: const EdgeInsets.only(
                                                   left: 20.0, right: 20.0),
@@ -690,10 +790,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                 Row(
                                                   children: <Widget>[
                                                     Checkbox(
-                                                      value: _foundation,
+                                                      value: _categories[
+                                                          'foundation'],
                                                       onChanged: (val) {
                                                         setState(() {
-                                                          _foundation = val;
+                                                          _categories[
+                                                                  'foundation'] =
+                                                              val;
 
 //                                                          print(val);
                                                         });
@@ -712,10 +815,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                 Row(
                                                   children: <Widget>[
                                                     Checkbox(
-                                                      value: _concealer,
+                                                      value: _categories[
+                                                          'concealer'],
                                                       onChanged: (val) {
                                                         setState(() {
-                                                          _concealer = val;
+                                                          _categories[
+                                                                  'concealer'] =
+                                                              val;
                                                         });
                                                         _populateFilterBody(
                                                             'Concealer', val);
@@ -732,10 +838,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                 Row(
                                                   children: <Widget>[
                                                     Checkbox(
-                                                      value: _highlighter,
+                                                      value: _categories[
+                                                          'highlighter'],
                                                       onChanged: (val) {
                                                         setState(() {
-                                                          _highlighter = val;
+                                                          _categories[
+                                                                  'highlighter'] =
+                                                              val;
                                                         });
                                                         _populateFilterBody(
                                                             'Highlighter', val);
@@ -752,10 +861,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                 Row(
                                                   children: <Widget>[
                                                     Checkbox(
-                                                      value: _powder,
+                                                      value:
+                                                          _categories['powder'],
                                                       onChanged: (val) {
                                                         setState(() {
-                                                          _powder = val;
+                                                          _categories[
+                                                              'powder'] = val;
                                                         });
                                                         _populateFilterBody(
                                                             'Powder', val);
@@ -771,10 +882,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                 Row(
                                                   children: <Widget>[
                                                     Checkbox(
-                                                      value: _faceBrimer,
+                                                      value: _categories[
+                                                          'faceBrimer'],
                                                       onChanged: (val) {
                                                         setState(() {
-                                                          _faceBrimer = val;
+                                                          _categories[
+                                                                  'faceBrimer'] =
+                                                              val;
                                                         });
                                                         _populateFilterBody(
                                                             'Face Brimer', val);
@@ -791,10 +905,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                 Row(
                                                   children: <Widget>[
                                                     Checkbox(
-                                                      value: _makeupFixingSpray,
+                                                      value: _categories[
+                                                          'makeupFixingSpray'],
                                                       onChanged: (val) {
                                                         setState(() {
-                                                          _makeupFixingSpray =
+                                                          _categories[
+                                                                  'makeupFixingSpray'] =
                                                               val;
                                                         });
                                                         _populateFilterBody(
@@ -813,10 +929,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                 Row(
                                                   children: <Widget>[
                                                     Checkbox(
-                                                      value: _bbCcCream,
+                                                      value: _categories[
+                                                          'bbCcCream'],
                                                       onChanged: (val) {
                                                         setState(() {
-                                                          _bbCcCream = val;
+                                                          _categories[
+                                                                  'bbCcCream'] =
+                                                              val;
                                                         });
                                                         _populateFilterBody(
                                                             'BB And CC Cream',
@@ -836,7 +955,8 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       ListTile(
                                         onTap: () {
                                           setState(() {
-                                            _eyes = !_eyes;
+                                            _categories['eyes'] =
+                                                !_categories['eyes'];
                                           });
                                         },
                                         title: Text(
@@ -844,24 +964,24 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                               .translate("eyes"),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              color: _eyes
+                                              color: _categories['eyes']
                                                   ? Theme.of(context)
                                                       .accentColor
                                                   : CustomColors
                                                       .kTabBarIconColor),
                                         ),
                                         trailing: Icon(
-                                            _eyes
+                                            _categories['eyes']
                                                 ? Icons.arrow_drop_up
                                                 : Icons.arrow_drop_down,
                                             size: 30.0,
-                                            color: _eyes
+                                            color: _categories['eyes']
                                                 ? Theme.of(context).accentColor
                                                 : CustomColors
                                                     .kTabBarIconColor),
-                                        selected: _eyes,
+                                        selected: _categories['eyes'],
                                       ),
-                                      _eyes
+                                      _categories['eyes']
                                           ? Container(
                                               margin: const EdgeInsets.only(
                                                   left: 20.0, right: 20.0),
@@ -870,10 +990,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _eyeMascara,
+                                                        value: _categories[
+                                                            'eyeMascara'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _eyeMascara = val;
+                                                            _categories[
+                                                                    'eyeMascara'] =
+                                                                val;
                                                           });
                                                           _populateFilterBody(
                                                               'Mascara', val);
@@ -890,10 +1013,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _eyeShadow,
+                                                        value: _categories[
+                                                            'eyeShadow'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _eyeShadow = val;
+                                                            _categories[
+                                                                    'eyeShadow'] =
+                                                                val;
                                                           });
                                                           _populateFilterBody(
                                                               'Eyeshadow', val);
@@ -910,10 +1036,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _eyeLiner,
+                                                        value: _categories[
+                                                            'eyeLiner'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _eyeLiner = val;
+                                                            _categories[
+                                                                    'eyeLiner'] =
+                                                                val;
                                                           });
                                                           _populateFilterBody(
                                                               'Eyeliner', val);
@@ -930,10 +1059,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _eyeBrimer,
+                                                        value: _categories[
+                                                            'eyeBrimer'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _eyeBrimer = val;
+                                                            _categories[
+                                                                    'eyeBrimer'] =
+                                                                val;
                                                             print(val);
                                                           });
                                                           _populateFilterBody(
@@ -951,10 +1083,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _eyeGlitter,
+                                                        value: _categories[
+                                                            'eyeGlitter'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _eyeGlitter = val;
+                                                            _categories[
+                                                                    'eyeGlitter'] =
+                                                                val;
                                                             print(val);
                                                           });
                                                           _populateFilterBody(
@@ -976,7 +1111,8 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       ListTile(
                                         onTap: () {
                                           setState(() {
-                                            _lips = !_lips;
+                                            _categories['lips'] =
+                                                !_categories['lips'];
                                           });
                                         },
                                         title: Text(
@@ -984,24 +1120,24 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                               .translate("lips"),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              color: _lips
+                                              color: _categories['lips']
                                                   ? Theme.of(context)
                                                       .accentColor
                                                   : CustomColors
                                                       .kTabBarIconColor),
                                         ),
                                         trailing: Icon(
-                                            _lips
+                                            _categories['lips']
                                                 ? Icons.arrow_drop_up
                                                 : Icons.arrow_drop_down,
                                             size: 30.0,
-                                            color: _lips
+                                            color: _categories['lips']
                                                 ? Theme.of(context).accentColor
                                                 : CustomColors
                                                     .kTabBarIconColor),
-                                        selected: _lips,
+                                        selected: _categories['lips'],
                                       ),
-                                      _lips
+                                      _categories['lips']
                                           ? Container(
                                               margin: const EdgeInsets.only(
                                                   left: 20.0, right: 20.0),
@@ -1010,10 +1146,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _lipSet,
+                                                        value: _categories[
+                                                            'lipSet'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _lipSet = val;
+                                                            _categories[
+                                                                'lipSet'] = val;
                                                           });
                                                           _populateFilterBody(
                                                               'Lip Set', val);
@@ -1030,10 +1168,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _lipGloss,
+                                                        value: _categories[
+                                                            'lipGloss'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _lipGloss = val;
+                                                            _categories[
+                                                                    'lipGloss'] =
+                                                                val;
                                                           });
                                                           _populateFilterBody(
                                                               'Lip Gloss', val);
@@ -1050,10 +1191,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _lipLiner,
+                                                        value: _categories[
+                                                            'lipLiner'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _lipLiner = val;
+                                                            _categories[
+                                                                    'lipLiner'] =
+                                                                val;
                                                           });
                                                           _populateFilterBody(
                                                               'Lip Liner', val);
@@ -1070,10 +1214,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _lipStick,
+                                                        value: _categories[
+                                                            'lipStick'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _lipStick = val;
+                                                            _categories[
+                                                                    'lipStick'] =
+                                                                val;
                                                             print(val);
                                                           });
                                                           _populateFilterBody(
@@ -1095,7 +1242,8 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       ListTile(
                                         onTap: () {
                                           setState(() {
-                                            _eyeBrow = !_eyeBrow;
+                                            _categories['eyeBrow'] =
+                                                !_categories['eyeBrow'];
                                           });
                                         },
                                         title: Text(
@@ -1103,24 +1251,24 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                               .translate("eyebrow"),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              color: _eyeBrow
+                                              color: _categories['eyeBrow']
                                                   ? Theme.of(context)
                                                       .accentColor
                                                   : CustomColors
                                                       .kTabBarIconColor),
                                         ),
                                         trailing: Icon(
-                                            _eyeBrow
+                                            _categories['eyeBrow']
                                                 ? Icons.arrow_drop_up
                                                 : Icons.arrow_drop_down,
                                             size: 30.0,
-                                            color: _eyeBrow
+                                            color: _categories['eyeBrow']
                                                 ? Theme.of(context).accentColor
                                                 : CustomColors
                                                     .kTabBarIconColor),
-                                        selected: _eyeBrow,
+                                        selected: _categories['eyeBrow'],
                                       ),
-                                      _eyeBrow
+                                      _categories['eyeBrow']
                                           ? Container(
                                               margin: const EdgeInsets.only(
                                                   left: 20.0, right: 20.0),
@@ -1129,10 +1277,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _eyeBrowMascara,
+                                                        value: _categories[
+                                                            'eyeBrowMascara'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _eyeBrowMascara =
+                                                            _categories[
+                                                                    'eyeBrowMascara'] =
                                                                 val;
                                                           });
                                                           _populateFilterBody(
@@ -1151,10 +1301,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _eyeBrowGel,
+                                                        value: _categories[
+                                                            'eyeBrowGel'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _eyeBrowGel = val;
+                                                            _categories[
+                                                                    'eyeBrowGel'] =
+                                                                val;
                                                           });
                                                           _populateFilterBody(
                                                               'Eyebrow Gel & Powder',
@@ -1172,10 +1325,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _eyeBrowPencil,
+                                                        value: _categories[
+                                                            'eyeBrowPencil'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _eyeBrowPencil =
+                                                            _categories[
+                                                                    'eyeBrowPencil'] =
                                                                 val;
                                                           });
                                                           _populateFilterBody(
@@ -1198,7 +1353,8 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       ListTile(
                                         onTap: () {
                                           setState(() {
-                                            _cheek = !_cheek;
+                                            _categories['cheek'] =
+                                                !_categories['cheek'];
                                           });
                                         },
                                         title: Text(
@@ -1206,24 +1362,24 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                               .translate("Cheek"),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              color: _cheek
+                                              color: _categories['cheek']
                                                   ? Theme.of(context)
                                                       .accentColor
                                                   : CustomColors
                                                       .kTabBarIconColor),
                                         ),
                                         trailing: Icon(
-                                            _cheek
+                                            _categories['cheek']
                                                 ? Icons.arrow_drop_up
                                                 : Icons.arrow_drop_down,
                                             size: 30.0,
-                                            color: _cheek
+                                            color: _categories['cheek']
                                                 ? Theme.of(context).accentColor
                                                 : CustomColors
                                                     .kTabBarIconColor),
-                                        selected: _cheek,
+                                        selected: _categories['cheek'],
                                       ),
-                                      _cheek
+                                      _categories['cheek']
                                           ? Container(
                                               margin: const EdgeInsets.only(
                                                   left: 20.0, right: 20.0),
@@ -1232,10 +1388,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _cheekContour,
+                                                        value: _categories[
+                                                            'cheekContour'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _cheekContour = val;
+                                                            _categories[
+                                                                    'cheekContour'] =
+                                                                val;
                                                           });
                                                           _populateFilterBody(
                                                               'Contour', val);
@@ -1252,10 +1411,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _cheekBlusher,
+                                                        value: _categories[
+                                                            'cheekBlusher'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _cheekBlusher = val;
+                                                            _categories[
+                                                                    'cheekBlusher'] =
+                                                                val;
                                                           });
                                                           _populateFilterBody(
                                                               'Cheek Blusher',
@@ -1277,8 +1439,9 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       ListTile(
                                         onTap: () {
                                           setState(() {
-                                            _makeupBrushesTools =
-                                                !_makeupBrushesTools;
+                                            _categories['makeupBrushesTools'] =
+                                                !_categories[
+                                                    'makeupBrushesTools'];
                                           });
                                         },
                                         title: Text(
@@ -1286,24 +1449,27 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                               "makeup_brushes_tools"),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              color: _makeupBrushesTools
+                                              color: _categories[
+                                                      'makeupBrushesTools']
                                                   ? Theme.of(context)
                                                       .accentColor
                                                   : CustomColors
                                                       .kTabBarIconColor),
                                         ),
                                         trailing: Icon(
-                                            _makeupBrushesTools
+                                            _categories['makeupBrushesTools']
                                                 ? Icons.arrow_drop_up
                                                 : Icons.arrow_drop_down,
                                             size: 30.0,
-                                            color: _makeupBrushesTools
+                                            color: _categories[
+                                                    'makeupBrushesTools']
                                                 ? Theme.of(context).accentColor
                                                 : CustomColors
                                                     .kTabBarIconColor),
-                                        selected: _makeupBrushesTools,
+                                        selected:
+                                            _categories['makeupBrushesTools'],
                                       ),
-                                      _makeupBrushesTools
+                                      _categories['makeupBrushesTools']
                                           ? Container(
                                               margin: const EdgeInsets.only(
                                                   left: 20.0, right: 20.0),
@@ -1312,10 +1478,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _eyeBrushes,
+                                                        value: _categories[
+                                                            'eyeBrushes'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _eyeBrushes = val;
+                                                            _categories[
+                                                                    'eyeBrushes'] =
+                                                                val;
                                                           });
                                                           _populateFilterBody(
                                                               'Eye Brushes',
@@ -1333,10 +1502,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _faceBrushes,
+                                                        value: _categories[
+                                                            'faceBrushes'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _faceBrushes = val;
+                                                            _categories[
+                                                                    'faceBrushes'] =
+                                                                val;
                                                           });
                                                           _populateFilterBody(
                                                               'Face Brushes',
@@ -1354,10 +1526,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _eyeBrowBrushes,
+                                                        value: _categories[
+                                                            'eyeBrowBrushes'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _eyeBrowBrushes =
+                                                            _categories[
+                                                                    'eyeBrowBrushes'] =
                                                                 val;
                                                           });
                                                           _populateFilterBody(
@@ -1376,10 +1550,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                                   Row(
                                                     children: <Widget>[
                                                       Checkbox(
-                                                        value: _makeupRemover,
+                                                        value: _categories[
+                                                            'makeupRemover'],
                                                         onChanged: (val) {
                                                           setState(() {
-                                                            _makeupRemover =
+                                                            _categories[
+                                                                    'makeupRemover'] =
                                                                 val;
                                                           });
                                                           _populateFilterBody(
@@ -1401,7 +1577,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                           : Container(),
                                     ]))
                                 : Container(),
-                            _perfume
+                            _categories['perfume']
                                 ? Container(
                                     margin: const EdgeInsets.only(
                                         left: 15.0, right: 15.0),
@@ -1409,10 +1585,11 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _womenPerfume,
+                                            value: _categories['womenPerfume'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _womenPerfume = val;
+                                                _categories['womenPerfume'] =
+                                                    val;
                                               });
                                               _populateFilterBody(
                                                   'Women Perfumes', val);
@@ -1427,10 +1604,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _menPerfume,
+                                            value: _categories['menPerfume'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _menPerfume = val;
+                                                _categories['menPerfume'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Men Perfumes', val);
@@ -1445,10 +1622,11 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _unisexPerfume,
+                                            value: _categories['unisexPerfume'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _unisexPerfume = val;
+                                                _categories['unisexPerfume'] =
+                                                    val;
                                               });
                                               _populateFilterBody(
                                                   'Unisex Perfumes', val);
@@ -1481,10 +1659,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _hairMist,
+                                            value: _categories['hairMist'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _hairMist = val;
+                                                _categories['hairMist'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Hair Mist', val);
@@ -1499,7 +1677,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                     ]),
                                   )
                                 : Container(),
-                            _care
+                            _categories['care']
                                 ? Container(
                                     margin: const EdgeInsets.only(
                                         left: 15.0, right: 15.0),
@@ -1507,10 +1685,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _careTool,
+                                            value: _categories['careTool'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _careTool = val;
+                                                _categories['careTool'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Lips Care', val);
@@ -1525,10 +1703,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _careLip,
+                                            value: _categories['careLip'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _careLip = val;
+                                                _categories['careLip'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Hands Care', val);
@@ -1543,10 +1721,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _careHand,
+                                            value: _categories['careHand'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _careHand = val;
+                                                _categories['careHand'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Face Care', val);
@@ -1561,10 +1739,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _careFace,
+                                            value: _categories['careFace'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _careFace = val;
+                                                _categories['careFace'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Eye And Lash Care', val);
@@ -1579,10 +1757,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _careHair,
+                                            value: _categories['careHair'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _careHair = val;
+                                                _categories['careHair'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Hair Care', val);
@@ -1597,10 +1775,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _careBody,
+                                            value: _categories['careBody'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _careBody = val;
+                                                _categories['careBody'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Body Care', val);
@@ -1615,7 +1793,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                     ]),
                                   )
                                 : Container(),
-                            _nails
+                            _categories['nails']
                                 ? Container(
                                     margin: const EdgeInsets.only(
                                         left: 15.0, right: 15.0),
@@ -1623,10 +1801,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _nailPolish,
+                                            value: _categories['nailPolish'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _nailPolish = val;
+                                                _categories['nailPolish'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Nail Polish', val);
@@ -1641,10 +1819,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _nailPolishRemover,
+                                            value: _categories[
+                                                'nailPolishRemover'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _nailPolishRemover = val;
+                                                _categories[
+                                                    'nailPolishRemover'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Nail Polish Remover', val);
@@ -1660,10 +1840,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _nailTool,
+                                            value: _categories['nailTool'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _nailTool = val;
+                                                _categories['nailTool'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Nail Tools', val);
@@ -1678,10 +1858,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _nailCare,
+                                            value: _categories['nailCare'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _nailCare = val;
+                                                _categories['nailCare'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Nail Care', val);
@@ -1696,7 +1876,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                     ]),
                                   )
                                 : Container(),
-                            _lenses
+                            _categories['lenses']
                                 ? Container(
                                     margin: const EdgeInsets.only(
                                         left: 15.0, right: 15.0),
@@ -1739,10 +1919,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _diva,
+                                            value: _categories['diva'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _diva = val;
+                                                _categories['diva'] = val;
                                               });
                                               _populateFilterBody('Diva', val);
                                             },
@@ -1774,10 +1954,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _lensme,
+                                            value: _categories['lensme'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _lensme = val;
+                                                _categories['lensme'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Lens me', val);
@@ -1811,7 +1991,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                     ]),
                                   )
                                 : Container(),
-                            _devices
+                            _categories['devices']
                                 ? Container(
                                     margin: const EdgeInsets.only(
                                         left: 15.0, right: 15.0),
@@ -1819,10 +1999,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _hairDevice,
+                                            value: _categories['hairDevice'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _hairDevice = val;
+                                                _categories['hairDevice'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Hair Device', val);
@@ -1837,10 +2017,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _bodyDevice,
+                                            value: _categories['bodyDevice'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _bodyDevice = val;
+                                                _categories['bodyDevice'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Body Device', val);
@@ -1855,10 +2035,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                                       Row(
                                         children: <Widget>[
                                           Checkbox(
-                                            value: _faceDevice,
+                                            value: _categories['faceDevice'],
                                             onChanged: (val) {
                                               setState(() {
-                                                _faceDevice = val;
+                                                _categories['faceDevice'] = val;
                                               });
                                               _populateFilterBody(
                                                   'Face Device', val);
@@ -1884,23 +2064,23 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           GestureDetector(
-                            onTap: _isLoading
+                            onTap: _categories['isLoading']
                                 ? null
                                 : () {
                                     setState(() {
-                                      _isLoading = true;
-                                      pageNumberOrdered = 1;
+                                      _categories['isLoading'] = true;
+                                      _flags['pageNumberOrdered'] = 1;
                                       _products.clear();
-                                      _isFilteredData = true;
+                                      _categories['isFilteredData'] = true;
                                     });
 
-                                    print('index :$pageNumberOrdered');
-                                    print('is filterd :$_isFilteredData');
-                                    _doFilter(pageNumberOrdered);
+//                                    print('index :$pageNumberOrdered');
+//                                    print('is filterd :$_isFilteredData');
+                                    _doFilter(_flags['pageNumberOrdered']);
                                     Navigator.of(context).pop();
 //                             _checkInternetConnection();
                                   },
-                            child: _isLoading
+                            child: _categories['isLoading']
                                 ? AdaptiveProgressIndicator()
                                 : Container(
                                     height: 40,
@@ -1926,13 +2106,13 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                _foundation = false;
-                                _concealer = false;
-                                _powder = false;
-                                _faceBrimer = false;
-                                _makeupFixingSpray = false;
-                                _bbCcCream = false;
-                                _eyeMascara = false;
+                                _categories['foundation'] = false;
+                                _categories['concealer'] = false;
+                                _categories['powder'] = false;
+                                _categories['faceBrimer'] = false;
+                                _categories['makeupFixingSpray'] = false;
+                                _categories['bbCcCream'] = false;
+                                _categories['eyeMascara'] = false;
                               });
                             },
                             child: Container(
@@ -1965,19 +2145,39 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
             ));
   }
 
+  _showEmptyCartPopup(BuildContext context) async {
+    return showModalBottomSheet(
+        context: context,
+        backgroundColor: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16.0),
+                topRight: Radius.circular(16.0))),
+        builder: (context) {
+          return Container(
+            height: 90.0,
+            child: Center(
+              child: Text(AppLocalization.of(context).translate("empty_cart")),
+            ),
+          );
+        });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_isInti) {
-      getProductsData(pageNumber);
+    if (_categories['isInti']) {
+      getProductsData(_flags['pageNumber']);
     }
-    _isInti = false;
+    _categories['isInti'] = false;
   }
 
   getProductsData(int pageNumber) async {
     final String lang = appLanguage.appLocal.toString();
     setState(() {
-      pageNumber > 1 ? _seeMoreLoading = true : _isLoading = true;
+      pageNumber > 1
+          ? _categories['seeMoreLoading'] = true
+          : _categories['isLoading'] = true;
     });
     var userData = await userProvider.isAuthenticated();
     Provider.of<ProductsProvider>(context, listen: false)
@@ -1987,45 +2187,43 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                 : widget.subCategoryName,
             lang,
             pageNumber,
-            userData['Authorization'] == 'none'
-                ? 'none'
-                : userData['Authorization'])
+            userData['Authorization'])
         .then((products) {
       if (products != null) {
         var list = products['data'] as List;
         _products.addAll(List<ProductsModel>.from(list));
-        lastPage = products['last_page'];
+        _flags['lastPage'] = products['last_page'];
       }
-//      print('call product num $pageNumber and lenght is ${_products.length}');
+      print('call product num $pageNumber and lenght is ${_products.length}');
       setState(() {
-        loaded = false;
-        _isLoading = false;
-        _seeMoreLoading = false;
-        _isFilteredData = false;
+        _categories['loaded'] = false;
+        _categories['isLoading'] = false;
+        _categories['seeMoreLoading'] = false;
+        _categories['isFilteredData'] = false;
       });
     });
   }
 
   loadMore() async {
-    if (_isFilteredData) {
+    if (_categories['isFilteredData']) {
 //      print('order page num is $pageNumberOrdered and last page is $lastPage');
-      pageNumberOrdered++;
+      _flags['pageNumberOrdered']++;
       if (_isFrom == 'filter') {
         print(_isFrom);
-        if (pageNumberOrdered <= lastPageFiltered) {
-          _doFilter(pageNumberOrdered);
+        if (_flags['pageNumberOrdered'] <= _flags['lastPageFiltered']) {
+          _doFilter(_flags['pageNumberOrdered']);
         }
       } else if (_isFrom == 'sort') {
         print(_isFrom);
-        if (pageNumberOrdered <= lastPageFiltered) {
-          _doSort(pageNumberOrdered);
+        if (_flags['pageNumberOrdered'] <= _flags['lastPageFiltered']) {
+          _doSort(_flags['pageNumberOrdered']);
         }
       }
-      print(pageNumberOrdered);
     } else {
 //      print('else execute  , last page : $lastPage');
-      pageNumber++;
-      if (pageNumber <= lastPage) getProductsData(pageNumber);
+      _flags['pageNumber']++;
+      if (_flags['pageNumber'] <= _flags['lastPage'])
+        getProductsData(_flags['pageNumber']);
     }
   }
 
@@ -2035,10 +2233,10 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
     _controller.addListener(() {
       double _maxScroll = _controller.position.maxScrollExtent;
       double _currentScroll = _controller.position.pixels;
-      double _delta = _maxScroll * 0.20 / pageNumberOrdered;
+      double _delta = _maxScroll * 0.20 / _flags['pageNumberOrdered'];
       if (_maxScroll - _currentScroll <= _delta) {
-        if (loaded == false) {
-          loaded = true;
+        if (_categories['loaded'] == false) {
+          _categories['loaded'] = true;
           loadMore();
 //          print('max is ; $_maxScroll and current is : $_currentScroll');
         }
@@ -2048,8 +2246,8 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   ScreenConfig screenConfig;
@@ -2074,9 +2272,52 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
               showSearch(context: context, delegate: SearchProduct());
             },
           ),
+          Consumer<CartItemProvider>(
+              builder: (ctx, cart, _) => IconButton(
+                    onPressed: () {
+                      cart.cartItems.length > 0
+                          ? showModalBottomSheet(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(16.0),
+                                      topRight: Radius.circular(16.0))),
+                              context: context,
+                              backgroundColor: Theme.of(context).primaryColor,
+                              builder: (context) => CartScreen())
+                          : _showEmptyCartPopup(context);
+                    },
+                    icon: Stack(
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/icons/cart.png',
+                          width: 20.0,
+                          height: 25.0,
+                          fit: BoxFit.fill,
+                        ),
+                        Positioned(
+                          top: 11.0,
+                          bottom: 4.0,
+                          child: Container(
+                            margin: cart.allItemQuantity > 9
+                                ? const EdgeInsets.symmetric(
+                                    horizontal: 4.0,
+                                  )
+                                : const EdgeInsets.symmetric(horizontal: 6.0),
+                            child: Text(
+                              '${cart.allItemQuantity > 9 ? '9+' : cart.allItemQuantity == 0 ? '' : cart.allItemQuantity}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 11.0,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )),
         ],
       ),
-      body: _isLoading
+      body: _categories['isLoading']
           ? Center(
               child: AdaptiveProgressIndicator(),
             )
@@ -2098,7 +2339,6 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                           Expanded(
                             flex: 1,
                             child: Container(
-                              width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 boxShadow: [
@@ -2166,7 +2406,7 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                               ),
                             ),
                           ),
-                          _seeMoreLoading
+                          _categories['seeMoreLoading']
                               ? Expanded(
                                   flex: 1,
                                   child: Container(
@@ -2190,5 +2430,12 @@ class _SeeMoreScreenState extends State<SeeMoreScreen> {
                   ),
                 ),
     );
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
   }
 }

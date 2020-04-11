@@ -23,4 +23,10 @@ class Ads {
         isMain: json['isMain'] as int,
         brandName: json['brandName'] as String);
   }
+
+  static List<Ads> parseAds(List<dynamic> jsonData) {
+    List<Ads> _list = [];
+    _list = jsonData.map((json) => Ads.fromJson(json)).toList();
+    return _list;
+  }
 }

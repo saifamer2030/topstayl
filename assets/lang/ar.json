@@ -24,7 +24,7 @@
   "country_in_settings_page": "الدولة",
   "language_in_settings_page": "اللغة",
   "profile_info_in_account_setting_page": "معلومات الحساب",
-  "change_password_in_account_setting_page": "تغيير كلمة المرور",
+  "change_password_in_account_setting_page": "تعديل كلمة المرور",
   "save_btn": "حفظ",
   "change_btn": "حفظ",
   "old_pass": "كلمة المرور السابقة",
@@ -101,7 +101,7 @@
   "no_internet_connection": "لا يوجد انترنت !",
   "user_or_pass_incorrect_msg": "البريد الإلكتروني او كلمة المرور خطأ",
   "user_name_validation_length_msg": "يجب ان يكون الإسم بين 5 الي 30 حرف",
-  "phone_validation_length_msg": "يجب ان يكون الرقم بين 9 الي 15 رقم ",
+  "phone_validation_length_msg": "يجب ان يكون الرقم بين 8 الي 13 رقم ",
   "forget_password": "هل نسيت كلمة المرور ؟",
   "email_taken_msg": "البريد الإلكتروني مسجل مسبقاً",
   "phone_taken_msg": "رقم الجوال مسجل مسبقاً",
@@ -245,7 +245,7 @@
   "cash_on_delivery_fee_hint": "رسوم الدفع عند الأستلام",
   "order_summary_title": "ملخص الطلب",
   "shipping_cost": "تكاليف الشحن",
-  "discount": "خصم علي الدفع الإلكتروني",
+  "discount": "خصم الدفع الإلكتروني",
   "coupon_value": "قسيمة التخفيض",
   "discount_credit": "تخفيض 10% ",
   "free_shipping": "مجاناً",
@@ -287,5 +287,15 @@
   "enter_phone" : "أدخل رقم الجوال",
   "remind email hint" : "قم بإدخال البريد الإكتروني الذي تود تذكيرك من خلاله عند توفر المنتج",
   "product not available" : "نفذت الكمية",
-  "offer" : "وفر"
+  "offer" : "وفر",
+  "delivery_days" : "سوف يتم توصيل طلبك خلال ٢ - ٦ ايام",
+  "home_page_hint" : "سوف يتم إضافه منتجات قريباً",
+  "enter_correct_address" : "تأكد من إدخال عنوان صحيح",
+  "order_canceled_hint" : "هل تريد الغاء الطلب ؟",
+  "yes" : "نعم",
+  "some_products_not_exist": "ناسف بعض المنتجات في سلتك نفذت كميتها الرجاء التحقق منها",
+  "change_name" : "تعديل الإسم",
+  "change_email" : "تعديل البريد الالكتروني",
+  "change_phone" : "تعديل رقم الجوال"
+
 }

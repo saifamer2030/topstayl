@@ -14,14 +14,14 @@ class BrandItem extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Container(
-        width: double.infinity,
+        width: MediaQuery.of(context).size.width,
         height: 55.0,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.0),
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: Colors.grey.shade200,
                   offset: Offset(1, 2),
                   blurRadius: 55.0)
             ]),
@@ -38,9 +38,8 @@ class BrandItem extends StatelessWidget {
             ),
           ),
           trailing: Container(
-//            margin: const EdgeInsets.only(bottom: 8.0),
-            child: Image.network(
-              brandImage,
+            child: Image(
+              image: NetworkImage(brandImage),
               width: 75.0,
               height: 50.0,
               fit: BoxFit.contain,

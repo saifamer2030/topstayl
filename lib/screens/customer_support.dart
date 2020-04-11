@@ -5,11 +5,18 @@ import 'package:topstyle/helper/appLocalization.dart';
 import 'package:topstyle/helper/size_config.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
-class CustomerSupport extends StatelessWidget {
+class CustomerSupport extends StatefulWidget {
   static const String routeName = 'customer-support';
 
+  @override
+  _CustomerSupportState createState() => _CustomerSupportState();
+}
+
+class _CustomerSupportState extends State<CustomerSupport> {
   final String phone = 'tel:+966920005869';
+
   final String email = 'support@topstylesa.com';
+
   final String whatsApp = 'https://api.whatsapp.com/send?phone=+966506221099';
 
   _callPhone() async {
@@ -37,7 +44,9 @@ class CustomerSupport extends StatelessWidget {
   }
 
   ScreenConfig screenConfig;
+
   WidgetSize widgetSize;
+
   @override
   Widget build(BuildContext context) {
     screenConfig = ScreenConfig(context);

@@ -11,9 +11,14 @@ import '../helper/appLocalization.dart';
 import '../providers/order_provider.dart';
 import '../widgets/OrderItem.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   static const String routeName = "orders-screen";
 
+  @override
+  _OrdersScreenState createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
   UserProvider user = UserProvider();
   List<OrderModel> orderData = [];
 

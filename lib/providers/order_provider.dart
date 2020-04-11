@@ -201,6 +201,14 @@ class OrdersProvider with ChangeNotifier {
       String phone,
       String gps,
       String token) async {
+    print(country);
+    print(city);
+    print(fullName);
+    print(area);
+    print(street);
+    print(address);
+    print(phone);
+    print(gps);
     int responseNumber = 0;
     try {
       final response = await http.post('${ApiUtil.BASE_URL}address', headers: {
@@ -224,6 +232,7 @@ class OrdersProvider with ChangeNotifier {
           print(jsonDecode(response.body));
         } else {
           responseNumber = 0;
+          print(jsonDecode(response.body));
         }
       } else {
         print('Error Number ${response.statusCode}');

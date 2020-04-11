@@ -6,7 +6,6 @@ import '../models/products_model.dart';
 
 class ProductListView extends StatelessWidget {
   final List<ProductsModel> _products;
-
   ProductListView(this._products);
 
   @override
