@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
@@ -60,6 +61,95 @@ class _AddressScreenState extends State<AddressScreen> {
     });
   }
 
+  Widget _buildPhone(BuildContext context) {
+    return Container(
+      height: 50.0,
+      margin: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              height: 50.0,
+              child: GestureDetector(
+                onTap: () {
+                  _showCountryPopup();
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  textDirection: TextDirection.ltr,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Image.asset(
+                      _stringVar['image'],
+                      width: 35.0,
+                      height: 25.0,
+                      fit: BoxFit.cover,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    Text(
+                      _stringVar['countryCode'],
+                      style: TextStyle(fontSize: widgetSize.content),
+                      textDirection: TextDirection.ltr,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    Icon(Icons.keyboard_arrow_down),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+                top: 0,
+                left: 125,
+                right: 16.0,
+                child: Container(
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          width: 1.0, color: CustomColors.kPCardColor),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        return (value.isEmpty || value.length < 8)
+                            ? AppLocalization.of(context)
+                                .translate("phone_validation_length_msg")
+                            : null;
+                      },
+                      style: TextStyle(fontSize: widgetSize.content),
+                      onChanged: (value) {
+                        _stringVar['phone'] =
+                            '${_stringVar['countryCode']}$value';
+                        print(value);
+                      },
+                      keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.next,
+                      textDirection: TextDirection.ltr,
+                      inputFormatters: <TextInputFormatter>[
+                        WhitelistingTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(9),
+                      ],
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.only(left: 5.0),
+                        errorStyle:
+                            TextStyle(fontSize: widgetSize.textFieldError),
+                        hintStyle: TextStyle(
+                            fontSize: widgetSize.subTitle,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ))),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildCitesItem() {
     return ListView.builder(
       itemCount: cites.length,
@@ -67,6 +157,7 @@ class _AddressScreenState extends State<AddressScreen> {
       itemBuilder: (context, i) => Padding(
         padding: const EdgeInsets.all(5.0),
         child: Container(
+          height: widgetSize.textField,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
             border: Border.all(width: 1.0, color: CustomColors.kPCardColor),
@@ -80,7 +171,10 @@ class _AddressScreenState extends State<AddressScreen> {
               addressStreet.text = '';
               Navigator.of(context).pop();
             },
-            title: Text('${cites[i].cityNameAr}-${cites[i].cityNameEn}'),
+            title: Text(
+              '${cites[i].cityNameAr}-${cites[i].cityNameEn}',
+              style: TextStyle(fontSize: widgetSize.content),
+            ),
           ),
         ),
       ),
@@ -125,7 +219,7 @@ class _AddressScreenState extends State<AddressScreen> {
     });
   }
 
-  _showPopupCountry() async {
+  _showCountryPopup() async {
     return showDialog(
       context: context,
       builder: (context) => Theme.of(context).platform == TargetPlatform.iOS
@@ -347,6 +441,7 @@ class _AddressScreenState extends State<AddressScreen> {
 
   _drawCountryItem(String countryName, String countryId) {
     return Container(
+      height: widgetSize.textField,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(width: 1.0, color: CustomColors.kPCardColor),
@@ -366,7 +461,10 @@ class _AddressScreenState extends State<AddressScreen> {
           _getAllCites(countryId);
           Navigator.of(context).pop();
         },
-        title: Text(countryName),
+        title: Text(
+          countryName,
+          style: TextStyle(fontSize: widgetSize.content),
+        ),
       ),
     );
   }
@@ -474,6 +572,8 @@ class _AddressScreenState extends State<AddressScreen> {
                                   _stringVar['name'] = value;
                                 });
                               },
+                              style: TextStyle(fontSize: widgetSize.content),
+                              textInputAction: TextInputAction.next,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   contentPadding: const EdgeInsets.only(
@@ -488,96 +588,7 @@ class _AddressScreenState extends State<AddressScreen> {
                             ),
                           ),
                         ),
-                        Container(
-                          height: 50.0,
-                          margin: const EdgeInsets.only(
-                              left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
-                          child: Row(
-                            textDirection: TextDirection.ltr,
-                            children: <Widget>[
-                              GestureDetector(
-                                onTap: () {
-                                  _showPopupCountry();
-                                },
-                                child: Container(
-                                  width: 100.0,
-                                  child: Row(
-                                    textDirection: TextDirection.ltr,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 5.0),
-                                        child: Image.asset(
-                                          _stringVar['image'] == null
-                                              ? 'assets/icons/ksa_flag.png'
-                                              : _stringVar['image'],
-                                          width: 25.0,
-                                          height: 15.0,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 5.0,
-                                      ),
-                                      Text(
-                                        _stringVar['countryCode'] == null
-                                            ? '+966'
-                                            : _stringVar['countryCode'],
-                                        style: TextStyle(
-                                            fontSize: widgetSize.content),
-                                        textDirection: TextDirection.ltr,
-                                      ),
-                                      Icon(Icons.arrow_drop_down),
-                                    ],
-                                  ),
-//                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  height: 44.0,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 1.0,
-                                        color: CustomColors.kPCardColor),
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  child: Directionality(
-                                    textDirection: TextDirection.rtl,
-                                    child: TextFormField(
-                                      textDirection: TextDirection.ltr,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _stringVar['phone'] =
-                                              '${_stringVar['countryCode']}$value';
-                                        });
-                                      },
-                                      keyboardType: TextInputType.phone,
-                                      inputFormatters: <TextInputFormatter>[
-                                        WhitelistingTextInputFormatter
-                                            .digitsOnly,
-                                        LengthLimitingTextInputFormatter(9),
-                                      ],
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: AppLocalization.of(context)
-                                            .translate('enter_phone'),
-                                        hintStyle: TextStyle(
-                                          color: CustomColors.kTabBarIconColor,
-                                        ),
-                                        contentPadding: const EdgeInsets.only(
-                                            left: 10.0,
-                                            right: 10.0,
-                                            bottom: 4.0),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        _buildPhone(context),
                         Container(
                           height: 50.0,
                           margin: const EdgeInsets.only(
@@ -637,7 +648,7 @@ class _AddressScreenState extends State<AddressScreen> {
                                   ? _stringVar['selectedCountry']
                                   : AppLocalization.of(context)
                                       .translate('country_hint'),
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: widgetSize.content),
                             ),
                             trailing: Icon(Icons.keyboard_arrow_down),
                           ),
@@ -674,7 +685,7 @@ class _AddressScreenState extends State<AddressScreen> {
                                   ? _stringVar['selectedCity']
                                   : AppLocalization.of(context)
                                       .translate('city_hint'),
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: widgetSize.content),
                             ),
                             trailing: Icon(Icons.keyboard_arrow_down),
                           ),
@@ -696,6 +707,8 @@ class _AddressScreenState extends State<AddressScreen> {
                                   addressArea.text = value;
                                 });
                               },
+                              textInputAction: TextInputAction.next,
+                              style: TextStyle(fontSize: widgetSize.content),
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   contentPadding: const EdgeInsets.only(
@@ -703,7 +716,8 @@ class _AddressScreenState extends State<AddressScreen> {
                                   hintText: AppLocalization.of(context)
                                       .translate("neighborhood_hint"),
                                   hintStyle: TextStyle(
-                                      color: CustomColors.kTabBarIconColor)),
+                                      color: CustomColors.kTabBarIconColor,
+                                      fontSize: widgetSize.subTitle)),
 //
                             ),
                           ),
@@ -725,6 +739,8 @@ class _AddressScreenState extends State<AddressScreen> {
                                   addressStreet.text = value;
                                 });
                               },
+                              textInputAction: TextInputAction.next,
+                              style: TextStyle(fontSize: widgetSize.content),
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   contentPadding: const EdgeInsets.only(
@@ -732,7 +748,8 @@ class _AddressScreenState extends State<AddressScreen> {
                                   hintText: AppLocalization.of(context)
                                       .translate("street_hint"),
                                   hintStyle: TextStyle(
-                                      color: CustomColors.kTabBarIconColor)),
+                                      color: CustomColors.kTabBarIconColor,
+                                      fontSize: widgetSize.subTitle)),
 //
                             ),
                           ),
@@ -754,8 +771,10 @@ class _AddressScreenState extends State<AddressScreen> {
                                 _stringVar['note'] = value;
                               });
                             },
+                            style: TextStyle(fontSize: widgetSize.content),
                             keyboardType: TextInputType.multiline,
                             maxLines: 3,
+                            textInputAction: TextInputAction.done,
                             decoration: InputDecoration(
                                 border: InputBorder.none,
                                 contentPadding: const EdgeInsets.only(
@@ -763,7 +782,8 @@ class _AddressScreenState extends State<AddressScreen> {
                                 hintText: AppLocalization.of(context)
                                     .translate('note_hint'),
                                 hintStyle: TextStyle(
-                                    color: CustomColors.kTabBarIconColor)),
+                                    color: CustomColors.kTabBarIconColor,
+                                    fontSize: widgetSize.subTitle)),
                           ),
                         ),
                         Container(

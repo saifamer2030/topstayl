@@ -90,7 +90,7 @@ class _SettingChoiceScreenState extends State<SettingChoiceScreen> {
 
   _selectedCountry() async {
     var prefs = await SharedPreferences.getInstance();
-    var country = prefs.getString("countryName");
+    var country = prefs.getString("userCountryName");
     switch (country) {
       case "KSA":
         setState(() {
@@ -220,7 +220,7 @@ class _SettingChoiceScreenState extends State<SettingChoiceScreen> {
 
   _setCountry(String country) async {
     var prefs = await SharedPreferences.getInstance();
-    await prefs.setString("countryName", country);
+    await prefs.setString("userCountryName", country);
   }
 
   _showPopupToChangeCountry(BuildContext context) {

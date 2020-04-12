@@ -119,6 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 10.0),
+                      height: screenConfig.screenHeight,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[

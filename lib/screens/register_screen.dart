@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,10 +36,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     'langugae': 'ar',
     'guestId': 'new'
   };
-  bool _isLoading = false;
-  bool _autoValidation = false;
-  var phone;
-  String countryCode = '+966', image;
+  bool _isLoading = false, _autoValidation = false;
+  String countryCode, image, phone;
 
   _doRegistration(var from) {
     if (!_createAccountKey.currentState.validate()) {
@@ -114,6 +114,93 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  Widget _buildPhone(BuildContext context) {
+    return Container(
+      height: widgetSize.textField,
+      margin: const EdgeInsets.only(top: 15.0),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              height: widgetSize.textField,
+              child: GestureDetector(
+                onTap: () {
+                  _showCountryPopup();
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  textDirection: TextDirection.ltr,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Image.asset(
+                      image,
+                      width: 35.0,
+                      height: 25.0,
+                      fit: BoxFit.cover,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    Text(
+                      countryCode,
+                      style: TextStyle(fontSize: widgetSize.content),
+                      textDirection: TextDirection.ltr,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    Icon(Icons.keyboard_arrow_down),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+                top: 0,
+                left: 125,
+                child: Container(
+                    width: screenConfig.screenWidth,
+                    height: widgetSize.textField,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          width: 1.0, color: CustomColors.kPCardColor),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        return (value.isEmpty || value.length < 8)
+                            ? AppLocalization.of(context)
+                                .translate("phone_validation_length_msg")
+                            : null;
+                      },
+                      style: TextStyle(fontSize: widgetSize.content),
+                      onSaved: (value) {
+                        _registerMap['phone'] = '$countryCode$value';
+                      },
+                      keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.done,
+                      textDirection: TextDirection.ltr,
+                      inputFormatters: <TextInputFormatter>[
+                        WhitelistingTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(9),
+                      ],
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.only(left: 5.0),
+                        errorStyle:
+                            TextStyle(fontSize: widgetSize.textFieldError),
+                        hintStyle: TextStyle(
+                            fontSize: widgetSize.subTitle,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ))),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -132,39 +219,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
         case 'en':
           _registerMap['langugae'] = "en";
           break;
+        default:
+          _registerMap['langugae'] = "ar";
+          break;
       }
     }
-    if (prefs.getString('countryName') != null) {
-      switch (prefs.getString('countryName')) {
+    if (prefs.getString('userCountryName') != null) {
+      switch (prefs.getString('userCountryName')) {
         case 'KSA':
-          setState(() {
-            countryCode = '+966';
-            _registerMap['country'] = "1";
-            image = 'assets/icons/ksa_flag.png';
-          });
+          countryCode = '+966';
+          _registerMap['country'] = "1";
+          image = 'assets/icons/ksa_flag.png';
           break;
         case 'UAE':
-          setState(() {
-            countryCode = '+971';
-            _registerMap['country'] = "3";
-            image = 'assets/icons/uae_flag.png';
-          });
+          countryCode = '+971';
+          _registerMap['country'] = "3";
+          image = 'assets/icons/uae_flag.png';
           break;
         case 'KW':
-          setState(() {
-            countryCode = '+965';
-            _registerMap['country'] = "2";
-            image = 'assets/icons/kw_flag.png';
-          });
+          countryCode = '+965';
+          _registerMap['country'] = "2";
+          image = 'assets/icons/kw_flag.png';
+          break;
+        default:
+          countryCode = '+966';
+          _registerMap['country'] = "1";
+          image = 'assets/icons/ksa_flag.png';
           break;
       }
     }
   }
 
-  _showPopupCountry() async {
+  _showCountryPopup() async {
     return showDialog(
       context: context,
-      builder: (context) => Theme.of(context).platform == TargetPlatform.iOS
+      builder: (context) => Platform.isIOS
           ? CupertinoAlertDialog(
               title: Text(
                 AppLocalization.of(context).translate("choose_country"),
@@ -203,7 +292,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 style: TextStyle(
                                     fontSize: widgetSize.textFieldError),
                               ),
-                              leading: Image.asset('assets/icons/ksa_flag.png'),
+                              leading: Image.asset(
+                                'assets/icons/ksa_flag.png',
+                                width: 35.0,
+                                height: 25.0,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -229,7 +323,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 });
                                 Navigator.of(context).pop();
                               },
-                              leading: Image.asset('assets/icons/uae_flag.png'),
+                              leading: Image.asset(
+                                'assets/icons/uae_flag.png',
+                                width: 35.0,
+                                height: 25.0,
+                                fit: BoxFit.cover,
+                              ),
                               title: Text(
                                 AppLocalization.of(context).translate("uae"),
                                 style: TextStyle(
@@ -260,7 +359,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 });
                                 Navigator.of(context).pop();
                               },
-                              leading: Image.asset('assets/icons/kw_flag.png'),
+                              leading: Image.asset(
+                                'assets/icons/kw_flag.png',
+                                width: 35.0,
+                                height: 25.0,
+                                fit: BoxFit.cover,
+                              ),
                               title: Text(
                                 AppLocalization.of(context).translate("kw"),
                                 style: TextStyle(
@@ -297,7 +401,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           AppLocalization.of(context).translate("ksa"),
                           style: TextStyle(fontSize: widgetSize.textFieldError),
                         ),
-                        leading: Image.asset('assets/icons/ksa_flag.png'),
+                        leading: Image.asset(
+                          'assets/icons/ksa_flag.png',
+                          width: 35.0,
+                          height: 25.0,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -315,7 +424,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           });
                           Navigator.of(context).pop();
                         },
-                        leading: Image.asset('assets/icons/uae_flag.png'),
+                        leading: Image.asset(
+                          'assets/icons/uae_flag.png',
+                          width: 35.0,
+                          height: 25.0,
+                          fit: BoxFit.cover,
+                        ),
                         title: Text(
                           AppLocalization.of(context).translate("uae"),
                           style: TextStyle(fontSize: widgetSize.textFieldError),
@@ -337,7 +451,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           });
                           Navigator.of(context).pop();
                         },
-                        leading: Image.asset('assets/icons/kw_flag.png'),
+                        leading: Image.asset(
+                          'assets/icons/kw_flag.png',
+                          width: 35.0,
+                          height: 25.0,
+                          fit: BoxFit.cover,
+                        ),
                         title: Text(
                           AppLocalization.of(context).translate("kw"),
                           style: TextStyle(fontSize: widgetSize.textFieldError),
@@ -381,6 +500,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16.0, vertical: 10.0),
+                        height: screenConfig.screenHeight,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
@@ -463,7 +583,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     _registerMap['name'] = value;
                                   },
                                   style:
-                                      TextStyle(fontSize: widgetSize.subTitle),
+                                      TextStyle(fontSize: widgetSize.content),
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     errorStyle: TextStyle(
@@ -482,100 +602,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               SizedBox(
                                 height: 10.0,
                               ),
-                              Row(
-                                textDirection: TextDirection.ltr,
-                                children: <Widget>[
-                                  GestureDetector(
-                                    onTap: () {
-                                      _showPopupCountry();
-                                    },
-                                    child: Container(
-                                      width: 100.0,
-                                      child: Row(
-                                        textDirection: TextDirection.ltr,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Image.asset(
-                                            image == null
-                                                ? 'assets/icons/ksa_flag.png'
-                                                : image,
-                                            width: 25.0,
-                                            height: 15.0,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          SizedBox(
-                                            width: 5.0,
-                                          ),
-                                          Text(
-                                            countryCode == null
-                                                ? '+966'
-                                                : countryCode,
-                                            style: TextStyle(fontSize: 14.0),
-                                            textDirection: TextDirection.ltr,
-                                          ),
-                                          Icon(Icons.arrow_drop_down),
-                                        ],
-                                      ),
-//                  ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      height: widgetSize.textField,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1.0,
-                                            color: CustomColors.kPCardColor),
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                      child: Directionality(
-                                        textDirection: TextDirection.ltr,
-                                        child: TextFormField(
-                                          textDirection: TextDirection.ltr,
-                                          validator: (value) {
-                                            return (value.isEmpty ||
-                                                    value.length < 8)
-                                                ? AppLocalization.of(context)
-                                                    .translate(
-                                                        "phone_validation_length_msg")
-                                                : null;
-                                          },
-                                          style: TextStyle(
-                                              fontSize: widgetSize.subTitle),
-                                          onSaved: (value) {
-                                            _registerMap['phone'] =
-                                                '$countryCode$value';
-                                          },
-                                          keyboardType: TextInputType.phone,
-                                          inputFormatters: <TextInputFormatter>[
-                                            WhitelistingTextInputFormatter
-                                                .digitsOnly,
-                                            LengthLimitingTextInputFormatter(9),
-                                          ],
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            errorStyle: TextStyle(
-                                                fontSize:
-                                                    widgetSize.textFieldError),
-                                            hintText: '5xxxxxxxx',
-                                            hintStyle: TextStyle(
-                                                fontSize: widgetSize.subTitle,
-                                                color: Colors.grey,
-                                                fontWeight: FontWeight.bold),
-                                            contentPadding:
-                                                const EdgeInsets.only(
-                                              left: 10.0,
-                                              right: 10.0,
-                                              bottom: 6.0,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              _buildPhone(context),
                               SizedBox(
                                 height: 10.0,
                               ),
@@ -599,7 +626,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       return null;
                                   },
                                   style:
-                                      TextStyle(fontSize: widgetSize.subTitle),
+                                      TextStyle(fontSize: widgetSize.content),
                                   onSaved: (value) {
                                     _registerMap['email'] = value;
                                   },
@@ -640,7 +667,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     return null;
                                   },
                                   style:
-                                      TextStyle(fontSize: widgetSize.subTitle),
+                                      TextStyle(fontSize: widgetSize.content),
                                   onSaved: (value) {
                                     _registerMap['password'] = value;
                                   },

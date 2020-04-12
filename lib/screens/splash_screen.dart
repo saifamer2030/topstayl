@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:topstyle/models/home_page_model.dart';
-import 'package:topstyle/providers/languages_provider.dart';
-import 'package:topstyle/providers/products_provider.dart';
-import 'package:topstyle/providers/user_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:topstyle/screens/app_lanugages.dart';
+import 'package:topstyle/screens/tabs_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   static String routeName = 'splash-screen';
@@ -13,24 +11,19 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final AppLanguageProvider _languages = AppLanguageProvider();
-  final UserProvider userProvider = UserProvider();
-  HomePageModel homePageModel;
-  fetchHomeData() async {
-    print('Home calling');
-    var token = await userProvider.isAuthenticated();
-    var lang = _languages.appLocal.toString();
-    Provider.of<ProductsProvider>(context, listen: false)
-        .fetchAllProducts(lang, token['Authorization'])
-        .then((data) {
-      homePageModel = data;
-    });
+  init() async {
+    var prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('language_code') != null) {
+      Navigator.of(context).pushReplacementNamed(TabsScreen.routeName);
+    } else {
+      Navigator.pushReplacementNamed(context, LanguagesScreen.routeName);
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    fetchHomeData();
+    Future.delayed(Duration(seconds: 2), () => init());
   }
 
   @override

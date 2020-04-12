@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import './constants/colors.dart';
 import './helper/appLocalization.dart';
@@ -39,12 +38,13 @@ import 'models/product_details_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  var prefs = await SharedPreferences.getInstance();
-  Widget homePage = TabsScreen();
-  if (prefs.getString('language_code') == null) {
-    print(prefs.getString('language_code'));
-    homePage = LanguagesScreen();
-  }
+//  var prefs = await SharedPreferences.getInstance();
+  //Widget homePage = TabsScreen();
+  Widget homePage = SplashScreen();
+//  if (prefs.getString('language_code') == null) {
+//    print(prefs.getString('language_code'));
+//    homePage = LanguagesScreen();
+//  }
   runApp(MyApp(homePage));
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,

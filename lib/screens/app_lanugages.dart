@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:topstyle/helper/common_component.dart';
 import 'package:topstyle/providers/languages_provider.dart';
 import 'package:topstyle/screens/tabs_screen.dart';
 
@@ -211,31 +212,37 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
                             if (_isUAEClicked && _isArabicClicked) {
 //                              _goToHome('UAE', 'ar', context);
                               languageProvider.changeLanguage(Locale("ar"));
+                              CommonComponent.storeCountry('UAE');
                               Navigator.of(context)
                                   .pushReplacementNamed(TabsScreen.routeName);
                             } else if (_isUAEClicked && _isEnglishClicked) {
 //                              _goToHome('UAE', 'en', context);
                               languageProvider.changeLanguage(Locale("en"));
+                              CommonComponent.storeCountry('UAE');
                               Navigator.of(context)
                                   .pushReplacementNamed(TabsScreen.routeName);
                             } else if (_isKSAClicked && _isArabicClicked) {
 //                              _goToHome('KSA', 'ar', context);
                               languageProvider.changeLanguage(Locale("ar"));
+                              CommonComponent.storeCountry('KSA');
                               Navigator.of(context)
                                   .pushReplacementNamed(TabsScreen.routeName);
                             } else if (_isKSAClicked && _isEnglishClicked) {
 //                              _goToHome('KSA', 'en', context);
                               languageProvider.changeLanguage(Locale("en"));
+                              CommonComponent.storeCountry('KSA');
                               Navigator.of(context)
                                   .pushReplacementNamed(TabsScreen.routeName);
                             } else if (_isKuwaitClicked && _isArabicClicked) {
 //                              _goToHome('KW', 'ar', context);
                               languageProvider.changeLanguage(Locale("ar"));
+                              CommonComponent.storeCountry('KW');
                               Navigator.of(context)
                                   .pushReplacementNamed(TabsScreen.routeName);
                             } else {
 //                              _goToHome('KW', 'en', context);
                               languageProvider.changeLanguage(Locale("en"));
+                              CommonComponent.storeCountry('KW');
                               Navigator.of(context)
                                   .pushReplacementNamed(TabsScreen.routeName);
                             }
