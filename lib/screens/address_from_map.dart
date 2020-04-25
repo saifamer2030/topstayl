@@ -15,6 +15,7 @@ import 'package:topstyle/widgets/connectivity_widget.dart';
 import '../helper/appLocalization.dart';
 import '../helper/location_helper.dart';
 import '../models/place.dart';
+import 'package:geocoder/geocoder.dart';
 
 class AddressFromMap extends StatefulWidget {
   @override
@@ -30,6 +31,7 @@ class _AddressFromMapState extends State<AddressFromMap> {
   Location location = Location();
   double lat;
   double long;
+
   @override
   void initState() {
     initLocation();
@@ -162,7 +164,7 @@ class _AddressFromMapState extends State<AddressFromMap> {
                     });
                   },
                 ),
-                Positioned(
+                /*     Positioned(
                   bottom: 20.0,
                   child: FloatingActionButton(
                     child: Icon(
@@ -183,7 +185,7 @@ class _AddressFromMapState extends State<AddressFromMap> {
                       });
                     },
                   ),
-                ),
+                ),*/
                 Positioned(
                   left: 8.0,
                   right: Platform.isIOS ? 8.0 : 15.0,
@@ -234,7 +236,7 @@ class _AddressFromMapState extends State<AddressFromMap> {
               child: RaisedButton(
                   padding: const EdgeInsets.all(8.0),
                   onPressed: readableAddress.length > 0
-                      ? () {
+                      ? () async {
                           for (int i = 0; i < readableAddress.length; i++) {
                             realAddress.putIfAbsent(readableAddress[i].type[0],
                                 () => readableAddress[i].shortName);
@@ -243,17 +245,29 @@ class _AddressFromMapState extends State<AddressFromMap> {
                               '${_supported.indexOf(realAddress['country']) + 1}';
 //                          print(realAddress['administrative_area_level_1']);
                           if (_supported.contains(realAddress['country'])) {
-                            // GO BACK TO FROM ADDRESS SCREEN
+                            // Get RealLocation
                             Map<String, String> locationData = {};
+                            final coordinates = new Coordinates(lat, long);
+                            var addresses = await Geocoder.local
+                                .findAddressesFromCoordinates(coordinates);
+                            var firstUserLocation = addresses.first;
+
                             locationData['countryId'] = countryId;
                             locationData['country'] = realAddress['country'];
-                            locationData['city'] = realAddress[
+                            locationData['city'] = firstUserLocation.locality;
+                            /*realAddress[
                                         'administrative_area_level_2'] !=
                                     null
                                 ? realAddress['administrative_area_level_2']
-                                : realAddress['administrative_area_level_1'];
-                            locationData['area'] = realAddress['political'];
-                            locationData['street'] = realAddress['route'];
+                                : realAddress['administrative_area_level_1'];*/
+                            locationData['area'] =
+                                firstUserLocation.subLocality;
+                            /*realAddress['political'];*/
+                            locationData['street'] =
+                                firstUserLocation.featureName +
+                                    ',' +
+                                    firstUserLocation.thoroughfare;
+//                                realAddress['route'];
                             locationData['gps'] = '$lat,$long';
                             print(locationData['city']);
                             Navigator.of(context).pop(locationData);
@@ -310,4 +324,5 @@ class _AddressFromMapState extends State<AddressFromMap> {
           result[0].position.latitude, result[0].position.longitude);
     });
   }
+
 }

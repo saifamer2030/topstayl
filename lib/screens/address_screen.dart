@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
@@ -471,6 +472,7 @@ class _AddressScreenState extends State<AddressScreen> {
 
   ScreenConfig screenConfig;
   WidgetSize widgetSize;
+
   @override
   void dispose() {
     addressArea.dispose();
@@ -514,7 +516,7 @@ class _AddressScreenState extends State<AddressScreen> {
                             _getAllCites(_stringVar['countryId']);
                             _stringVar['selectedCity'] = dataFromMap['city'];
                             addressArea.text = dataFromMap['area'];
-                            addressStreet.text = dataFromMap['street'];
+                            addressStreet.text = '${dataFromMap['street']}';
                             _stringVar['gps'] = dataFromMap['gps'];
                           });
                         }

@@ -19,7 +19,8 @@ class LocationHelper {
     AddressComponents addressData;
     try {
       String url =
-          'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=${ApiUtil.GOOGLE_API_KEY}';
+          'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng'
+          '&key=${ApiUtil.GOOGLE_API_KEY}';
       final response = await http.get(url);
       switch (json.decode(response.body)['status']) {
         case "OK":
