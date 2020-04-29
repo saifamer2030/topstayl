@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "346523162580",
+    "firebase_url": "https://topstyle-c617d.firebaseio.com",
+    "project_id": "topstyle-c617d",
+    "storage_bucket": "topstyle-c617d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346523162580:android:c2f575f7bf300b15266841",
+        "android_client_info": {
+          "package_name": "com.topstylesa.topstyle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346523162580-raodvhmbm8jacalk2irtn4sjnht8b54o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIrvE0Vv1lLNeOHbJdwUZ-TvXK853_ziY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "346523162580-raodvhmbm8jacalk2irtn4sjnht8b54o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

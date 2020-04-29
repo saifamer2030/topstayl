@@ -38,6 +38,10 @@ dependencies:
   shared_preferences: ^0.5.6+1
   flutter_webview_plugin: ^0.3.10+1
   geocoder: ^0.2.1
+  firebase_messaging: ^5.1.2
+  firebase_database: ^3.0.4
+  firebase_auth: ^0.11.1+11
+  flutter_local_notifications: ^0.8.4
 
 
 
