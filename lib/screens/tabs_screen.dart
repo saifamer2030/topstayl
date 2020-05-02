@@ -1,5 +1,8 @@
+import 'package:fimber/fimber_base.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:topstyle/constants/colors.dart';
 import 'package:topstyle/helper/appLocalization.dart';
@@ -10,7 +13,8 @@ import 'package:topstyle/providers/languages_provider.dart';
 import 'package:topstyle/providers/network_provider.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/widgets/connectivity_widget.dart';
-
+import 'dart:convert';
+import 'dart:io' show Platform;
 import '../screens/brands_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/categories_screen.dart';
@@ -23,6 +27,11 @@ class TabsScreen extends StatefulWidget {
   @override
   _TabsScreenState createState() => _TabsScreenState();
 }
+
+FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    new FlutterLocalNotificationsPlugin();
 
 class _TabsScreenState extends State<TabsScreen>
     with SingleTickerProviderStateMixin {
@@ -43,6 +52,7 @@ class _TabsScreenState extends State<TabsScreen>
   List<CartItemModel> _lists = [];
   UserProvider userProvider = UserProvider();
   double totalPrice = 0.0;
+
   getCartData() async {
     var token = await userProvider.isAuthenticated();
     final String lang = appLanguage.appLocal.toString();
@@ -54,6 +64,8 @@ class _TabsScreenState extends State<TabsScreen>
   void initState() {
     _tabController = new TabController(vsync: this, length: 5, initialIndex: 0);
     getCartData();
+    registerNotification();
+    configLocalNotification();
     super.initState();
   }
 
@@ -90,26 +102,30 @@ class _TabsScreenState extends State<TabsScreen>
               height: 25.0,
               fit: BoxFit.fill,
               color: _selectedIndex == 2
-                  ? Theme.of(context).accentColor
+                  ? Theme
+                  .of(context)
+                  .accentColor
                   : CustomColors.kTabBarIconColor,
             ),
             Positioned(
               top: 11.0,
               bottom: 4.0,
               child: Consumer<CartItemProvider>(
-                builder: (ctx, cart, _) => Container(
-                  margin: cart.allItemQuantity > 9
-                      ? const EdgeInsets.symmetric(
-                          horizontal: 4.0,
-                        )
-                      : const EdgeInsets.symmetric(horizontal: 6.0),
-                  child: Text(
-                    '${cart.allItemQuantity > 9 ? '9+' : cart.allItemQuantity == 0 ? '' : cart.allItemQuantity}',
-                    textAlign: TextAlign.center,
-                    style:
+                builder: (ctx, cart, _) =>
+                    Container(
+                      margin: cart.allItemQuantity > 9
+                          ? const EdgeInsets.symmetric(
+                        horizontal: 4.0,
+                      )
+                          : const EdgeInsets.symmetric(horizontal: 6.0),
+                      child: Text(
+                        '${cart.allItemQuantity > 9 ? '9+' : cart
+                            .allItemQuantity == 0 ? '' : cart.allItemQuantity}',
+                        textAlign: TextAlign.center,
+                        style:
                         TextStyle(fontSize: 11.0, fontWeight: FontWeight.bold),
-                  ),
-                ),
+                      ),
+                    ),
               ),
             )
           ],
@@ -141,15 +157,16 @@ class _TabsScreenState extends State<TabsScreen>
       body: Provider<NetworkProvider>.value(
         value: NetworkProvider(),
         child: Consumer<NetworkProvider>(
-          builder: (context, value, _) => Center(
-              child: ConnectivityWidget(
-            networkProvider: value,
-            child: TabBarView(
-              controller: _tabController,
-              physics: NeverScrollableScrollPhysics(),
-              children: _mainPages,
-            ),
-          )),
+          builder: (context, value, _) =>
+              Center(
+                  child: ConnectivityWidget(
+                    networkProvider: value,
+                    child: TabBarView(
+                      controller: _tabController,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: _mainPages,
+                    ),
+                  )),
         ),
       ),
       bottomNavigationBar: Container(
@@ -173,5 +190,95 @@ class _TabsScreenState extends State<TabsScreen>
             tabs: _listOfTabs(context)),
       ),
     );
+  }
+
+  void registerNotification() {
+    firebaseMessaging.requestNotificationPermissions();
+
+    firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) {
+          print('onMessage: $message');
+          showNotification(message['notification']);
+          return;
+        },
+        onResume: (Map<String, dynamic> message) {
+          print('onResume: $message');
+          _serialiseAndNavigate(message);
+          return;
+        },
+        //onBackgroundMessage: myBackgroundMessageHandler,
+        onLaunch: (Map<String, dynamic> message) {
+          print('onLaunch: $message');
+          _serialiseAndNavigate(message);
+          return;
+        });
+  }
+
+  void configLocalNotification() {
+    var initializationSettingsAndroid =
+    new AndroidInitializationSettings('@drawable/ic_launcher_foreground');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  void showNotification(message) async {
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+      Platform.isAndroid
+          ? 'ccom.topstylesa.topstyle'
+          : 'com.topstylesa.topstyle',
+      'topstyle',
+      'your channel description',
+      playSound: true,
+      enableVibration: true,
+      importance: Importance.Max,
+      priority: Priority.High,
+    );
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
+        message['body'].toString(), platformChannelSpecifics,
+        payload: json.encode(message));
+  }
+
+  // ignore: missing_return
+  Future _serialiseAndNavigate(Map<String, dynamic> message) {
+    var notificationData = message['data'];
+    var view = notificationData['view'];
+
+    if (view != null) {
+      // Navigate to the create post view
+      if (view == 'cart_screen') {
+        Navigator.push(
+          context,
+          new MaterialPageRoute(builder: (context) => CartScreen()),
+        );
+      } else if (view == 'categories_screen') {
+        Navigator.push(
+          context,
+          new MaterialPageRoute(builder: (context) => CategoriesScreen()),
+        );
+      }
+    }
+  }
+
+  Future<dynamic> myBackgroundMessageHandler(
+      Map<String, dynamic> message) async {
+    print("_backgroundMessageHandler");
+    if (message.containsKey('data')) {
+      // Handle data message
+      final dynamic data = message['data'];
+      print("_backgroundMessageHandler data: $data");
+    }
+
+    if (message.containsKey('notification')) {
+      // Handle notification message
+      final dynamic notification = message['notification'];
+      print("_backgroundMessageHandler notification: $notification");
+      Fimber.d("=====>myBackgroundMessageHandler $message");
+    }
+    return Future<void>.value();
   }
 }

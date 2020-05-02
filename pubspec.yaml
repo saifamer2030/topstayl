@@ -42,6 +42,8 @@ dependencies:
   firebase_database: ^3.0.4
   firebase_auth: ^0.11.1+11
   flutter_local_notifications: ^0.8.4
+  get_it: ^4.0.2
+  fimber: ^0.4.0
 
 
 

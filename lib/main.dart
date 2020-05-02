@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
 import './constants/colors.dart';
@@ -35,7 +36,7 @@ import './screens/register_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/tabs_screen.dart';
 import 'models/product_details_model.dart';
-
+GetIt getIt = GetIt.instance;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 //  var prefs = await SharedPreferences.getInstance();
@@ -45,6 +46,7 @@ void main() async {
 //    print(prefs.getString('language_code'));
 //    homePage = LanguagesScreen();
 //  }
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp(homePage));
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,
