@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,6 +40,10 @@ class ProductDetails extends StatefulWidget {
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
+
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    new FlutterLocalNotificationsPlugin();
 
 class _ProductDetailsState extends State<ProductDetails>
     with SingleTickerProviderStateMixin {
@@ -81,6 +90,7 @@ class _ProductDetailsState extends State<ProductDetails>
   double totalPrice = 0.0;
 
   List<CartItemModel> _lists = [];
+
   getCartData() async {
     var token = await userProvider.isAuthenticated();
     final String lang = appLanguage.appLocal.toString();
@@ -160,6 +170,8 @@ class _ProductDetailsState extends State<ProductDetails>
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
+
+
   }
 
   @override
@@ -1256,6 +1268,8 @@ class _ProductDetailsState extends State<ProductDetails>
                                             ? () async {
                                                 setState(() {
                                                   _isProductAddedToCart = true;
+                                                  configLocalNotification();
+
                                                 });
                                                 var token = await userProvider
                                                     .isAuthenticated();
@@ -1587,5 +1601,49 @@ class _ProductDetailsState extends State<ProductDetails>
               )),
             ),
           );
+  }
+
+  Future<void> showNotification() async {
+    var scheduledNotificationDateTime =
+    DateTime.now().add(Duration(seconds: 5));
+    var androidPlatformChannelSpecifics =
+    AndroidNotificationDetails('your other channel id',
+        'your other channel name', 'your other channel description');
+    var iOSPlatformChannelSpecifics =
+    IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(
+        300,
+        'تذكير',
+          'عزيزي العميل لديك منتج في السلة',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics,
+        payload: 'cart');
+  }
+  Future selectNotification(String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: ' + payload);
+    }
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CartScreen()),
+    );
+  }
+  Future<void> configLocalNotification() async {
+    var initializationSettingsAndroid =
+    AndroidInitializationSettings('@drawable/ic_launcher_foreground');
+    var initializationSettingsIOS = IOSInitializationSettings(
+      requestSoundPermission: true,
+      requestBadgePermission: true,
+      requestAlertPermission: true,
+
+    );
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: selectNotification  );
+    showNotification();
+
   }
 }

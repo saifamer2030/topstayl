@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:topstyle/constants/colors.dart';
@@ -12,14 +13,19 @@ import 'package:topstyle/providers/order_provider.dart';
 import 'package:topstyle/providers/user_provider.dart';
 import 'package:topstyle/screens/checkoutScreen.dart';
 import 'package:topstyle/screens/login_screen.dart';
+import 'package:topstyle/screens/tabs_screen.dart';
 import 'package:topstyle/widgets/adaptive_progress_indecator.dart';
 import 'package:topstyle/widgets/cart_item_in_listview.dart';
 
 class CartScreen extends StatefulWidget {
   static const String routeName = 'cart';
+
   @override
   _CartScreenState createState() => _CartScreenState();
 }
+
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    new FlutterLocalNotificationsPlugin();
 
 class _CartScreenState extends State<CartScreen> {
   bool _isProductOutOfStock = false;
@@ -51,8 +57,15 @@ class _CartScreenState extends State<CartScreen> {
     });
   }
 
+  @override
+  void initState() {
+
+    super.initState();
+  }
+
   ScreenConfig screenConfig;
   WidgetSize widgetSize;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -247,4 +260,6 @@ class _CartScreenState extends State<CartScreen> {
       super.setState(fn);
     }
   }
+
+
 }
